@@ -1,0 +1,39 @@
+{
+    "manifest_version":2,
+
+    "name":"KOSHIAN リロード拡張 改",
+
+    "version":"1.0.0",
+
+    "description":"マウスホイールでカタログやレス画面をリロードします",
+
+    "icons":{
+        "48":"icons/icon-48.png"
+    },
+
+    "content_scripts":[
+        {
+            "exclude_matches": ["*://*.2chan.net/*/res/**","*://*.2chan.net/*/src/*"],
+            "matches":["*://*.2chan.net/*/*"],
+            "js":["cat.js"]
+        },
+        {
+            "matches":["*://*.2chan.net/*/res/*"],
+            "js":["res.js"]
+        }
+    ],
+
+    "options_ui":{
+        "page":"options.html"
+    },
+
+    "permissions":[
+        "storage"
+    ],
+    
+    "applications":{
+        "gecko":{
+            "id":"{E5F040CA-E22F-11E7-8D70-447F1843E317}"
+        }
+    }    
+}
