@@ -171,6 +171,36 @@ class Reloader {
             return;
         }
 
+        let new_smalls = new_document.getElementsByTagName("small");
+        let new_fonts = new_document.getElementsByTagName("font");
+        let contdisp = document.getElementById("contdisp");
+
+        if (new_smalls){
+          for(let i=0 ; i < new_smalls.length ; i++){
+            let small_text = new_smalls[i].innerText;
+            if (small_text.length){
+//            console.log("res.js : small[" + i + "]_text = " + small_text);
+              let limittime = small_text.match(/^.*頃消えます/);
+              if (limittime){
+                contdisp.innerText = limittime;
+//              console.log("res.js : limittime[0] = " + limittime[0]);
+                break;
+              }
+            }
+          }
+        }
+
+        if(new_fonts){
+          for (let i=0 ; i < new_fonts.length ; i++){
+            let font_text = new_fonts[i].innerText;
+            if (font_text == "このスレは古いので、もうすぐ消えます。"){
+//            console.log("res.js : font[" + i + "]_text = " + font_text);
+              contdisp.style.color = "red";
+              break;
+            }
+          }
+        }
+
         let tables = thre.getElementsByTagName("table");
         let new_tables = new_thre.getElementsByTagName("table");
         let res_num = tables ? tables.length : 0;
