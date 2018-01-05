@@ -3,11 +3,13 @@ const DEFAULT_COUNT_TO_RELOAD = 10;
 const DEFAULT_RELOAD_PERIOD = 5000;
 const DEFAULT_TIME_OUT = 60000;
 const DEFAULT_REPLACE_RELOAD_BUTTON = true;
+const DEFAULT_USE_FUTABACHIN_LINK = false;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
 let reload_period = DEFAULT_RELOAD_PERIOD;
 let time_out = DEFAULT_TIME_OUT;
 let replace_reload_button = DEFAULT_REPLACE_RELOAD_BUTTON;
+let use_futabachin_link = DEFAULT_USE_FUTABACHIN_LINK;
 
 class Notify {
     constructor() {
@@ -100,6 +102,7 @@ class Reloader {
             if (header.status == 404) {
                 this.notify.setText(`スレは落ちています`);
                 this.loading = false;
+                dispLogLink();
                 fixFormPosition();
             }
 
@@ -256,6 +259,24 @@ function fixFormPosition() {
     form.style.top = `${top}px`;
 }
 
+function dispLogLink() {
+    let href_match = location.href.match(/^https?:\/\/(may|img)\.2chan\.net\/b\/res\/.+\.htm$/);
+    if (href_match && use_futabachin_link) {
+        let futabachin_link = href_match[0].replace(".2chan.net/",".2chin.net/");
+        let futabachin_span = document.createElement("span");
+        futabachin_span.innerText = " [";
+        let futabachin_a = document.createElement("a");
+        futabachin_a.setAttribute("href", futabachin_link);
+        futabachin_a.setAttribute("target", "_blank");
+        futabachin_a.innerText = "2chin";
+        futabachin_span.appendChild(futabachin_a);
+        let futabachin_txt = document.createTextNode("]");
+        futabachin_span.appendChild(futabachin_txt);
+        let koshian_notify = document.getElementById("KOSHIAN_NOTIFY");
+        koshian_notify.parentNode.insertBefore(futabachin_span, koshian_notify.nextSibling);
+    }
+}
+
 function getTime() {
     return new Date().getTime();
 }
@@ -311,6 +332,7 @@ browser.storage.local.get().then((result) => {
     count_to_reload = safeGetValue(result.count_to_reload, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(result.reload_period, DEFAULT_RELOAD_PERIOD);
     replace_reload_button = safeGetValue(result.replace_reload_button, DEFAULT_REPLACE_RELOAD_BUTTON);
+    use_futabachin_link = safeGetValue(result.use_futabachin_link, DEFAULT_USE_FUTABACHIN_LINK);
 
     main();
 }, (error) => { });
@@ -323,4 +345,5 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     scroll_period = safeGetValue(changes.scroll_period.newValue, DEFAULT_SCROLL_PERIOD);
     count_to_reload = safeGetValue(changes.count_to_reload.newValue, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(changes.reload_period.newValue, DEFAULT_RELOAD_PERIOD);
+    use_futabachin_link = safeGetValue(changes.use_futabachin_link.newValue, DEFAULT_USE_FUTABACHIN_LINK);
 });
