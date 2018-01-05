@@ -263,9 +263,17 @@ function dispLogLink() {
     let href_match = location.href.match(/^https?:\/\/(may|img)\.2chan\.net\/b\/res\/.+\.htm$/);
     if (href_match && use_futabachin_link) {
         let futabachin_link = href_match[0].replace(".2chan.net/",".2chin.net/");
-        let futabachin_html = "<span> [<a href='" + futabachin_link + "' target='_blank'>2chin</a>]</span>";
+        let futabachin_span = document.createElement("span");
+        futabachin_span.innerText = " [";
+        let futabachin_a = document.createElement("a");
+        futabachin_a.setAttribute("href", futabachin_link);
+        futabachin_a.setAttribute("target", "_blank");
+        futabachin_a.innerText = "2chin";
+        futabachin_span.appendChild(futabachin_a);
+        let futabachin_txt = document.createTextNode("]");
+        futabachin_span.appendChild(futabachin_txt);
         let koshian_notify = document.getElementById("KOSHIAN_NOTIFY");
-        koshian_notify.insertAdjacentHTML("afterend",futabachin_html);
+        koshian_notify.parentNode.insertBefore(futabachin_span, koshian_notify.nextSibling);
     }
 }
 
