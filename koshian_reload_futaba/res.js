@@ -3,12 +3,14 @@ const DEFAULT_COUNT_TO_RELOAD = 10;
 const DEFAULT_RELOAD_PERIOD = 5000;
 const DEFAULT_TIME_OUT = 60000;
 const DEFAULT_REPLACE_RELOAD_BUTTON = true;
+const DEFAULT_REFRESH_DELETED_RES = false;
 const DEFAULT_USE_FUTABACHIN_LINK = false;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
 let reload_period = DEFAULT_RELOAD_PERIOD;
 let time_out = DEFAULT_TIME_OUT;
 let replace_reload_button = DEFAULT_REPLACE_RELOAD_BUTTON;
+let refresh_deleted_res = DEFAULT_REFRESH_DELETED_RES;
 let use_futabachin_link = DEFAULT_USE_FUTABACHIN_LINK;
 
 class Notify {
@@ -204,6 +206,63 @@ class Reloader {
           }
         }
 
+        if (refresh_deleted_res) {
+            let deleted = thre.getElementsByClassName("deleted");
+            let new_deleted = new_thre.getElementsByClassName("deleted");
+            let deleted_num = deleted ? deleted.length : 0;
+            let new_deleted_num = new_deleted ? new_deleted.length : 0;
+//          console.log("res.js : deleted_num,new_deleted_num = " + deleted_num + "," + new_deleted_num);
+            if (deleted_num < new_deleted_num) {
+                let show_deleted_res;
+                let new_ddel = new_thre.getElementsByTagName("blockquote")[0].nextElementSibling.nextElementSibling;
+                if (new_ddel.id == "ddel") {
+                    let ddel = document.getElementById("ddel");
+                    if (ddel) {
+                        let new_ddnum_text = new_ddel.firstElementChild.innerText;
+                        let ddnum = document.getElementById("ddnum");
+                        ddnum.innerText = new_ddnum_text;
+                    } else {
+                        let clone_new_ddel = new_ddel.cloneNode(true);
+                        let radtop = document.getElementById("radtop");
+                        radtop.parentNode.insertBefore(clone_new_ddel, radtop.nextSibling);
+                    }
+                    let ddbut = document.getElementById("ddbut");
+                    show_deleted_res = ddbut.innerText == "隠す";
+                }
+                for (let i = 0; i < new_deleted_num; i++) {
+                    let new_deleted_input = new_deleted[i].getElementsByTagName("input")[0];
+                    let new_deleted_input_id = new_deleted_input.id;
+//                  console.log("res.js : new_deleted_input_id = " + new_deleted_input_id);
+                    let deleted_input = document.getElementById(new_deleted_input_id);
+                    if (deleted_input) {
+                        let deleted_table = deleted_input.parentNode.parentNode.parentNode.parentNode;
+                        if (deleted_table) {
+                            if (deleted_table.className != "deleted") {
+                                deleted_table.classList.add("deleted");
+                                deleted_table.style.border = "2px dashed red";
+                                let new_deleted_blockquote = new_deleted[i].getElementsByTagName("blockquote")[0];
+                                let new_deleted_font = new_deleted_blockquote.getElementsByTagName("font")[0];
+                                let new_deleted_text = new_deleted_font.innerText;
+                                let deleted_font = document.createElement("font");
+                                deleted_font.setAttribute("color","red");
+                                deleted_font.innerText = new_deleted_text;
+                                let deleted_br = document.createElement("br");
+                                let deleted_blockquote = deleted_table.getElementsByTagName("blockquote")[0];
+                                deleted_blockquote.insertBefore(deleted_br, deleted_blockquote.firstChild);
+                                deleted_blockquote.insertBefore(deleted_font, deleted_blockquote.firstChild);
+                                deleted_table.style.display = "table";
+                            }
+                        }
+                    } else {
+                        let new_deleted_table = new_deleted_input.parentNode.parentNode.parentNode.parentNode;
+                        if (new_deleted_table) {
+                            new_deleted_table.setAttribute("style", show_deleted_res ? "display: table;" : "display: none;");
+                        }
+                    }
+                }
+            }
+        }
+
         let tables = thre.getElementsByTagName("table");
         let new_tables = new_thre.getElementsByTagName("table");
         let res_num = tables ? tables.length : 0;
@@ -332,6 +391,7 @@ browser.storage.local.get().then((result) => {
     count_to_reload = safeGetValue(result.count_to_reload, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(result.reload_period, DEFAULT_RELOAD_PERIOD);
     replace_reload_button = safeGetValue(result.replace_reload_button, DEFAULT_REPLACE_RELOAD_BUTTON);
+    refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
     use_futabachin_link = safeGetValue(result.use_futabachin_link, DEFAULT_USE_FUTABACHIN_LINK);
 
     main();
@@ -345,5 +405,6 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     scroll_period = safeGetValue(changes.scroll_period.newValue, DEFAULT_SCROLL_PERIOD);
     count_to_reload = safeGetValue(changes.count_to_reload.newValue, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(changes.reload_period.newValue, DEFAULT_RELOAD_PERIOD);
+    refresh_deleted_res = safeGetValue(changes.refresh_deleted_res.newValue, DEFAULT_REFRESH_DELETED_RES);
     use_futabachin_link = safeGetValue(changes.use_futabachin_link.newValue, DEFAULT_USE_FUTABACHIN_LINK);
 });
