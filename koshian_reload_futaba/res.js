@@ -178,8 +178,8 @@ class Reloader {
             return;
         }
 
-        let new_smalls = new_document.getElementsByTagName("small");
-        let new_fonts = new_document.getElementsByTagName("font");
+        let new_smalls = new_thre.getElementsByTagName("small");
+        let new_fonts = new_thre.getElementsByTagName("font");
         let contdisp = document.getElementById("contdisp");
 
         if (new_smalls){
