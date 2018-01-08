@@ -320,11 +320,13 @@ function fixFormPosition() {
 
 function dispLogLink() {
     let href_match = location.href.match(/^https?:\/\/(may|img)\.2chan\.net\/b\/res\/.+\.htm$/);
-    if (href_match && use_futabachin_link) {
+    let futabachin_link_id = document.getElementById("futabachin_link");
+    if (href_match && use_futabachin_link && !futabachin_link_id) {
         let futabachin_link = href_match[0].replace(".2chan.net/",".2chin.net/");
         let futabachin_span = document.createElement("span");
         futabachin_span.innerText = " [";
         let futabachin_a = document.createElement("a");
+        futabachin_a.id = "futabachin_link";
         futabachin_a.setAttribute("href", futabachin_link);
         futabachin_a.setAttribute("target", "_blank");
         futabachin_a.innerText = "2chin";
