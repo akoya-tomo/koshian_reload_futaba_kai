@@ -4,6 +4,7 @@ const DEFAULT_RELOAD_PERIOD = 5000;
 const DEFAULT_TIME_OUT = 60000;
 const DEFAULT_REPLACE_RELOAD_BUTTON = true;
 const DEFAULT_REFRESH_DELETED_RES = false;
+const DEFAULT_REFRESH_SOUDANE = false;
 const DEFAULT_USE_FUTABACHIN_LINK = false;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
@@ -11,6 +12,7 @@ let reload_period = DEFAULT_RELOAD_PERIOD;
 let time_out = DEFAULT_TIME_OUT;
 let replace_reload_button = DEFAULT_REPLACE_RELOAD_BUTTON;
 let refresh_deleted_res = DEFAULT_REFRESH_DELETED_RES;
+let refresh_soudane = DEFAULT_REFRESH_SOUDANE;
 let use_futabachin_link = DEFAULT_USE_FUTABACHIN_LINK;
 
 class Notify {
@@ -211,8 +213,9 @@ class Reloader {
             let new_deleted = new_thre.getElementsByClassName("deleted");
             let deleted_num = deleted ? deleted.length : 0;
             let new_deleted_num = new_deleted ? new_deleted.length : 0;
-//          console.log("res.js : deleted_num,new_deleted_num = " + deleted_num + "," + new_deleted_num);
             if (deleted_num < new_deleted_num) {
+//              console.log("res.js : deleted_num,new_deleted_num = " + deleted_num + "," + new_deleted_num);
+                let refresh_deleted_res_start_time = Date.now();
                 let show_deleted_res;
                 let new_ddel = new_thre.getElementsByTagName("blockquote")[0].nextElementSibling.nextElementSibling;
                 if (new_ddel.id == "ddel") {
@@ -260,6 +263,25 @@ class Reloader {
                         }
                     }
                 }
+//              console.log("res.js: refresh deleted res processing time = " + (Date.now() - refresh_deleted_res_start_time) + "msec");
+            }
+        }
+
+        if (refresh_soudane) {
+            let new_sod = new_thre.getElementsByClassName("sod");
+            let new_sod_num  = new_sod ? new_sod.length : 0;
+//          console.log("res.js : new_sod_num = " + new_sod_num);
+            if (new_sod_num) {
+                let refresh_soudane_start_time = Date.now();
+                for (let i = 0; i < new_sod_num; i++) {
+                    let new_sod_id = new_sod[i].id;
+                    let new_sod_text = new_sod[i].innerText;
+                    let sod_id = document.getElementById(new_sod_id);
+                    if (sod_id) {
+                        sod_id.innerText = new_sod_text;
+                    }
+                }
+//          console.log("res.js: refresh soudane processing time = " + (Date.now() - refresh_soudane_start_time) + "msec");
             }
         }
 
@@ -394,6 +416,7 @@ browser.storage.local.get().then((result) => {
     reload_period = safeGetValue(result.reload_period, DEFAULT_RELOAD_PERIOD);
     replace_reload_button = safeGetValue(result.replace_reload_button, DEFAULT_REPLACE_RELOAD_BUTTON);
     refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
+    refresh_soudane = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
     use_futabachin_link = safeGetValue(result.use_futabachin_link, DEFAULT_USE_FUTABACHIN_LINK);
 
     main();
@@ -408,5 +431,6 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     count_to_reload = safeGetValue(changes.count_to_reload.newValue, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(changes.reload_period.newValue, DEFAULT_RELOAD_PERIOD);
     refresh_deleted_res = safeGetValue(changes.refresh_deleted_res.newValue, DEFAULT_REFRESH_DELETED_RES);
+    refresh_soudane = safeGetValue(changes.refresh_soudane.newValue, DEFAULT_REFRESH_SOUDANE);
     use_futabachin_link = safeGetValue(changes.use_futabachin_link.newValue, DEFAULT_USE_FUTABACHIN_LINK);
 });
