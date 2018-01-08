@@ -2,11 +2,15 @@ const DEFAULT_SCROLL_PERIOD = 500;
 const DEFAULT_COUNT_TO_RELOAD = 10;
 const DEFAULT_RELOAD_PERIOD = 5000;
 const DEFAULT_REPLACE_RELOAD_BUTTON = true;
+const DEFAULT_REFRESH_DELETED_RES = false;
+const DEFAULT_REFRESH_SOUDANE = false;
 const DEFAULT_USE_FUTABACHIN_LINK = false;
 let scroll_period = null;
 let count_to_reload = null;
 let reload_period = null;
 let replace_reload_button = null;
+let refresh_deleted_res = null;
+let refresh_soudane = null;
 let use_futabachin_link = null;
 
 function onError(error) {
@@ -22,6 +26,8 @@ function saveSetting(e) {
         count_to_reload: count_to_reload.value,
         reload_period: reload_period.value,
         replace_reload_button:replace_reload_button.checked,
+        refresh_deleted_res:refresh_deleted_res.checked,
+        refresh_soudane:refresh_soudane.checked,
         use_futabachin_link:use_futabachin_link.checked
     });
 }
@@ -31,6 +37,8 @@ function setCurrentChoice(result) {
     count_to_reload.value = safeGetValue(result.count_to_reload, DEFAULT_COUNT_TO_RELOAD);
     reload_period.value = safeGetValue(result.reload_period, DEFAULT_RELOAD_PERIOD);
     replace_reload_button.checked = safeGetValue(result.replace_reload_button, DEFAULT_REPLACE_RELOAD_BUTTON);    
+    refresh_deleted_res.checked = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);    
+    refresh_soudane.checked = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);    
     use_futabachin_link.checked = safeGetValue(result.use_futabachin_link, DEFAULT_USE_FUTABACHIN_LINK);    
 }
 
@@ -39,12 +47,16 @@ function onLoad() {
     count_to_reload = document.getElementById("count_to_reload");
     reload_period = document.getElementById("reload_period");
     replace_reload_button = document.getElementById("replace_reload_button");
+    refresh_deleted_res = document.getElementById("refresh_deleted_res");
+    refresh_soudane = document.getElementById("refresh_soudane");
     use_futabachin_link = document.getElementById("use_futabachin_link");
 
     scroll_period.addEventListener("change", saveSetting);
     count_to_reload.addEventListener("change", saveSetting);
     reload_period.addEventListener("change", saveSetting);
     replace_reload_button.addEventListener("change", saveSetting);
+    refresh_deleted_res.addEventListener("change", saveSetting);
+    refresh_soudane.addEventListener("change", saveSetting);
     use_futabachin_link.addEventListener("change", saveSetting);
 
     browser.storage.local.get().then(setCurrentChoice, onError);
