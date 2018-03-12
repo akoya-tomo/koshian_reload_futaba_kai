@@ -1,13 +1,13 @@
 ## KOSHIAN リロード拡張 改
-このアドオンは[Pachira](https://addons.mozilla.org/ja/firefox/user/anonymous-a0bba9187b568f98732d22d51c5955a6/)氏の[KOSHIAN リロード拡張](https://addons.mozilla.org/ja/firefox/addon/koshian-reload-futaba/)アドオンを改変したものです。  
+このFirefoxアドオンは[Pachira](https://addons.mozilla.org/ja/firefox/user/anonymous-a0bba9187b568f98732d22d51c5955a6/)氏の[KOSHIAN リロード拡張](https://addons.mozilla.org/ja/firefox/addon/koshian-reload-futaba/)アドオンを改変したものです。  
 リロード時にページ下段のスレ消滅時刻を更新する機能などをオリジナル版に追加しています。  
 
-※他のKOSHIANアドオン改変版やUserscriptは[こちら](https://github.com/akoya-tomo/futaba_auto_reloader_K/wiki)の一覧からどうぞ。  
+※他のKOSHIANアドオン改変版やUserscriptは[こちら](https://github.com/akoya-tomo/futaba_auto_reloader_K/wiki/)の一覧からどうぞ。  
 
 ## 機能
 * オリジナルの機能（KOSHIAN リロード拡張）
-  - 画面端で一定回数マウスホイールでスクロールすることでふたば☆ちゃんねるのカタログやレス画面をリロードします
-  - レス画面ではページを更新することなく新着レスを取得できます
+  - 画面端で一定回数マウスホイールでスクロールすることでふたば☆ちゃんねるのカタログやレス画面をリロード
+  - レス画面でページを更新することなく新着レスを取得
 * 追加された機能（KOSHIAN リロード拡張 改）
   - リロード時にページ下段のスレ消滅時刻を更新する機能  
     リロード時に最新のスレ消滅時刻を取得してページ下段の表示を書き換えます。  
@@ -22,13 +22,17 @@
 ## インストール
 [GitHub](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.2.0/koshian_reload_futaba_kai-1.2.0-an.fx.xpi)
 
+※「接続エラーのため、アドオンをダウンロードできませんでした。」と表示されてインストール出来ない時はリンクを右クリックしてxpiファイルをダウンロードし、メニューのツール→アドオン（またはCtrl+Shift+A）で表示されたアドオンマネージャーのページにxpiファイルをドラッグ＆ドロップして下さい。  
+
 ## 注意事項
+* このアドオンはWebExtensionアドオン対応のFirefox専用です。  
+* 本アドオンを有効化したときはオリジナル版を無効化または削除して下さい。  
+* オリジナル版とは別アドオンなので設定は初期値に戻ります。  
+  再度設定をお願い致します。  
 * 赤破線の削除レスを隠したいときは、スレの本文下にある「削除された記事がx件あります」の横の「隠す」ボタンを押してください。新着の削除レスと一緒に隠すことができます。  
 * 新着レスについては削除されていても、表示は今まで通りで赤破線は表示されません。  
 * 新着レスがしばらく無いスレは『このスレは古いので、もうすぐ消えます。』が表示されないままスレが消えることがあり、結果としてスレ消滅時刻が赤字にならないことがあります。（imgで良く発生します）  
 * ページ上部の時刻は更新されません。  
-* オリジナル版とは別アドオンなので設定は初期値に戻ります。  
-  再度設定をお願い致します。  
 
 ## 更新履歴
 * v1.2.0 2018-01-08
