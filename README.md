@@ -2,6 +2,7 @@
 このFirefoxアドオンは[Pachira](https://addons.mozilla.org/ja/firefox/user/anonymous-a0bba9187b568f98732d22d51c5955a6/)氏の[KOSHIAN リロード拡張](https://addons.mozilla.org/ja/firefox/addon/koshian-reload-futaba/)アドオンを改変したものです。  
 リロード時にページ下段のスレ消滅時刻を更新する機能などをオリジナル版に追加しています。  
 
+※このアドオンはWebExtensionアドオン対応のFirefox専用となります。  
 ※他のKOSHIANアドオン改変版やUserscriptは[こちら](https://github.com/akoya-tomo/futaba_auto_reloader_K/wiki/)の一覧からどうぞ。  
 
 ## 機能
