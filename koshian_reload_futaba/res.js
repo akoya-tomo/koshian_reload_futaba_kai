@@ -5,6 +5,7 @@ const DEFAULT_TIME_OUT = 60000;
 const DEFAULT_REPLACE_RELOAD_BUTTON = true;
 const DEFAULT_REFRESH_DELETED_RES = false;
 const DEFAULT_REFRESH_SOUDANE = false;
+const DEFAULT_REFRESH_IDIP = false;
 const DEFAULT_USE_FUTABACHIN_LINK = false;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
@@ -13,7 +14,9 @@ let time_out = DEFAULT_TIME_OUT;
 let replace_reload_button = DEFAULT_REPLACE_RELOAD_BUTTON;
 let refresh_deleted_res = DEFAULT_REFRESH_DELETED_RES;
 let refresh_soudane = DEFAULT_REFRESH_SOUDANE;
+let refresh_idip = DEFAULT_REFRESH_IDIP;
 let use_futabachin_link = DEFAULT_USE_FUTABACHIN_LINK;
+let isIdIpThread = checkThreadMail();
 
 class Notify {
     constructor() {
@@ -285,6 +288,23 @@ class Reloader {
             }
         }
 
+        if (!isIdIpThread && refresh_idip) {
+            //let refresh_idip_start_time = Date.now();
+            let [new_del_id, new_idip_text] = searchIdIp(new_thre);
+            if (new_del_id && new_idip_text) {
+                setIdIp(new_del_id, new_idip_text);
+            }
+
+            let new_rtds = new_thre.getElementsByClassName("rtd");
+            for (let i = 0; i < new_rtds.length; i++) {
+                [new_del_id, new_idip_text] = searchIdIp(new_rtds[i]);
+                if (new_del_id && new_idip_text) {
+                    setIdIp(new_del_id, new_idip_text);
+                }
+            }
+            //console.log("res.js refresh idip processing time: " + (Date.now() - refresh_idip_start_time) + "msec");
+        }
+
         let tables = thre.getElementsByTagName("table");
         let new_tables = new_thre.getElementsByTagName("table");
         let res_num = tables ? tables.length : 0;
@@ -360,6 +380,79 @@ function dispLogLink() {
     }
 }
 
+function checkThreadMail() {
+    let mail = document.querySelector("html > body > form > div > font > b > a");
+    if (mail && mail.href.match(/^mailto:i[dp]%E8%A1%A8%E7%A4%BA/i)) {
+        return true;
+    }
+    mail = document.getElementsByClassName("KOSHIAN_meran")[0];
+    if (mail && mail.innerText.match(/^\[i[dp]表示/i)) {
+        return true;
+    }
+    return false;
+}
+
+function searchIdIp(elm) {
+    let del_id;
+    for (let i = 0; i < elm.childNodes.length; i++) {
+        let node = elm.childNodes[i];
+        if (node.tagName == "BLOCKQUOTE") return [null, null];
+        if (node.tagName == "INPUT") {
+            del_id = node.id;
+        }
+        if (node.nodeValue) {
+            let idip_text = node.nodeValue.match(/I[DP]:\S{8}/);
+            if (idip_text) {
+                if (del_id) {
+                    return [del_id, idip_text];
+                } else {
+                    return [null, null];
+                }
+            }
+        }
+    }
+    return [null, null];
+}
+
+function setIdIp(new_del_id, new_idip) {
+    if (!new_del_id || !new_idip) return;
+    let del_elm = document.getElementById(new_del_id);
+    if (!del_elm) return;
+    if (del_elm.classList.contains("KOSHIAN_reload_idip")) return;
+    let parent = del_elm.parentNode;
+    let time_node = null, time_text;
+    for (let i = 0; i < parent.childNodes.length; i++) {
+        let node = parent.childNodes[i];
+        if (node.tagName == "BLOCKQUOTE") {
+            if (time_node) {
+                time_node.nodeValue = time_text[1] + " " + new_idip + time_text[2];
+                del_elm.classList.add("KOSHIAN_reload_idip");
+            }
+            return;
+        } else if (node.tagName == "A") {
+            if (node.name == new_idip) {
+                del_elm.classList.add("KOSHIAN_reload_idip");
+                return;
+            }
+        } else if (node.nodeValue) {
+            if (!time_node) {
+                let time_match = node.nodeValue.match(/^( ?\d{2}\/\d{2}\/\d{2}\([^)]+\)\d{2}:\d{2}:\d{2})(.*)/);
+                if (time_match) {
+                    time_node = node;
+                    time_text = time_match;
+                }
+            }
+            if (time_node) {
+                if (node.nodeValue.indexOf(new_idip) > -1) {
+                    del_elm.classList.add("KOSHIAN_reload_idip");
+                    return;
+                }
+            }
+        }
+    }
+    return;
+}
+
 function getTime() {
     return new Date().getTime();
 }
@@ -372,6 +465,8 @@ function isBottom(dy) {
 }
 
 function main() {
+    console.log("res.js isIdIpThread: " + isIdIpThread);
+
     let reloader = new Reloader();
 
     document.addEventListener("wheel", (e) => {
@@ -417,6 +512,7 @@ browser.storage.local.get().then((result) => {
     replace_reload_button = safeGetValue(result.replace_reload_button, DEFAULT_REPLACE_RELOAD_BUTTON);
     refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
+    refresh_idip = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
     use_futabachin_link = safeGetValue(result.use_futabachin_link, DEFAULT_USE_FUTABACHIN_LINK);
 
     main();
@@ -432,5 +528,6 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     reload_period = safeGetValue(changes.reload_period.newValue, DEFAULT_RELOAD_PERIOD);
     refresh_deleted_res = safeGetValue(changes.refresh_deleted_res.newValue, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(changes.refresh_soudane.newValue, DEFAULT_REFRESH_SOUDANE);
+    refresh_idip = safeGetValue(changes.refresh_idip.newValue, DEFAULT_REFRESH_IDIP);
     use_futabachin_link = safeGetValue(changes.use_futabachin_link.newValue, DEFAULT_USE_FUTABACHIN_LINK);
 });
