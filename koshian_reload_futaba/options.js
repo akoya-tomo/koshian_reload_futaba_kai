@@ -7,6 +7,7 @@ const DEFAULT_REFRESH_SOUDANE = false;
 const DEFAULT_REFRESH_IDIP = false;
 const DEFAULT_USE_FUTABACHIN_LINK = false;
 const DEFAULT_USE_FUTAPO_LINK = false;
+const DEFAULT_SCROLL_TO_TOP = false;
 let scroll_period = null;
 let count_to_reload = null;
 let reload_period = null;
@@ -16,6 +17,7 @@ let refresh_soudane = null;
 let refresh_idip = null;
 let use_futabachin_link = null;
 let use_futapo_link = null;
+let scroll_to_top = null;
 
 function onError(error) {
 }
@@ -34,7 +36,8 @@ function saveSetting(e) {
         refresh_soudane:refresh_soudane.checked,
         refresh_idip:refresh_idip.checked,
         use_futabachin_link:use_futabachin_link.checked,
-        use_futapo_link:use_futapo_link.checked
+        use_futapo_link:use_futapo_link.checked,
+        scroll_to_top:scroll_to_top.checked
     });
 }
 
@@ -48,6 +51,7 @@ function setCurrentChoice(result) {
     refresh_idip.checked = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);    
     use_futabachin_link.checked = safeGetValue(result.use_futabachin_link, DEFAULT_USE_FUTABACHIN_LINK);    
     use_futapo_link.checked = safeGetValue(result.use_futapo_link, DEFAULT_USE_FUTAPO_LINK);    
+    scroll_to_top.checked = safeGetValue(result.scroll_to_top, DEFAULT_SCROLL_TO_TOP);    
 }
 
 function onLoad() {
@@ -60,6 +64,7 @@ function onLoad() {
     refresh_idip = document.getElementById("refresh_idip");
     use_futabachin_link = document.getElementById("use_futabachin_link");
     use_futapo_link = document.getElementById("use_futapo_link");
+    scroll_to_top = document.getElementById("scroll_to_top");
 
     scroll_period.addEventListener("change", saveSetting);
     count_to_reload.addEventListener("change", saveSetting);
@@ -70,6 +75,7 @@ function onLoad() {
     refresh_idip.addEventListener("change", saveSetting);
     use_futabachin_link.addEventListener("change", saveSetting);
     use_futapo_link.addEventListener("change", saveSetting);
+    scroll_to_top.addEventListener("change", saveSetting);
 
     browser.storage.local.get().then(setCurrentChoice, onError);
 }
