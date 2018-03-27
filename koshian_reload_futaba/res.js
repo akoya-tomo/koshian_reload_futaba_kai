@@ -5,7 +5,9 @@ const DEFAULT_TIME_OUT = 60000;
 const DEFAULT_REPLACE_RELOAD_BUTTON = true;
 const DEFAULT_REFRESH_DELETED_RES = false;
 const DEFAULT_REFRESH_SOUDANE = false;
+const DEFAULT_REFRESH_IDIP = false;
 const DEFAULT_USE_FUTABACHIN_LINK = false;
+const DEFAULT_USE_FUTAPO_LINK = false;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
 let reload_period = DEFAULT_RELOAD_PERIOD;
@@ -13,7 +15,10 @@ let time_out = DEFAULT_TIME_OUT;
 let replace_reload_button = DEFAULT_REPLACE_RELOAD_BUTTON;
 let refresh_deleted_res = DEFAULT_REFRESH_DELETED_RES;
 let refresh_soudane = DEFAULT_REFRESH_SOUDANE;
+let refresh_idip = DEFAULT_REFRESH_IDIP;
 let use_futabachin_link = DEFAULT_USE_FUTABACHIN_LINK;
+let use_futapo_link = DEFAULT_USE_FUTAPO_LINK;
+let isIdIpThread = checkThreadMail();
 
 class Notify {
     constructor() {
@@ -159,6 +164,7 @@ class Reloader {
             }
         }catch(e){
             this.notify.setText(`レス取得失敗 CODE:${xhr.status}`);
+            console.log("res.js onBodyLoad error:" + e);
         }
 
         this.loading = false;
@@ -182,107 +188,140 @@ class Reloader {
         let new_fonts = new_thre.getElementsByTagName("font");
         let contdisp = document.getElementById("contdisp");
 
-        if (new_smalls){
-          for(let i=0 ; i < new_smalls.length ; i++){
-            let small_text = new_smalls[i].innerText;
-            if (small_text.length){
-//            console.log("res.js : small[" + i + "]_text = " + small_text);
-              let limittime = small_text.match(/^.*頃消えます/);
-              if (limittime){
-                contdisp.innerText = limittime;
-//              console.log("res.js : limittime[0] = " + limittime[0]);
-                break;
-              }
+        if (contdisp) {
+            for (let i = 0; i < new_smalls.length; i++) {
+                let small_text = new_smalls[i].innerText;
+                let limit_time = small_text.match(/.+頃消えます/);
+                if (limit_time) {
+                    contdisp.innerText = limit_time[0];
+                    break;
+                }
             }
-          }
-        }
 
-        if(new_fonts){
-          for (let i=0 ; i < new_fonts.length ; i++){
-            let font_text = new_fonts[i].innerText;
-            if (font_text == "このスレは古いので、もうすぐ消えます。"){
-//            console.log("res.js : font[" + i + "]_text = " + font_text);
-              contdisp.style.color = "red";
-              break;
+            for (let i = 0; i < new_fonts.length; i++) {
+                if (new_fonts[i].innerText == "このスレは古いので、もうすぐ消えます。") {
+                    contdisp.style.color = "red";
+                    break;
+                }
             }
-          }
         }
 
         if (refresh_deleted_res) {
-            let deleted = thre.getElementsByClassName("deleted");
-            let new_deleted = new_thre.getElementsByClassName("deleted");
-            let deleted_num = deleted ? deleted.length : 0;
-            let new_deleted_num = new_deleted ? new_deleted.length : 0;
+            let deleteds = thre.getElementsByClassName("deleted");
+            let new_deleteds = new_thre.getElementsByClassName("deleted");
+            let deleted_num = deleteds ? deleteds.length : 0;
+            let new_deleted_num = new_deleteds ? new_deleteds.length : 0;
             if (deleted_num < new_deleted_num) {
-//              console.log("res.js : deleted_num,new_deleted_num = " + deleted_num + "," + new_deleted_num);
-                let refresh_deleted_res_start_time = Date.now();
+                //let refresh_deleted_res_start_time = Date.now();
                 let show_deleted_res;
-                let new_ddel = new_thre.getElementsByTagName("blockquote")[0].nextElementSibling.nextElementSibling;
-                if (new_ddel.id == "ddel") {
-                    let ddel = document.getElementById("ddel");
-                    if (ddel) {
-                        let new_ddnum_text = new_ddel.firstElementChild.innerText;
-                        let ddnum = document.getElementById("ddnum");
-                        ddnum.innerText = new_ddnum_text;
-                    } else {
-                        let clone_new_ddel = new_ddel.cloneNode(true);
-                        let radtop = document.getElementById("radtop");
-                        radtop.parentNode.insertBefore(clone_new_ddel, radtop.nextSibling);
+                let new_blockquotes = new_thre.getElementsByTagName("blockquote");
+                if (new_blockquotes.length) {
+                    let new_ddel = new_blockquotes[0].nextElementSibling.nextElementSibling;
+                    if (new_ddel && new_ddel.id == "ddel") {
+                        let ddel = document.getElementById("ddel");
+                        if (ddel) {
+                            let new_ddnum = new_ddel.firstElementChild;
+                            if (new_ddnum) {
+                                let new_ddnum_text = new_ddnum.innerText;
+                                let ddnum = document.getElementById("ddnum");
+                                if (ddnum) {
+                                    ddnum.innerText = new_ddnum_text;
+                                }
+                            }
+                        } else {
+                            let clone_new_ddel = new_ddel.cloneNode(true);
+                            let radtop = document.getElementById("radtop");
+                            if (radtop) {
+                                radtop.parentNode.insertBefore(clone_new_ddel, radtop.nextSibling);
+                            }
+                        }
+                        let ddbut = document.getElementById("ddbut");
+                        show_deleted_res = ddbut ? ddbut.innerText == "隠す" : false;
                     }
-                    let ddbut = document.getElementById("ddbut");
-                    show_deleted_res = ddbut.innerText == "隠す";
                 }
                 for (let i = 0; i < new_deleted_num; i++) {
-                    let new_deleted_input = new_deleted[i].getElementsByTagName("input")[0];
-                    let new_deleted_input_id = new_deleted_input.id;
-//                  console.log("res.js : new_deleted_input_id = " + new_deleted_input_id);
+                    let new_deleted_inputs = new_deleteds[i].getElementsByTagName("input");
+                    if (!new_deleted_inputs.length) break;
+                    let new_deleted_input_id = new_deleted_inputs[0].id;
                     let deleted_input = document.getElementById(new_deleted_input_id);
                     if (deleted_input) {
                         let deleted_table = deleted_input.parentNode.parentNode.parentNode.parentNode;
+                        let deleted_td =deleted_input.parentNode;
                         if (deleted_table) {
                             if (deleted_table.className != "deleted") {
                                 deleted_table.classList.add("deleted");
-                                deleted_table.style.border = "2px dashed red";
-                                let new_deleted_blockquote = new_deleted[i].getElementsByTagName("blockquote")[0];
-                                let new_deleted_font = new_deleted_blockquote.getElementsByTagName("font")[0];
-                                let new_deleted_text = new_deleted_font.innerText;
-                                let deleted_font = document.createElement("font");
-                                deleted_font.setAttribute("color","red");
-                                deleted_font.innerText = new_deleted_text;
-                                let deleted_br = document.createElement("br");
-                                let deleted_blockquote = deleted_table.getElementsByTagName("blockquote")[0];
-                                deleted_blockquote.insertBefore(deleted_br, deleted_blockquote.firstChild);
-                                deleted_blockquote.insertBefore(deleted_font, deleted_blockquote.firstChild);
-                                deleted_table.style.display = "table";
+                                deleted_td.style.border = "2px dashed red";
+                                let new_deleted_blockquotes = new_deleteds[i].getElementsByTagName("blockquote");
+                                if (new_deleted_blockquotes.length) {
+                                    let new_deleted_fonts = new_deleted_blockquotes[0].getElementsByTagName("font");
+                                    if (new_deleted_fonts.length) {
+                                        let new_deleted_text;
+                                        let new_deleted_bolds = new_deleted_fonts[0].getElementsByTagName("b");
+                                        if (new_deleted_bolds.length) {
+                                            new_deleted_text = new_deleted_bolds[0].innerText;
+                                        } else {
+                                            new_deleted_text = new_deleted_fonts[0].innerText;
+                                        }
+                                        let deleted_font = document.createElement("font");
+                                        deleted_font.style.color = "red";
+                                        if (new_deleted_bolds.length) {
+                                            deleted_font.style.fontWeight = "bold";
+                                        }
+                                        deleted_font.innerText = new_deleted_text;
+                                        let deleted_br = document.createElement("br");
+                                        let deleted_blockquotes = deleted_table.getElementsByTagName("blockquote");
+                                        if (deleted_blockquotes.length) {
+                                            deleted_blockquotes[0].insertBefore(deleted_br, deleted_blockquotes[0].firstChild);
+                                            deleted_blockquotes[0].insertBefore(deleted_font, deleted_blockquotes[0].firstChild);
+                                            deleted_table.style.display = "table";
+                                        }
+                                    }
+                                }
                             }
                         }
                     } else {
-                        let new_deleted_table = new_deleted_input.parentNode.parentNode.parentNode.parentNode;
+                        let new_deleted_table = new_deleted_inputs[0].parentNode.parentNode.parentNode.parentNode;
                         if (new_deleted_table) {
-                            new_deleted_table.setAttribute("style", show_deleted_res ? "display: table;" : "display: none;");
+                            new_deleted_table.style.display = show_deleted_res ? "display: table;" : "display: none;";
                         }
                     }
                 }
-//              console.log("res.js: refresh deleted res processing time = " + (Date.now() - refresh_deleted_res_start_time) + "msec");
+                //console.log("res.js refresh deleted res processing time: " + (Date.now() - refresh_deleted_res_start_time) + "msec");
             }
         }
 
         if (refresh_soudane) {
-            let new_sod = new_thre.getElementsByClassName("sod");
-            let new_sod_num  = new_sod ? new_sod.length : 0;
-//          console.log("res.js : new_sod_num = " + new_sod_num);
+            let new_sods = new_thre.getElementsByClassName("sod");
+            let new_sod_num  = new_sods ? new_sods.length : 0;
             if (new_sod_num) {
-                let refresh_soudane_start_time = Date.now();
+                //let refresh_soudane_start_time = Date.now();
                 for (let i = 0; i < new_sod_num; i++) {
-                    let new_sod_id = new_sod[i].id;
-                    let new_sod_text = new_sod[i].innerText;
+                    let new_sod_id = new_sods[i].id;
+                    let new_sod_text = new_sods[i].innerText;
                     let sod_id = document.getElementById(new_sod_id);
                     if (sod_id) {
                         sod_id.innerText = new_sod_text;
                     }
                 }
-//          console.log("res.js: refresh soudane processing time = " + (Date.now() - refresh_soudane_start_time) + "msec");
+                //console.log("res.js refresh soudane processing time: " + (Date.now() - refresh_soudane_start_time) + "msec");
             }
+        }
+
+        if (!isIdIpThread && refresh_idip) {
+            //let refresh_idip_start_time = Date.now();
+            let [new_del_id, new_idip_text] = searchIdIp(new_thre);
+            if (new_del_id && new_idip_text) {
+                setIdIp(new_del_id, new_idip_text);
+            }
+
+            let new_rtds = new_thre.getElementsByClassName("rtd");
+            for (let i = 0; i < new_rtds.length; i++) {
+                [new_del_id, new_idip_text] = searchIdIp(new_rtds[i]);
+                if (new_del_id && new_idip_text) {
+                    setIdIp(new_del_id, new_idip_text);
+                }
+            }
+            //console.log("res.js refresh idip processing time: " + (Date.now() - refresh_idip_start_time) + "msec");
         }
 
         let tables = thre.getElementsByTagName("table");
@@ -341,23 +380,109 @@ function fixFormPosition() {
 }
 
 function dispLogLink() {
-    let href_match = location.href.match(/^https?:\/\/(may|img)\.2chan\.net\/b\/res\/.+\.htm$/);
-    let futabachin_link_id = document.getElementById("futabachin_link");
+    let href_match = location.href.match(/^https?:\/\/(may|img)\.2chan\.net\/b\/res\/(\d+)\.htm$/);
+
+    let futapo_link_id = document.getElementById("KOSHIAN_futapo_link");
+    if (href_match && use_futapo_link && !futapo_link_id) {
+        let futapo_link = "http://kako.futakuro.com/futa/" + href_match[1] + "_b/" + href_match[2] + "/";
+        setLogLink(futapo_link, "futapo");
+    }
+
+    let futabachin_link_id = document.getElementById("KOSHIAN_2chin_link");
     if (href_match && use_futabachin_link && !futabachin_link_id) {
         let futabachin_link = href_match[0].replace(".2chan.net/",".2chin.net/");
-        let futabachin_span = document.createElement("span");
-        futabachin_span.innerText = " [";
-        let futabachin_a = document.createElement("a");
-        futabachin_a.id = "futabachin_link";
-        futabachin_a.setAttribute("href", futabachin_link);
-        futabachin_a.setAttribute("target", "_blank");
-        futabachin_a.innerText = "2chin";
-        futabachin_span.appendChild(futabachin_a);
-        let futabachin_txt = document.createTextNode("]");
-        futabachin_span.appendChild(futabachin_txt);
-        let koshian_notify = document.getElementById("KOSHIAN_NOTIFY");
-        koshian_notify.parentNode.insertBefore(futabachin_span, koshian_notify.nextSibling);
+        setLogLink(futabachin_link, "2chin");
     }
+
+    function setLogLink(link, name) {
+        let span = document.createElement("span");
+        span.innerText = " [";
+        let a = document.createElement("a");
+        a.id = "KOSHIAN_" + name + "_link";
+        a.href = link;
+        a.target = "_blank";
+        a.innerText = name;
+        span.appendChild(a);
+        let txt = document.createTextNode("]");
+        span.appendChild(txt);
+        let koshian_notify = document.getElementById("KOSHIAN_NOTIFY");
+        if (koshian_notify) {
+            koshian_notify.parentNode.insertBefore(span, koshian_notify.nextSibling);
+        }
+    }
+}
+
+function checkThreadMail() {
+    let mail = document.querySelector("html > body > form > div > font > b > a");
+    if (mail && mail.href.match(/^mailto:i[dp]%E8%A1%A8%E7%A4%BA/i)) {
+        return true;
+    }
+    mail = document.getElementsByClassName("KOSHIAN_meran")[0];
+    if (mail && mail.innerText.match(/^\[i[dp]表示/i)) {
+        return true;
+    }
+    return false;
+}
+
+function searchIdIp(elm) {
+    let del_id;
+    for (let i = 0; i < elm.childNodes.length; i++) {
+        let node = elm.childNodes[i];
+        if (node.tagName == "BLOCKQUOTE") return [null, null];
+        if (node.tagName == "INPUT") {
+            del_id = node.id;
+        }
+        if (node.nodeValue) {
+            let idip_text = node.nodeValue.match(/I[DP]:\S{8}/);
+            if (idip_text) {
+                if (del_id) {
+                    return [del_id, idip_text];
+                } else {
+                    return [null, null];
+                }
+            }
+        }
+    }
+    return [null, null];
+}
+
+function setIdIp(new_del_id, new_idip) {
+    if (!new_del_id || !new_idip) return;
+    let del_elm = document.getElementById(new_del_id);
+    if (!del_elm) return;
+    if (del_elm.classList.contains("KOSHIAN_reload_idip")) return;
+    let parent = del_elm.parentNode;
+    let time_node = null, time_text;
+    for (let i = 0; i < parent.childNodes.length; i++) {
+        let node = parent.childNodes[i];
+        if (node.tagName == "BLOCKQUOTE") {
+            if (time_node) {
+                time_node.nodeValue = time_text[1] + " " + new_idip + time_text[2];
+                del_elm.classList.add("KOSHIAN_reload_idip");
+            }
+            return;
+        } else if (node.tagName == "A") {
+            if (node.name == new_idip) {
+                del_elm.classList.add("KOSHIAN_reload_idip");
+                return;
+            }
+        } else if (node.nodeValue) {
+            if (!time_node) {
+                let time_match = node.nodeValue.match(/^( ?\d{2}\/\d{2}\/\d{2}\([^)]+\)\d{2}:\d{2}:\d{2})(.*)/);
+                if (time_match) {
+                    time_node = node;
+                    time_text = time_match;
+                }
+            }
+            if (time_node) {
+                if (node.nodeValue.indexOf(new_idip) > -1) {
+                    del_elm.classList.add("KOSHIAN_reload_idip");
+                    return;
+                }
+            }
+        }
+    }
+    return;
 }
 
 function getTime() {
@@ -372,6 +497,8 @@ function isBottom(dy) {
 }
 
 function main() {
+    console.log("res.js isIdIpThread: " + isIdIpThread);
+
     let reloader = new Reloader();
 
     document.addEventListener("wheel", (e) => {
@@ -417,7 +544,9 @@ browser.storage.local.get().then((result) => {
     replace_reload_button = safeGetValue(result.replace_reload_button, DEFAULT_REPLACE_RELOAD_BUTTON);
     refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
+    refresh_idip = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
     use_futabachin_link = safeGetValue(result.use_futabachin_link, DEFAULT_USE_FUTABACHIN_LINK);
+    use_futapo_link = safeGetValue(result.use_futapo_link, DEFAULT_USE_FUTAPO_LINK);
 
     main();
 }, (error) => { });
@@ -432,5 +561,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     reload_period = safeGetValue(changes.reload_period.newValue, DEFAULT_RELOAD_PERIOD);
     refresh_deleted_res = safeGetValue(changes.refresh_deleted_res.newValue, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(changes.refresh_soudane.newValue, DEFAULT_REFRESH_SOUDANE);
+    refresh_idip = safeGetValue(changes.refresh_idip.newValue, DEFAULT_REFRESH_IDIP);
     use_futabachin_link = safeGetValue(changes.use_futabachin_link.newValue, DEFAULT_USE_FUTABACHIN_LINK);
+    use_futapo_link = safeGetValue(changes.use_futapo_link.newValue, DEFAULT_USE_FUTAPO_LINK);
 });
