@@ -164,6 +164,7 @@ class Reloader {
             }
         }catch(e){
             this.notify.setText(`レス取得失敗 CODE:${xhr.status}`);
+            console.log("res.js onBodyLoad error:" + e);
         }
 
         this.loading = false;
@@ -187,30 +188,22 @@ class Reloader {
         let new_fonts = new_thre.getElementsByTagName("font");
         let contdisp = document.getElementById("contdisp");
 
-        if (new_smalls){
-          for(let i=0 ; i < new_smalls.length ; i++){
-            let small_text = new_smalls[i].innerText;
-            if (small_text.length){
-//            console.log("res.js : small[" + i + "]_text = " + small_text);
-              let limittime = small_text.match(/^.*頃消えます/);
-              if (limittime){
-                contdisp.innerText = limittime;
-//              console.log("res.js : limittime[0] = " + limittime[0]);
-                break;
-              }
+        if (contdisp) {
+            for (let i = 0; i < new_smalls.length; i++) {
+                let small_text = new_smalls[i].innerText;
+                let limit_time = small_text.match(/.+頃消えます/);
+                if (limit_time) {
+                    contdisp.innerText = limit_time[0];
+                    break;
+                }
             }
-          }
-        }
 
-        if(new_fonts){
-          for (let i=0 ; i < new_fonts.length ; i++){
-            let font_text = new_fonts[i].innerText;
-            if (font_text == "このスレは古いので、もうすぐ消えます。"){
-//            console.log("res.js : font[" + i + "]_text = " + font_text);
-              contdisp.style.color = "red";
-              break;
+            for (let i = 0; i < new_fonts.length; i++) {
+                if (new_fonts[i].innerText == "このスレは古いので、もうすぐ消えます。") {
+                    contdisp.style.color = "red";
+                    break;
+                }
             }
-          }
         }
 
         if (refresh_deleted_res) {
@@ -298,20 +291,19 @@ class Reloader {
         }
 
         if (refresh_soudane) {
-            let new_sod = new_thre.getElementsByClassName("sod");
-            let new_sod_num  = new_sod ? new_sod.length : 0;
-//          console.log("res.js : new_sod_num = " + new_sod_num);
+            let new_sods = new_thre.getElementsByClassName("sod");
+            let new_sod_num  = new_sods ? new_sods.length : 0;
             if (new_sod_num) {
-                let refresh_soudane_start_time = Date.now();
+                //let refresh_soudane_start_time = Date.now();
                 for (let i = 0; i < new_sod_num; i++) {
-                    let new_sod_id = new_sod[i].id;
-                    let new_sod_text = new_sod[i].innerText;
+                    let new_sod_id = new_sods[i].id;
+                    let new_sod_text = new_sods[i].innerText;
                     let sod_id = document.getElementById(new_sod_id);
                     if (sod_id) {
                         sod_id.innerText = new_sod_text;
                     }
                 }
-//          console.log("res.js: refresh soudane processing time = " + (Date.now() - refresh_soudane_start_time) + "msec");
+                //console.log("res.js refresh soudane processing time: " + (Date.now() - refresh_soudane_start_time) + "msec");
             }
         }
 
