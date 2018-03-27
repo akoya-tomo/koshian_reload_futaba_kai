@@ -214,61 +214,86 @@ class Reloader {
         }
 
         if (refresh_deleted_res) {
-            let deleted = thre.getElementsByClassName("deleted");
-            let new_deleted = new_thre.getElementsByClassName("deleted");
-            let deleted_num = deleted ? deleted.length : 0;
-            let new_deleted_num = new_deleted ? new_deleted.length : 0;
+            let deleteds = thre.getElementsByClassName("deleted");
+            let new_deleteds = new_thre.getElementsByClassName("deleted");
+            let deleted_num = deleteds ? deleteds.length : 0;
+            let new_deleted_num = new_deleteds ? new_deleteds.length : 0;
             if (deleted_num < new_deleted_num) {
-//              console.log("res.js : deleted_num,new_deleted_num = " + deleted_num + "," + new_deleted_num);
-                let refresh_deleted_res_start_time = Date.now();
+                //let refresh_deleted_res_start_time = Date.now();
                 let show_deleted_res;
-                let new_ddel = new_thre.getElementsByTagName("blockquote")[0].nextElementSibling.nextElementSibling;
-                if (new_ddel.id == "ddel") {
-                    let ddel = document.getElementById("ddel");
-                    if (ddel) {
-                        let new_ddnum_text = new_ddel.firstElementChild.innerText;
-                        let ddnum = document.getElementById("ddnum");
-                        ddnum.innerText = new_ddnum_text;
-                    } else {
-                        let clone_new_ddel = new_ddel.cloneNode(true);
-                        let radtop = document.getElementById("radtop");
-                        radtop.parentNode.insertBefore(clone_new_ddel, radtop.nextSibling);
+                let new_blockquotes = new_thre.getElementsByTagName("blockquote");
+                if (new_blockquotes.length) {
+                    let new_ddel = new_blockquotes[0].nextElementSibling.nextElementSibling;
+                    if (new_ddel && new_ddel.id == "ddel") {
+                        let ddel = document.getElementById("ddel");
+                        if (ddel) {
+                            let new_ddnum = new_ddel.firstElementChild;
+                            if (new_ddnum) {
+                                let new_ddnum_text = new_ddnum.innerText;
+                                let ddnum = document.getElementById("ddnum");
+                                if (ddnum) {
+                                    ddnum.innerText = new_ddnum_text;
+                                }
+                            }
+                        } else {
+                            let clone_new_ddel = new_ddel.cloneNode(true);
+                            let radtop = document.getElementById("radtop");
+                            if (radtop) {
+                                radtop.parentNode.insertBefore(clone_new_ddel, radtop.nextSibling);
+                            }
+                        }
+                        let ddbut = document.getElementById("ddbut");
+                        show_deleted_res = ddbut ? ddbut.innerText == "隠す" : false;
                     }
-                    let ddbut = document.getElementById("ddbut");
-                    show_deleted_res = ddbut.innerText == "隠す";
                 }
                 for (let i = 0; i < new_deleted_num; i++) {
-                    let new_deleted_input = new_deleted[i].getElementsByTagName("input")[0];
-                    let new_deleted_input_id = new_deleted_input.id;
-//                  console.log("res.js : new_deleted_input_id = " + new_deleted_input_id);
+                    let new_deleted_inputs = new_deleteds[i].getElementsByTagName("input");
+                    if (!new_deleted_inputs.length) break;
+                    let new_deleted_input_id = new_deleted_inputs[0].id;
                     let deleted_input = document.getElementById(new_deleted_input_id);
                     if (deleted_input) {
                         let deleted_table = deleted_input.parentNode.parentNode.parentNode.parentNode;
+                        let deleted_td =deleted_input.parentNode;
                         if (deleted_table) {
                             if (deleted_table.className != "deleted") {
                                 deleted_table.classList.add("deleted");
-                                deleted_table.style.border = "2px dashed red";
-                                let new_deleted_blockquote = new_deleted[i].getElementsByTagName("blockquote")[0];
-                                let new_deleted_font = new_deleted_blockquote.getElementsByTagName("font")[0];
-                                let new_deleted_text = new_deleted_font.innerText;
-                                let deleted_font = document.createElement("font");
-                                deleted_font.setAttribute("color","red");
-                                deleted_font.innerText = new_deleted_text;
-                                let deleted_br = document.createElement("br");
-                                let deleted_blockquote = deleted_table.getElementsByTagName("blockquote")[0];
-                                deleted_blockquote.insertBefore(deleted_br, deleted_blockquote.firstChild);
-                                deleted_blockquote.insertBefore(deleted_font, deleted_blockquote.firstChild);
-                                deleted_table.style.display = "table";
+                                deleted_td.style.border = "2px dashed red";
+                                let new_deleted_blockquotes = new_deleteds[i].getElementsByTagName("blockquote");
+                                if (new_deleted_blockquotes.length) {
+                                    let new_deleted_fonts = new_deleted_blockquotes[0].getElementsByTagName("font");
+                                    if (new_deleted_fonts.length) {
+                                        let new_deleted_text;
+                                        let new_deleted_bolds = new_deleted_fonts[0].getElementsByTagName("b");
+                                        if (new_deleted_bolds.length) {
+                                            new_deleted_text = new_deleted_bolds[0].innerText;
+                                        } else {
+                                            new_deleted_text = new_deleted_fonts[0].innerText;
+                                        }
+                                        let deleted_font = document.createElement("font");
+                                        deleted_font.style.color = "red";
+                                        if (new_deleted_bolds.length) {
+                                            deleted_font.style.fontWeight = "bold";
+                                        }
+                                        deleted_font.innerText = new_deleted_text;
+                                        let deleted_br = document.createElement("br");
+                                        let deleted_blockquotes = deleted_table.getElementsByTagName("blockquote");
+                                        if (deleted_blockquotes.length) {
+                                            deleted_blockquotes[0].insertBefore(deleted_br, deleted_blockquotes[0].firstChild);
+                                            deleted_blockquotes[0].insertBefore(deleted_font, deleted_blockquotes[0].firstChild);
+                                            deleted_table.style.display = "table";
+                                        }
+                                    }
+                                }
                             }
                         }
                     } else {
-                        let new_deleted_table = new_deleted_input.parentNode.parentNode.parentNode.parentNode;
+                        let new_deleted_table = new_deleted_inputs[0].parentNode.parentNode.parentNode.parentNode;
                         if (new_deleted_table) {
-                            new_deleted_table.setAttribute("style", show_deleted_res ? "display: table;" : "display: none;");
+                            new_deleted_table.style.display = show_deleted_res ? "display: table;" : "display: none;";
                         }
                     }
                 }
-//              console.log("res.js: refresh deleted res processing time = " + (Date.now() - refresh_deleted_res_start_time) + "msec");
+                //console.log("res.js refresh deleted res processing time: " + (Date.now() - refresh_deleted_res_start_time) + "msec");
             }
         }
 
