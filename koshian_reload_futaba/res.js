@@ -207,14 +207,37 @@ class Reloader {
         }
 
         if (refresh_deleted_res) {
+            //let refresh_deleted_res_start_time = Date.now();
+            let new_blockquotes = new_thre.getElementsByTagName("blockquote");
+            if (new_blockquotes.length) {
+                let blockquotes = thre.getElementsByTagName("blockquote");
+                if (blockquotes.length &&
+                    blockquotes[0].textContent != new_blockquotes[0].textContent &&
+                    !blockquotes[0].style.border) {
+                    blockquotes[0].style.border = "2px dashed red";
+                    let blockquotes_font = document.createElement("font");
+                    blockquotes_font.style.color = "red";
+                    blockquotes_font.innerText = new_blockquotes[0].textContent;
+                    let blockquotes_br = document.createElement("br");
+                    blockquotes[0].insertBefore(blockquotes_br, blockquotes[0].firstChild);
+                    blockquotes[0].insertBefore(blockquotes_font, blockquotes[0].firstChild);
+                }
+            }
+
+            let new_img = new_thre.querySelector(".thre > a > img");
+            if (!new_img) {
+                let img = thre.querySelector(".thre > a > img");
+                if (img && !img.style.border) {
+                    img.style.border = "2px dashed red";
+                }
+            }
+
             let deleteds = thre.getElementsByClassName("deleted");
             let new_deleteds = new_thre.getElementsByClassName("deleted");
             let deleted_num = deleteds ? deleteds.length : 0;
             let new_deleted_num = new_deleteds ? new_deleteds.length : 0;
             if (deleted_num < new_deleted_num) {
-                //let refresh_deleted_res_start_time = Date.now();
                 let show_deleted_res;
-                let new_blockquotes = new_thre.getElementsByTagName("blockquote");
                 if (new_blockquotes.length) {
                     let new_ddel = new_blockquotes[0].nextElementSibling.nextElementSibling;
                     if (new_ddel && new_ddel.id == "ddel") {
@@ -239,6 +262,7 @@ class Reloader {
                         show_deleted_res = ddbut ? ddbut.innerText == "隠す" : false;
                     }
                 }
+
                 for (let i = 0; i < new_deleted_num; i++) {
                     let new_deleted_inputs = new_deleteds[i].getElementsByTagName("input");
                     if (!new_deleted_inputs.length) break;
@@ -247,34 +271,32 @@ class Reloader {
                     if (deleted_input) {
                         let deleted_table = deleted_input.parentNode.parentNode.parentNode.parentNode;
                         let deleted_td =deleted_input.parentNode;
-                        if (deleted_table) {
-                            if (deleted_table.className != "deleted") {
-                                deleted_table.classList.add("deleted");
-                                deleted_td.style.border = "2px dashed red";
-                                let new_deleted_blockquotes = new_deleteds[i].getElementsByTagName("blockquote");
-                                if (new_deleted_blockquotes.length) {
-                                    let new_deleted_fonts = new_deleted_blockquotes[0].getElementsByTagName("font");
-                                    if (new_deleted_fonts.length) {
-                                        let new_deleted_text;
-                                        let new_deleted_bolds = new_deleted_fonts[0].getElementsByTagName("b");
-                                        if (new_deleted_bolds.length) {
-                                            new_deleted_text = new_deleted_bolds[0].innerText;
-                                        } else {
-                                            new_deleted_text = new_deleted_fonts[0].innerText;
-                                        }
-                                        let deleted_font = document.createElement("font");
-                                        deleted_font.style.color = "red";
-                                        if (new_deleted_bolds.length) {
-                                            deleted_font.style.fontWeight = "bold";
-                                        }
-                                        deleted_font.innerText = new_deleted_text;
-                                        let deleted_br = document.createElement("br");
-                                        let deleted_blockquotes = deleted_table.getElementsByTagName("blockquote");
-                                        if (deleted_blockquotes.length) {
-                                            deleted_blockquotes[0].insertBefore(deleted_br, deleted_blockquotes[0].firstChild);
-                                            deleted_blockquotes[0].insertBefore(deleted_font, deleted_blockquotes[0].firstChild);
-                                            deleted_table.style.display = "table";
-                                        }
+                        if (deleted_table && deleted_table.className != "deleted") {
+                            deleted_table.classList.add("deleted");
+                            deleted_td.style.border = "2px dashed red";
+                            let new_deleted_blockquotes = new_deleteds[i].getElementsByTagName("blockquote");
+                            if (new_deleted_blockquotes.length) {
+                                let new_deleted_fonts = new_deleted_blockquotes[0].getElementsByTagName("font");
+                                if (new_deleted_fonts.length) {
+                                    let new_deleted_text;
+                                    let new_deleted_bolds = new_deleted_fonts[0].getElementsByTagName("b");
+                                    if (new_deleted_bolds.length) {
+                                        new_deleted_text = new_deleted_bolds[0].innerText;
+                                    } else {
+                                        new_deleted_text = new_deleted_fonts[0].innerText;
+                                    }
+                                    let deleted_font = document.createElement("font");
+                                    deleted_font.style.color = "red";
+                                    if (new_deleted_bolds.length) {
+                                        deleted_font.style.fontWeight = "bold";
+                                    }
+                                    deleted_font.innerText = new_deleted_text;
+                                    let deleted_br = document.createElement("br");
+                                    let deleted_blockquotes = deleted_table.getElementsByTagName("blockquote");
+                                    if (deleted_blockquotes.length) {
+                                        deleted_blockquotes[0].insertBefore(deleted_br, deleted_blockquotes[0].firstChild);
+                                        deleted_blockquotes[0].insertBefore(deleted_font, deleted_blockquotes[0].firstChild);
+                                        deleted_table.style.display = "table";
                                     }
                                 }
                             }
