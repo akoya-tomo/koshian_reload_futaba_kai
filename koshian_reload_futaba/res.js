@@ -6,7 +6,7 @@ const DEFAULT_REPLACE_RELOAD_BUTTON = true;
 const DEFAULT_REFRESH_DELETED_RES = false;
 const DEFAULT_REFRESH_SOUDANE = false;
 const DEFAULT_REFRESH_IDIP = false;
-const DEFAULT_USE_FUTABACHIN_LINK = false;
+//const DEFAULT_USE_FUTABACHIN_LINK = false;
 const DEFAULT_USE_FUTAPO_LINK = false;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
@@ -16,7 +16,7 @@ let replace_reload_button = DEFAULT_REPLACE_RELOAD_BUTTON;
 let refresh_deleted_res = DEFAULT_REFRESH_DELETED_RES;
 let refresh_soudane = DEFAULT_REFRESH_SOUDANE;
 let refresh_idip = DEFAULT_REFRESH_IDIP;
-let use_futabachin_link = DEFAULT_USE_FUTABACHIN_LINK;
+//let use_futabachin_link = DEFAULT_USE_FUTABACHIN_LINK;
 let use_futapo_link = DEFAULT_USE_FUTAPO_LINK;
 let isIdIpThread = checkThreadMail();
 
@@ -409,13 +409,13 @@ function dispLogLink() {
         let futapo_link = "http://kako.futakuro.com/futa/" + href_match[1] + "_b/" + href_match[2] + "/";
         setLogLink(futapo_link, "futapo");
     }
-
+    /*
     let futabachin_link_id = document.getElementById("KOSHIAN_2chin_link");
     if (href_match && use_futabachin_link && !futabachin_link_id) {
         let futabachin_link = href_match[0].replace(".2chan.net/",".2chin.net/");
         setLogLink(futabachin_link, "2chin");
     }
-
+    */
     function setLogLink(link, name) {
         let span = document.createElement("span");
         span.innerText = " [";
@@ -567,7 +567,7 @@ browser.storage.local.get().then((result) => {
     refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
-    use_futabachin_link = safeGetValue(result.use_futabachin_link, DEFAULT_USE_FUTABACHIN_LINK);
+    //use_futabachin_link = safeGetValue(result.use_futabachin_link, DEFAULT_USE_FUTABACHIN_LINK);
     use_futapo_link = safeGetValue(result.use_futapo_link, DEFAULT_USE_FUTAPO_LINK);
 
     main();
@@ -584,6 +584,6 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     refresh_deleted_res = safeGetValue(changes.refresh_deleted_res.newValue, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(changes.refresh_soudane.newValue, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(changes.refresh_idip.newValue, DEFAULT_REFRESH_IDIP);
-    use_futabachin_link = safeGetValue(changes.use_futabachin_link.newValue, DEFAULT_USE_FUTABACHIN_LINK);
+    //use_futabachin_link = safeGetValue(changes.use_futabachin_link.newValue, DEFAULT_USE_FUTABACHIN_LINK);
     use_futapo_link = safeGetValue(changes.use_futapo_link.newValue, DEFAULT_USE_FUTAPO_LINK);
 });
