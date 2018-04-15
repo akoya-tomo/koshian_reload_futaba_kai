@@ -184,6 +184,11 @@ class Reloader {
             return;
         }
 
+        let tables = thre.getElementsByTagName("table");
+        let new_tables = new_thre.getElementsByTagName("table");
+        let res_num = tables ? tables.length : 0;
+        let new_res_num = new_tables ? new_tables.length : 0;
+
         let new_smalls = new_thre.getElementsByTagName("small");
         let new_fonts = new_thre.getElementsByTagName("font");
         let contdisp = document.getElementById("contdisp");
@@ -217,7 +222,7 @@ class Reloader {
                     blockquotes[0].style.border = "2px dashed red";
                     let blockquotes_font = document.createElement("font");
                     blockquotes_font.style.color = "red";
-                    blockquotes_font.innerText = new_blockquotes[0].textContent;
+                    blockquotes_font.textContent = new_blockquotes[0].textContent;
                     let blockquotes_br = document.createElement("br");
                     blockquotes[0].insertBefore(blockquotes_br, blockquotes[0].firstChild);
                     blockquotes[0].insertBefore(blockquotes_font, blockquotes[0].firstChild);
@@ -236,33 +241,27 @@ class Reloader {
             let new_deleteds = new_thre.getElementsByClassName("deleted");
             let deleted_num = deleteds ? deleteds.length : 0;
             let new_deleted_num = new_deleteds ? new_deleteds.length : 0;
-            if (deleted_num < new_deleted_num) {
-                let show_deleted_res;
-                if (new_blockquotes.length) {
-                    let new_ddel = new_blockquotes[0].nextElementSibling.nextElementSibling;
-                    if (new_ddel && new_ddel.id == "ddel") {
-                        let ddel = document.getElementById("ddel");
-                        if (ddel) {
-                            let new_ddnum = new_ddel.firstElementChild;
-                            if (new_ddnum) {
-                                let new_ddnum_text = new_ddnum.innerText;
-                                let ddnum = document.getElementById("ddnum");
-                                if (ddnum) {
-                                    ddnum.innerText = new_ddnum_text;
-                                }
-                            }
-                        } else {
-                            let clone_new_ddel = new_ddel.cloneNode(true);
-                            let radtop = document.getElementById("radtop");
-                            if (radtop) {
-                                radtop.parentNode.insertBefore(clone_new_ddel, radtop.nextSibling);
+            if (new_res_num) {
+                let new_ddel = new_tables[0].previousElementSibling;
+                if (new_ddel && new_ddel.id == "ddel") {
+                    let ddel = document.getElementById("ddel");
+                    if (ddel) {
+                        let new_ddnum = new_ddel.firstElementChild;
+                        if (new_ddnum && new_ddnum.id == "ddnum") {
+                            let ddnum = document.getElementById("ddnum");
+                            if (ddnum) {
+                                ddnum.innerText = new_ddnum.innerText;
                             }
                         }
                         let ddbut = document.getElementById("ddbut");
                         show_deleted_res = ddbut ? ddbut.innerText == "隠す" : false;
+                    } else if (res_num) {
+                        tables[0].parentNode.insertBefore(new_ddel, tables[0]);
                     }
                 }
+            }
 
+            if (deleted_num < new_deleted_num) {
                 for (let i = 0; i < new_deleted_num; i++) {
                     let new_deleted_inputs = new_deleteds[i].getElementsByTagName("input");
                     if (!new_deleted_inputs.length) break;
@@ -271,20 +270,15 @@ class Reloader {
                     if (deleted_input) {
                         let deleted_table = deleted_input.parentNode.parentNode.parentNode.parentNode;
                         let deleted_td =deleted_input.parentNode;
-                        if (deleted_table && deleted_table.className != "deleted") {
+                        if (deleted_table && !deleted_table.classList.contains("deleted")) {
                             deleted_table.classList.add("deleted");
                             deleted_td.style.border = "2px dashed red";
                             let new_deleted_blockquotes = new_deleteds[i].getElementsByTagName("blockquote");
                             if (new_deleted_blockquotes.length) {
                                 let new_deleted_fonts = new_deleted_blockquotes[0].getElementsByTagName("font");
                                 if (new_deleted_fonts.length) {
-                                    let new_deleted_text;
+                                    let new_deleted_text = new_deleted_fonts[0].innerText;
                                     let new_deleted_bolds = new_deleted_fonts[0].getElementsByTagName("b");
-                                    if (new_deleted_bolds.length) {
-                                        new_deleted_text = new_deleted_bolds[0].innerText;
-                                    } else {
-                                        new_deleted_text = new_deleted_fonts[0].innerText;
-                                    }
                                     let deleted_font = document.createElement("font");
                                     deleted_font.style.color = "red";
                                     if (new_deleted_bolds.length) {
@@ -346,11 +340,6 @@ class Reloader {
             //console.log("res.js refresh idip processing time: " + (Date.now() - refresh_idip_start_time) + "msec");
         }
 
-        let tables = thre.getElementsByTagName("table");
-        let new_tables = new_thre.getElementsByTagName("table");
-        let res_num = tables ? tables.length : 0;
-        let new_res_num = new_tables ? new_tables.length : 0;
-        
         if(res_num == new_res_num){
             this.notify.setText(`新しいレスはありません`);
             return;
