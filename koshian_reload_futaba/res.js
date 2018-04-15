@@ -253,8 +253,6 @@ class Reloader {
                                 ddnum.innerText = new_ddnum.innerText;
                             }
                         }
-                        let ddbut = document.getElementById("ddbut");
-                        show_deleted_res = ddbut ? ddbut.innerText == "隠す" : false;
                     } else if (res_num) {
                         tables[0].parentNode.insertBefore(new_ddel, tables[0]);
                     }
@@ -294,11 +292,6 @@ class Reloader {
                                     }
                                 }
                             }
-                        }
-                    } else {
-                        let new_deleted_table = new_deleted_inputs[0].parentNode.parentNode.parentNode.parentNode;
-                        if (new_deleted_table) {
-                            new_deleted_table.style.display = show_deleted_res ? "display: table;" : "display: none;";
                         }
                     }
                 }
@@ -350,8 +343,13 @@ class Reloader {
             return;
         }
 
+        let ddbut = document.getElementById("ddbut");
+        let show_deleted_res = ddbut ? ddbut.innerText == "隠す" : false;
         for (let i = res_num, inserted = res_num == 0 ? thre.getElementsByTagName("blockquote")[0] : tables[res_num - 1]; i < new_res_num; ++i) {
             inserted = thre.insertBefore(new_tables[res_num], inserted.nextElementSibling);
+            if (inserted.classList.contains("deleted")) {
+                inserted.style.display = show_deleted_res ? "table" : "none";
+            }
         }
 
         this.notify.setText(`新着レス:${new_res_num - res_num}`);
