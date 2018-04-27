@@ -3,13 +3,17 @@
 
     "name":"KOSHIAN リロード拡張 改",
 
-    "version":"1.4.1",
+    "version":"1.4.2",
 
     "description":"マウスホイールでカタログやレス画面をリロードします",
 
     "icons":{
         "48":"icons/icon-48.png"
     },
+
+    "author": "akoya_tomo",
+
+    "homepage_url": "https://github.com/akoya-tomo/koshian_reload_futaba_kai/",
 
     "content_scripts":[
         {

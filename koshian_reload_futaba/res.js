@@ -1,3 +1,8 @@
+const no_comment_list = [
+    /^ｷﾀ━+\(ﾟ∀ﾟ\)━+ *!+$/,
+    /^本文無し$/
+];
+
 const DEFAULT_SCROLL_PERIOD = 500;
 const DEFAULT_COUNT_TO_RELOAD = 10;
 const DEFAULT_RELOAD_PERIOD = 5000;
@@ -77,6 +82,8 @@ class Reloader {
         this.notify = new Notify();
         this.loading = false;
         this.last_reload_time = getTime();
+        this.org_mod = null;
+        this.new_mod = null;
     }
 
     reload(force = false) {
@@ -127,12 +134,15 @@ class Reloader {
                 let org_mod = Date.parse(document.lastModified);
                 let new_mod = Date.parse(last_mod_header);
 
-                if (org_mod == new_mod) {
+                if (org_mod == new_mod || this.org_mod == new_mod) {
                     this.notify.setText(`新しいレスはありません`);
                     this.loading = false;
                     fixFormPosition();
                     return;
                 }
+                this.new_mod = new_mod;
+            } else {
+                this.new_mod = null;
             }
 
             let xhr = new XMLHttpRequest();
@@ -215,17 +225,22 @@ class Reloader {
             //let refresh_deleted_res_start_time = Date.now();
             let new_blockquotes = new_thre.getElementsByTagName("blockquote");
             if (new_blockquotes.length) {
-                let blockquotes = thre.getElementsByTagName("blockquote");
-                if (blockquotes.length &&
-                    blockquotes[0].textContent != new_blockquotes[0].textContent &&
-                    !blockquotes[0].style.border) {
-                    blockquotes[0].style.border = "2px dashed red";
-                    let blockquotes_font = document.createElement("font");
-                    blockquotes_font.style.color = "red";
-                    blockquotes_font.textContent = new_blockquotes[0].textContent;
-                    let blockquotes_br = document.createElement("br");
-                    blockquotes[0].insertBefore(blockquotes_br, blockquotes[0].firstChild);
-                    blockquotes[0].insertBefore(blockquotes_font, blockquotes[0].firstChild);
+                for (let no_comment of no_comment_list) {
+                    if (no_comment.test(new_blockquotes[0].textContent)) {
+                        let blockquotes = thre.getElementsByTagName("blockquote");
+                        if (blockquotes.length &&
+                            blockquotes[0].textContent != new_blockquotes[0].textContent &&
+                            !blockquotes[0].style.border) {
+                            blockquotes[0].style.border = "2px dashed red";
+                            let blockquotes_font = document.createElement("font");
+                            blockquotes_font.style.color = "red";
+                            blockquotes_font.textContent = new_blockquotes[0].textContent;
+                            let blockquotes_br = document.createElement("br");
+                            blockquotes[0].insertBefore(blockquotes_br, blockquotes[0].firstChild);
+                            blockquotes[0].insertBefore(blockquotes_font, blockquotes[0].firstChild);
+                        }
+                        break;
+                    }
                 }
             }
 
@@ -356,6 +371,10 @@ class Reloader {
         this.notify.moveTo(res_num - 1);
 
         document.dispatchEvent(new CustomEvent("KOSHIAN_reload"));
+
+        if (this.new_mod) {
+            this.org_mod = this.new_mod;
+        }
     }
 
     onError() {

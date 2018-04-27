@@ -25,7 +25,7 @@
     カタログページでリロードしたときにページ先頭へ移動します。  
 
 ## インストール
-[GitHub](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.4.1/koshian_reload_futaba_kai-1.4.1-an.fx.xpi)
+[GitHub](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.4.2/koshian_reload_futaba_kai-1.4.2-an.fx.xpi)
 
 ※「接続エラーのため、アドオンをダウンロードできませんでした。」と表示されてインストール出来ないときはリンクを右クリックしてxpiファイルをダウンロードし、メニューのツール→アドオン（またはCtrl+Shift+A）で表示されたアドオンマネージャーのページにxpiファイルをドラッグ＆ドロップして下さい。  
 
@@ -42,6 +42,9 @@
   再度設定をお願い致します。  
 
 ## 更新履歴
+* v1.4.2 2018-04-28
+  - スレ本文に自動リンクが含まれているとスレ爆破失敗と誤認識する不具合を修正
+  - スレの最終更新日時の確認方法を修正
 * v1.4.1 2018-04-16
   - 削除レスがあるのに「削除された記事がx件あります」が表示されないことがある不具合を修正
   - 削除された新着レスが[見る]ボタンで表示されない不具合（v1.3.0以降で発生）を修正
