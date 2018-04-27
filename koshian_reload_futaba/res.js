@@ -82,6 +82,8 @@ class Reloader {
         this.notify = new Notify();
         this.loading = false;
         this.last_reload_time = getTime();
+        this.org_mod = null;
+        this.new_mod = null;
     }
 
     reload(force = false) {
@@ -132,12 +134,15 @@ class Reloader {
                 let org_mod = Date.parse(document.lastModified);
                 let new_mod = Date.parse(last_mod_header);
 
-                if (org_mod == new_mod) {
+                if (org_mod == new_mod || this.org_mod == new_mod) {
                     this.notify.setText(`新しいレスはありません`);
                     this.loading = false;
                     fixFormPosition();
                     return;
                 }
+                this.new_mod = new_mod;
+            } else {
+                this.new_mod = null;
             }
 
             let xhr = new XMLHttpRequest();
@@ -366,6 +371,10 @@ class Reloader {
         this.notify.moveTo(res_num - 1);
 
         document.dispatchEvent(new CustomEvent("KOSHIAN_reload"));
+
+        if (this.new_mod) {
+            this.org_mod = this.new_mod;
+        }
     }
 
     onError() {
