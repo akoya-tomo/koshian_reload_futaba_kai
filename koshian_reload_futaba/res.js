@@ -8,6 +8,7 @@ const DEFAULT_COUNT_TO_RELOAD = 10;
 const DEFAULT_RELOAD_PERIOD = 5000;
 const DEFAULT_TIME_OUT = 60000;
 const DEFAULT_REPLACE_RELOAD_BUTTON = true;
+const DEFAULT_REPLACE_F5_KEY = false;
 const DEFAULT_REFRESH_DELETED_RES = false;
 const DEFAULT_REFRESH_SOUDANE = false;
 const DEFAULT_REFRESH_IDIP = false;
@@ -18,6 +19,7 @@ let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
 let reload_period = DEFAULT_RELOAD_PERIOD;
 let time_out = DEFAULT_TIME_OUT;
 let replace_reload_button = DEFAULT_REPLACE_RELOAD_BUTTON;
+let replace_f5_key = DEFAULT_REPLACE_F5_KEY;
 let refresh_deleted_res = DEFAULT_REFRESH_DELETED_RES;
 let refresh_soudane = DEFAULT_REFRESH_SOUDANE;
 let refresh_idip = DEFAULT_REFRESH_IDIP;
@@ -548,6 +550,13 @@ function main() {
         }
     });
 
+    document.addEventListener("keydown", (e) => {
+        if (e.key == "F5" && replace_f5_key) {
+            e.preventDefault();
+            reloader.reload();
+        }
+    });
+
     if (replace_reload_button) {
         let reload_button = document.getElementById("contres").getElementsByTagName("a")[0];
         if (reload_button) {
@@ -570,6 +579,7 @@ browser.storage.local.get().then((result) => {
     count_to_reload = safeGetValue(result.count_to_reload, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(result.reload_period, DEFAULT_RELOAD_PERIOD);
     replace_reload_button = safeGetValue(result.replace_reload_button, DEFAULT_REPLACE_RELOAD_BUTTON);
+    replace_f5_key = safeGetValue(result.replace_f5_key, DEFAULT_REPLACE_F5_KEY);
     refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
@@ -587,6 +597,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     scroll_period = safeGetValue(changes.scroll_period.newValue, DEFAULT_SCROLL_PERIOD);
     count_to_reload = safeGetValue(changes.count_to_reload.newValue, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(changes.reload_period.newValue, DEFAULT_RELOAD_PERIOD);
+    replace_f5_key = safeGetValue(changes.replace_f5_key.newValue, DEFAULT_REPLACE_F5_KEY);
     refresh_deleted_res = safeGetValue(changes.refresh_deleted_res.newValue, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(changes.refresh_soudane.newValue, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(changes.refresh_idip.newValue, DEFAULT_REFRESH_IDIP);
