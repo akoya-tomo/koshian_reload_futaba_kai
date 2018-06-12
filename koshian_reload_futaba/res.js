@@ -118,10 +118,11 @@ class Reloader {
     onHeadLoad(header) {
         try {
             if (header.status == 404) {
-                this.notify.setText(`スレは落ちています`);
+                this.notify.setText(`スレは落ちています CODE:404`);
                 this.loading = false;
                 dispLogLink();
                 fixFormPosition();
+                return;
             }
 
             if (header.status != 200) {
@@ -169,7 +170,7 @@ class Reloader {
                     this.addNewResponses(xhr.responseXML);
                     break;
                 case 404:
-                    this.notify.setText(`スレは落ちています`);
+                    this.notify.setText(`スレは落ちています CODE:404`);
                     break;
                 default:
                     this.notify.setText(`レス取得失敗`);
