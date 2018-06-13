@@ -122,6 +122,7 @@ class Reloader {
                 this.loading = false;
                 dispLogLink();
                 fixFormPosition();
+                document.dispatchEvent(new CustomEvent("KOSHIAN_reload_notfound"));
                 return;
             }
 
@@ -171,6 +172,7 @@ class Reloader {
                     break;
                 case 404:
                     this.notify.setText(`スレは落ちています CODE:404`);
+                    document.dispatchEvent(new CustomEvent("KOSHIAN_reload_notfound"));
                     break;
                 default:
                     this.notify.setText(`レス取得失敗`);
