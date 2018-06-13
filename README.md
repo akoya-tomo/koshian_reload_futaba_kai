@@ -27,7 +27,7 @@
     F5キーによるリロードをページ更新無しの新着レス取得に置き換えます。  
 
 ## インストール
-[GitHub](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.5.1/koshian_reload_futaba_kai-1.5.1-an.fx.xpi)
+[GitHub](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.6.0/koshian_reload_futaba_kai-1.6.0-an.fx.xpi)
 
 ※「接続エラーのため、アドオンをダウンロードできませんでした。」と表示されてインストール出来ないときはリンクを右クリックしてxpiファイルをダウンロードし、メニューのツール→アドオン（またはCtrl+Shift+A）で表示されたアドオンマネージャーのページにxpiファイルをドラッグ＆ドロップして下さい。  
 
@@ -44,7 +44,9 @@
   再度設定をお願い致します。  
 
 ## 更新履歴
-* v1.5.1 2018-06-11
+* v1.6.0 2018-06-14
+  - [futaba auto reloader K](https://greasyfork.org/ja/scripts/36235-futaba-auto-reloader-k) rev6の新機能への対応
+* v1.5.1 2018-06-12
   - スレが落ちたときのメッセージを修正
 * v1.5.0 2018-05-02
   - F5キーをページ更新無しの新着レス取得に置き換えるオプション追加
