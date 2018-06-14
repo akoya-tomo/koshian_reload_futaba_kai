@@ -556,7 +556,7 @@ function main() {
     document.addEventListener("keydown", (e) => {
         if (e.key == "F5" && replace_f5_key) {
             e.preventDefault();
-            reloader.reload();
+            reloader.reload(true);
         }
     });
 
