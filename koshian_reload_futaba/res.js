@@ -96,7 +96,7 @@ class Reloader {
         let cur = getTime();
 
         if (!force && cur - this.last_reload_time < reload_period) {
-            this.notify.setText(`新しいレスはありません`);
+            this.notify.setText(`ホイールリロード規制中`);
             fixFormPosition();
             return;
         } else {
