@@ -86,6 +86,7 @@ class Reloader {
         this.last_reload_time = getTime();
         this.org_mod = null;
         this.new_mod = null;
+        this.thread_not_found = false;
     }
 
     reload(force = false) {
@@ -96,7 +97,7 @@ class Reloader {
         let cur = getTime();
 
         if (!force && cur - this.last_reload_time < reload_period) {
-            this.notify.setText(`ホイールリロード規制中`);
+            if (!this.thread_not_found) this.notify.setText(`ホイールリロード規制中`);  //スレ消滅メッセージ表示を優先
             fixFormPosition();
             return;
         } else {
@@ -120,6 +121,7 @@ class Reloader {
             if (header.status == 404) {
                 this.notify.setText(`スレは落ちています CODE:404`);
                 this.loading = false;
+                this.thread_not_found = true;
                 dispLogLink();
                 fixFormPosition();
                 document.dispatchEvent(new CustomEvent("KOSHIAN_reload_notfound"));
@@ -172,6 +174,7 @@ class Reloader {
                     break;
                 case 404:
                     this.notify.setText(`スレは落ちています CODE:404`);
+                    this.thread_not_found = true;
                     document.dispatchEvent(new CustomEvent("KOSHIAN_reload_notfound"));
                     break;
                 default:
