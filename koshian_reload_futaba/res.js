@@ -60,6 +60,14 @@ class Notify {
 
     setText(text) {
         this.text.textContent = text;
+        this.notify.style.color = "";
+        this.notify.style.fontWeight = "";
+    }
+
+    setAlarmText(text) {
+        this.text.textContent = text;
+        this.notify.style.color = "red";
+        this.notify.style.fontWeight = "bold";
     }
 
     moveTo(index) {
@@ -119,7 +127,7 @@ class Reloader {
     onHeadLoad(header) {
         try {
             if (header.status == 404) {
-                this.notify.setText(`スレは落ちています CODE:404`);
+                this.notify.setAlarmText(`スレは落ちています CODE:404`);
                 this.loading = false;
                 this.thread_not_found = true;
                 dispLogLink();
@@ -173,7 +181,7 @@ class Reloader {
                     this.addNewResponses(xhr.responseXML);
                     break;
                 case 404:
-                    this.notify.setText(`スレは落ちています CODE:404`);
+                    this.notify.setAlarmText(`スレは落ちています CODE:404`);
                     this.thread_not_found = true;
                     document.dispatchEvent(new CustomEvent("KOSHIAN_reload_notfound"));
                     break;
@@ -224,6 +232,7 @@ class Reloader {
             for (let i = 0; i < new_fonts.length; i++) {
                 if (new_fonts[i].innerText == "このスレは古いので、もうすぐ消えます。") {
                     contdisp.style.color = "red";
+                    contdisp.style.fontWeight = "bold";
                     break;
                 }
             }
