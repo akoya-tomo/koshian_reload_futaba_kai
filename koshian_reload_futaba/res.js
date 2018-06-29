@@ -105,7 +105,7 @@ class Reloader {
         let cur = getTime();
 
         if (!force && cur - this.last_reload_time < reload_period) {
-            if (!this.thread_not_found) this.notify.setText(`ホイールリロード規制中`);  //スレ消滅メッセージ表示を優先
+            if (!this.thread_not_found) this.notify.setText(`ホイールリロード規制中（あと${reload_period - cur + this.last_reload_time}msec）`);  //スレ消滅メッセージ表示を優先
             fixFormPosition();
             return;
         } else {
