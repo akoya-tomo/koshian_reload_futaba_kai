@@ -3,7 +3,7 @@
 
     "name":"KOSHIAN リロード拡張 改",
 
-    "version":"1.6.1",
+    "version":"1.6.2",
 
     "description":"マウスホイールでカタログやレス画面をリロードします",
 
@@ -17,13 +17,15 @@
 
     "content_scripts":[
         {
-            "exclude_matches": ["*://*.2chan.net/*/res/**","*://*.2chan.net/*/src/*"],
+            "exclude_matches": ["*://*.2chan.net/*/res/*","*://*.2chan.net/*/src/*"],
             "matches":["*://*.2chan.net/*/*"],
-            "js":["cat.js"]
+            "js":["cat.js"],
+            "all_frames": true
         },
         {
             "matches":["*://*.2chan.net/*/res/*"],
-            "js":["res.js"]
+            "js":["res.js"],
+            "all_frames": false
         }
     ],
 

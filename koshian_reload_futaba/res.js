@@ -105,7 +105,7 @@ class Reloader {
         let cur = getTime();
 
         if (!force && cur - this.last_reload_time < reload_period) {
-            if (!this.thread_not_found) this.notify.setText(`ホイールリロード規制中`);  //スレ消滅メッセージ表示を優先
+            if (!this.thread_not_found) this.notify.setText(`ホイールリロード規制中（あと${reload_period - cur + this.last_reload_time}msec）`);  //スレ消滅メッセージ表示を優先
             fixFormPosition();
             return;
         } else {
@@ -562,7 +562,9 @@ let bottom_scroll_count = 0;
 let last_bottom_scroll = getTime();
 
 function isBottom(dy) {
-    return (document.documentElement.scrollTop + document.documentElement.clientHeight == document.documentElement.scrollHeight) && (dy > 0);
+    //console.log("KOSHIAN_reload/res.js scrollHeight: " + document.documentElement.scrollHeight);
+    //console.log("KOSHIAN_reload/res.js scrollTop + clientHeight: " + (document.documentElement.scrollTop + document.documentElement.clientHeight));
+    return (document.documentElement.scrollHeight - (document.documentElement.scrollTop + document.documentElement.clientHeight) <= 1) && (dy > 0);
 }
 
 function main() {
