@@ -25,7 +25,9 @@ function isTop(dy) {
 }
 
 function isBottom(dy) {
-    return (document.documentElement.scrollTop + documentElement.clientHeight == document.documentElement.scrollHeight) && (dy > 0);
+    //console.log("KOSHIAN_reload/res.js scrollHeight: " + document.documentElement.scrollHeight);
+    //console.log("KOSHIAN_reload/res.js scrollTop + clientHeight: " + (document.documentElement.scrollTop + document.documentElement.clientHeight));
+    return (document.documentElement.scrollHeight - (document.documentElement.scrollTop + document.documentElement.clientHeight) <= 1) && (dy > 0);
 }
 
 let last_wheel_time = getTime();
