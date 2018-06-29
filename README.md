@@ -1,9 +1,9 @@
-## <sub><img src="/koshian_reload_futaba/icons/icon-48.png"></sub> KOSHIAN リロード拡張 改
-このFirefoxアドオンはふたば☆ちゃんねるでページ更新せずに新着レスを取得・マウスホイールでリロードできる[Pachira](https://addons.mozilla.org/ja/firefox/user/anonymous-a0bba9187b568f98732d22d51c5955a6/)氏の[KOSHIAN リロード拡張](https://addons.mozilla.org/ja/firefox/addon/koshian-reload-futaba/)アドオンを改変したものです。  
+## <sub><img src="koshian_reload_futaba/icons/icon-48.png"></sub> KOSHIAN リロード拡張 改
+このFirefoxアドオンはふたば☆ちゃんねるでページ更新せずに新着レスを取得・マウスホイールでリロードできる[Pachira](https://addons.mozilla.org/ja/firefox/user/anonymous-a0bba9187b568f98732d22d51c5955a6/)氏の[KOSHIAN リロード拡張](https://addons.mozilla.org/ja/firefox/addon/koshian-reload-futaba/)の非公式改変版です。  
 リロード時に既読レスの情報を更新する機能などをオリジナル版に追加しています。  
 
 ※このアドオンはWebExtensionアドオン対応のFirefox専用となります。  
-※他のこしあんアドオン改変版やUserscriptは[こちら](https://github.com/akoya-tomo/futaba_auto_reloader_K/wiki/)の一覧からどうぞ。  
+※他のKOSHIAN改変版などのふたば支援ツールは[こちら](https://github.com/akoya-tomo/futaba_auto_reloader_K/wiki/)。  
 
 ## 機能
 * オリジナルの機能（KOSHIAN リロード拡張）
@@ -27,7 +27,8 @@
     F5キーによるリロードをページ更新無しの新着レス取得に置き換えます。  
 
 ## インストール
-[GitHub](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.6.1/koshian_reload_futaba_kai-1.6.1-an.fx.xpi)
+**GitHub**  
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.6.2/koshian_reload_futaba_kai-1.6.2-an.fx.xpi)
 
 ※「接続エラーのため、アドオンをダウンロードできませんでした。」と表示されてインストール出来ないときはリンクを右クリックしてxpiファイルをダウンロードし、メニューのツール→アドオン（またはCtrl+Shift+A）で表示されたアドオンマネージャーのページにxpiファイルをドラッグ＆ドロップして下さい。  
 
@@ -39,12 +40,15 @@
 * レス本文内の赤字のIP情報については更新対象外です。（要望があれば実装検討します）  
 
 ## 注意事項
-* このアドオンはWebExtensionアドオン対応のFirefox専用です。  
 * 本アドオンを有効にしたときはオリジナル版を無効にするか削除して下さい。  
 * オリジナル版とは別アドオンなので設定は初期値に戻ります。  
   再度設定をお願い致します。  
 
 ## 更新履歴
+* v1.6.2 2018-06-29
+  - フレーム表示のカタログで動作するように修正
+  - ページ下端の検出を修正
+  - ホイールリロード規制中に解除までの残り時間を表示するように修正
 * v1.6.1 2018-06-14
   - 「以前のリロードからxミリ秒以内なら行わない」でリロード抑制したときは「ホイールリロード規制中」にメッセージを変更
   - スレ消滅メッセージとスレ消滅直前の消滅時刻を赤字・太字に変更
