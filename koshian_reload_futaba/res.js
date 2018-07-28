@@ -95,10 +95,12 @@ class Reloader {
         this.org_mod = null;
         this.new_mod = null;
         this.thread_not_found = false;
+        this.form_submit = false;
+        this.timer = null;
     }
 
     reload(force = false) {
-        if (this.loading) {
+        if (this.loading || this.form_submit) {
             return;
         }
 
@@ -607,6 +609,22 @@ function main() {
             }
         }
     }
+
+    document.addEventListener("KOSHIAN_form_submit", () => {
+        reloader.form_submit = true;
+        reloader.timer = setTimeout(() => {
+            reloader.form_submit = false;
+            reloader.timer = null;
+        }, time_out);
+    });
+
+    document.addEventListener("KOSHIAN_form_loaded", () => {
+        reloader.form_submit = false;
+        if (reloader.timer) {
+            clearTimeout(reloader.timer);
+            reloader.timer = null;
+        }
+    });
 
     fixFormPosition();
 }
