@@ -20,15 +20,15 @@
   - リロード時に既読レスのID表示情報を更新（デフォルト：無効）  
     既読レスのID表示情報を更新します。IDカウンター[（WebExtensions版）](http://toshiakisp.github.io/akahuku-firefox-sp/#others)・[（userscript版）](https://github.com/toshiakisp/idcounter-userscript/)または[futaba ID+IP popup](https://greasyfork.org/ja/scripts/8189-futaba-id-ip-popup/)との併用も可能です。  
   - リロード時にスレが消えていたらポータルサイト[ふたポ](http://futapo.futakuro.com/)\(futapo\)の過去ログ\(kako.futakuro.com\)へのリンクを表示（二次元裏may・imgのみ）（デフォルト：無効）  
-    設定画面で有効にするとスレ消滅の表示の横にリンクが表示されます。  
+    スレ消滅の表示の横に過去ログへのリンクが表示されます。  
   - カタログでリロード時にページ先頭に移動（デフォルト：無効）  
     カタログページでリロードしたときにページ先頭へ移動します。  
   - F5キーのリロードを置き換える（デフォルト：無効）  
-    F5キーによるリロードをページ更新無しの新着レス取得に置き換えます。  
+    F5キーによるリロードを新着レス取得に置き換えます。  
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.6.2/koshian_reload_futaba_kai-1.6.2-an.fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.7.0/koshian_reload_futaba_kai-1.7.0-an+fx.xpi)
 
 ※「接続エラーのため、アドオンをダウンロードできませんでした。」と表示されてインストール出来ないときはリンクを右クリックしてxpiファイルをダウンロードし、メニューのツール→アドオン（またはCtrl+Shift+A）で表示されたアドオンマネージャーのページにxpiファイルをドラッグ＆ドロップして下さい。  
 
@@ -45,6 +45,9 @@
   再度設定をお願い致します。  
 
 ## 更新履歴
+* v1.7.0 2018-07-28
+  - [KOSHIAN 返信フォーム拡張 改](https://github.com/akoya-tomo/koshian_form_futaba_kai/) v0.2.0以降で返信中にリロードを抑制するように修正
+  - コード整理
 * v1.6.2 2018-06-29
   - フレーム表示のカタログで動作するように修正
   - ページ下端の検出を修正
