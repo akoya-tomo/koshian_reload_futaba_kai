@@ -28,7 +28,7 @@
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.7.0/koshian_reload_futaba_kai-1.7.0-an+fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.7.1/koshian_reload_futaba_kai-1.7.1-fx.xpi)
 
 ※「接続エラーのため、アドオンをダウンロードできませんでした。」と表示されてインストール出来ないときはリンクを右クリックしてxpiファイルをダウンロードし、メニューのツール→アドオン（またはCtrl+Shift+A）で表示されたアドオンマネージャーのページにxpiファイルをドラッグ＆ドロップして下さい。  
 
@@ -45,6 +45,8 @@
   再度設定をお願い致します。  
 
 ## 更新履歴
+* v1.7.1 2018-11-02
+  - レイアウト変更に伴いスレ消滅時刻の取得を修正
 * v1.7.0 2018-07-28
   - [KOSHIAN 返信フォーム拡張 改](https://github.com/akoya-tomo/koshian_form_futaba_kai/) v0.2.0以降で返信中にリロードを抑制するように修正
   - コード整理

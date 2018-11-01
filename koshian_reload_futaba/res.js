@@ -225,12 +225,23 @@ class Reloader {
 
         if (contdisp) {
             // スレ消滅時間
-            let new_smalls = new_thre.getElementsByTagName("small");
-            for (let new_small of new_smalls) {
-                let expire_time = new_small.textContent.match(/.+頃消えます/);
+            let new_cntds = new_thre.getElementsByClassName("cntd");   // 新式表示
+            let expire_time = null;
+            for (let new_cntd of new_cntds) {
+                expire_time = new_cntd.textContent.match(/.+頃消えます/);
                 if (expire_time) {
                     contdisp.textContent = expire_time[0];
                     break;
+                }
+            }
+            if (!expire_time) {
+                let new_smalls = new_thre.getElementsByTagName("small");    //旧式表示
+                for (let new_small of new_smalls) {
+                    expire_time = new_small.textContent.match(/.+頃消えます/);
+                    if (expire_time) {
+                        contdisp.textContent = expire_time[0];
+                        break;
+                    }
                 }
             }
 
