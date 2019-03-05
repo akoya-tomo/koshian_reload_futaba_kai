@@ -391,6 +391,10 @@ class Reloader {
         let ddbut = document.getElementById("ddbut");
         let show_deleted_res = ddbut ? ddbut.textContent == "隠す" : false;
 
+        // スクロール位置を保存
+        let scroll_top = document.documentElement.scrollTop;
+
+        // 新着レスを挿入
         for (let i = res_num, inserted = res_num == 0 ? thre.getElementsByTagName("blockquote")[0] : tables[res_num - 1]; i < new_res_num; ++i) {
             inserted = thre.insertBefore(new_tables[res_num], inserted.nextElementSibling);
             // 削除された新着レスへ削除レス表示設定を反映
@@ -398,6 +402,9 @@ class Reloader {
                 inserted.style.display = show_deleted_res ? "table" : "none";
             }
         }
+
+        // スクロール位置を新着レス挿入前に戻す(Fx66+対策)
+        document.documentElement.scrollTop = scroll_top;
 
         this.notify.setText(`新着レス:${new_res_num - res_num}`);
         this.notify.moveTo(res_num - 1);
