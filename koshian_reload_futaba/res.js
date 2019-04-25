@@ -16,8 +16,9 @@ const DEFAULT_REPLACE_F5_KEY = false;
 const DEFAULT_REFRESH_DELETED_RES = false;
 const DEFAULT_REFRESH_SOUDANE = false;
 const DEFAULT_REFRESH_IDIP = false;
-//const DEFAULT_USE_FUTABACHIN_LINK = false;
 const DEFAULT_USE_FUTAPO_LINK = false;
+const DEFAULT_USE_FTBUCKET_LINK = false;
+const DEFAULT_USE_TSUMANNE_LINK = false;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
 let reload_period = DEFAULT_RELOAD_PERIOD;
@@ -27,8 +28,9 @@ let replace_f5_key = DEFAULT_REPLACE_F5_KEY;
 let refresh_deleted_res = DEFAULT_REFRESH_DELETED_RES;
 let refresh_soudane = DEFAULT_REFRESH_SOUDANE;
 let refresh_idip = DEFAULT_REFRESH_IDIP;
-//let use_futabachin_link = DEFAULT_USE_FUTABACHIN_LINK;
 let use_futapo_link = DEFAULT_USE_FUTAPO_LINK;
+let use_ftbucket_link = DEFAULT_USE_FTBUCKET_LINK;
+let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
 let isIdIpThread = checkThreadMail();
 
 class Notify {
@@ -447,25 +449,53 @@ function fixFormPosition() {
     form.style.top = `${top}px`;
 }
 
+/**
+ * 過去ログへのリンクを表示
+ */
 function dispLogLink() {
-    // 過去ログへのリンクを表示
-    let href_match = location.href.match(/^https?:\/\/(may|img)\.2chan\.net\/b\/res\/(\d+)\.htm$/);
+    let href_match = location.href.match(/^https?:\/\/([^/.]+)\.2chan\.net\/([^/]+)\/res\/(\d+)\.htm$/);
+    let link_id, link, server, board;
+
+    // 「」ッチー
+    link_id = document.getElementById("KOSHIAN_tsumanne_link");
+    if (use_tsumanne_link && !link_id && href_match
+        && `${href_match[1]}_${href_match[2]}`.match(/may_b|img_b|dat_b/)) {
+        switch (href_match[1]) {
+            case "may":
+                server = "my";
+                break;
+            case "img":
+                server = "si";
+                break;
+            case "dat":
+                server = "sa";
+                break;
+            default:
+                server = "";
+        }
+        if (server) {
+            link = `http://tsumanne.net/${server}/indexes.php?sbmt=URL&w=${href_match[3]}.htm`;
+            setLogLink(link, "tsumanne");
+        }
+    }
+
+    // FTBucket
+    link_id = document.getElementById("KOSHIAN_ftbucket_link");
+    if (use_ftbucket_link && !link_id && href_match
+        && `${href_match[1]}_${href_match[2]}`.match(/may_b|img_b|jun_jun|dec_55|dec_60/)) {
+        board = `${href_match[1]}_${href_match[2]}` == "jun_jun" ? "b" : href_match[2];  // jun_junはjun_bに変換
+        server = board == "b" ? href_match[1] : href_match[1] + href_match[2];
+        link = `http://www.ftbucket.info/${server}/cont/${href_match[1]}.2chan.net_${board}_res_${href_match[3]}/index.htm`;
+        setLogLink(link, "ftbucket");
+    }
 
     // ふたポ
-    let futapo_link_id = document.getElementById("KOSHIAN_futapo_link");
-    if (href_match && use_futapo_link && !futapo_link_id) {
-        let futapo_link = "http://kako.futakuro.com/futa/" + href_match[1] + "_b/" + href_match[2] + "/";
-        setLogLink(futapo_link, "futapo");
+    link_id = document.getElementById("KOSHIAN_futapo_link");
+    if (use_futapo_link && !link_id && href_match
+        && `${href_match[1]}_${href_match[2]}`.match(/may_b|img_b/)) {
+        link = `http://kako.futakuro.com/futa/${href_match[1]}_${href_match[2]}/${href_match[3]}/`;
+        setLogLink(link, "futapo");
     }
-
-    // ふたば☆ちん（閉鎖）
-    /*
-    let futabachin_link_id = document.getElementById("KOSHIAN_2chin_link");
-    if (href_match && use_futabachin_link && !futabachin_link_id) {
-        let futabachin_link = href_match[0].replace(".2chan.net/",".2chin.net/");
-        setLogLink(futabachin_link, "2chin");
-    }
-    */
 
     /**
      * 過去ログへのリンクを設定
@@ -661,8 +691,9 @@ browser.storage.local.get().then((result) => {
     refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
-    //use_futabachin_link = safeGetValue(result.use_futabachin_link, DEFAULT_USE_FUTABACHIN_LINK);
     use_futapo_link = safeGetValue(result.use_futapo_link, DEFAULT_USE_FUTAPO_LINK);
+    use_ftbucket_link = safeGetValue(result.use_ftbucket_link, DEFAULT_USE_FTBUCKET_LINK);
+    use_tsumanne_link = safeGetValue(result.use_tsumanne_link, DEFAULT_USE_TSUMANNE_LINK);
 
     main();
 }, (error) => { });
@@ -679,6 +710,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     refresh_deleted_res = safeGetValue(changes.refresh_deleted_res.newValue, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(changes.refresh_soudane.newValue, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(changes.refresh_idip.newValue, DEFAULT_REFRESH_IDIP);
-    //use_futabachin_link = safeGetValue(changes.use_futabachin_link.newValue, DEFAULT_USE_FUTABACHIN_LINK);
     use_futapo_link = safeGetValue(changes.use_futapo_link.newValue, DEFAULT_USE_FUTAPO_LINK);
+    use_ftbucket_link = safeGetValue(changes.use_ftbucket_link.newValue, DEFAULT_USE_FTBUCKET_LINK);
+    use_tsumanne_link = safeGetValue(changes.use_tsumanne_link.newValue, DEFAULT_USE_TSUMANNE_LINK);
 });

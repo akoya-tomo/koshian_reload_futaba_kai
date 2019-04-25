@@ -19,7 +19,7 @@
     既読レスのそうだねの数字を更新します。  
   - リロード時に既読レスのID表示情報を更新（デフォルト：無効）  
     既読レスのID表示情報を更新します。IDカウンター[（WebExtensions版）](http://toshiakisp.github.io/akahuku-firefox-sp/#others)・[（userscript版）](https://github.com/toshiakisp/idcounter-userscript/)または[futaba ID+IP popup](https://greasyfork.org/ja/scripts/8189-futaba-id-ip-popup/)との併用も可能です。  
-  - リロード時にスレが消えていたらポータルサイト[ふたポ](http://futapo.futakuro.com/)\(futapo\)の過去ログ\(kako.futakuro.com\)へのリンクを表示（二次元裏may・imgのみ）（デフォルト：無効）  
+  - リロード時にスレが消えていたらログサイトへのリンクを表示（デフォルト：無効）  
     スレ消滅の表示の横に過去ログへのリンクが表示されます。  
   - カタログでリロード時にページ先頭に移動（デフォルト：無効）  
     カタログページでリロードしたときにページ先頭へ移動します。  
@@ -28,7 +28,7 @@
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.7.2/koshian_reload_futaba_kai-1.7.2-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.8.0/koshian_reload_futaba_kai-1.8.0-fx.xpi)
 
 ※「接続エラーのため、アドオンをダウンロードできませんでした。」と表示されてインストール出来ないときはリンクを右クリックしてxpiファイルをダウンロードし、メニューのツール→アドオン（またはCtrl+Shift+A）で表示されたアドオンマネージャーのページにxpiファイルをドラッグ＆ドロップして下さい。  
 
@@ -38,6 +38,7 @@
 * 新着レスが削除されていたときは赤破線は表示されません。  
 * 新着レスがしばらく無いスレはスレ消滅時刻が赤字にならないで消えることがあります。  
 * レス本文内の赤字のIP情報については更新対象外です。  
+* ![\(New\)](images/new.png "New") ログサイトに該当スレのログが無いときは開いたタブにエラーが表示されます。  
 
 ## 注意事項
 * 本アドオンを有効にしたときはオリジナル版を無効にするか削除して下さい。  
@@ -45,6 +46,8 @@
   再度設定をお願い致します。  
 
 ## 更新履歴
+* v1.8.0 2019-04-26
+  - ログサイトを追加
 * v1.7.2 2019-03-05
   - Firefox 66以降でリロード時に最終レスにスクロールすることがある不具合を修正
 * v1.7.1 2018-11-02
