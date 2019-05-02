@@ -34,6 +34,7 @@
     },
 
     "permissions":[
+        "*://tsumanne.net/*",
         "storage"
     ],
     
