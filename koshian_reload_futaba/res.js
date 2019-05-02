@@ -32,6 +32,7 @@ let use_futapo_link = DEFAULT_USE_FUTAPO_LINK;
 let use_ftbucket_link = DEFAULT_USE_FTBUCKET_LINK;
 let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
 let isIdIpThread = checkThreadMail();
+let tsumanne_loading = false;
 
 class Notify {
     constructor() {
@@ -458,24 +459,42 @@ function dispLogLink() {
 
     // 「」ッチー
     link_id = document.getElementById("KOSHIAN_tsumanne_link");
-    if (use_tsumanne_link && !link_id && href_match
-        && `${href_match[1]}_${href_match[2]}`.match(/may_b|img_b|dat_b/)) {
-        switch (href_match[1]) {
-            case "may":
+    if (use_tsumanne_link && !link_id && href_match && !tsumanne_loading) {
+        switch (`${href_match[1]}_${href_match[2]}`) {
+            case "may_b":
                 server = "my";
                 break;
-            case "img":
+            case "img_b":
                 server = "si";
                 break;
-            case "dat":
+            case "dat_b":
                 server = "sa";
                 break;
             default:
                 server = "";
         }
         if (server) {
-            link = `http://tsumanne.net/${server}/indexes.php?sbmt=URL&w=${href_match[3]}.htm`;
-            setLogLink(link, "tsumanne");
+            let xhr = new XMLHttpRequest();
+            xhr.responseType = "json";
+            xhr.timeout = time_out;
+            xhr.addEventListener("load", () => {
+                if (xhr.status == 200) {
+                    let res = xhr.response;
+                    if (res.success) {
+                        link = `http://tsumanne.net${res.path}`;
+                        setLogLink(link, "tsumanne");
+                    }
+                }
+            });
+            xhr.addEventListener("error", () => {
+                tsumanne_loading = false;
+            });
+            xhr.addEventListener("timeout", () => {
+                tsumanne_loading = false;
+            });
+            xhr.open("GET", `http://tsumanne.net/${server}/indexes.php?format=json&sbmt=URL&w=${href_match[3]}`);
+            xhr.send();
+            tsumanne_loading = true;
         }
     }
 
