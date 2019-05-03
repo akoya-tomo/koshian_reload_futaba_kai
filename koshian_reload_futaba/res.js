@@ -33,6 +33,7 @@ let use_ftbucket_link = DEFAULT_USE_FTBUCKET_LINK;
 let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
 let isIdIpThread = checkThreadMail();
 let tsumanne_loading = false;
+let ftbucket_loading = false;
 
 class Notify {
     constructor() {
@@ -455,11 +456,12 @@ function fixFormPosition() {
  */
 function dispLogLink() {
     let href_match = location.href.match(/^https?:\/\/([^/.]+)\.2chan\.net\/([^/]+)\/res\/(\d+)\.htm$/);
-    let link_id, link, server, board;
+    let link_id;
 
     // 「」ッチー
     link_id = document.getElementById("KOSHIAN_tsumanne_link");
     if (use_tsumanne_link && !link_id && href_match && !tsumanne_loading) {
+        let server;
         switch (`${href_match[1]}_${href_match[2]}`) {
             case "may_b":
                 server = "my";
@@ -481,7 +483,7 @@ function dispLogLink() {
                 if (xhr.status == 200) {
                     let res = xhr.response;
                     if (res.success) {
-                        link = `http://tsumanne.net${res.path}`;
+                        let link = `http://tsumanne.net${res.path}`;
                         setLogLink(link, "tsumanne");
                     }
                 }
@@ -500,19 +502,33 @@ function dispLogLink() {
 
     // FTBucket
     link_id = document.getElementById("KOSHIAN_ftbucket_link");
-    if (use_ftbucket_link && !link_id && href_match
+    if (use_ftbucket_link && !link_id && href_match && !ftbucket_loading
         && `${href_match[1]}_${href_match[2]}`.match(/may_b|img_b|jun_jun|dec_55|dec_60/)) {
-        board = `${href_match[1]}_${href_match[2]}` == "jun_jun" ? "b" : href_match[2];  // jun_junはjun_bに変換
-        server = board == "b" ? href_match[1] : href_match[1] + href_match[2];
-        link = `http://www.ftbucket.info/${server}/cont/${href_match[1]}.2chan.net_${board}_res_${href_match[3]}/index.htm`;
-        setLogLink(link, "ftbucket");
+        let board = `${href_match[1]}_${href_match[2]}` == "jun_jun" ? "b" : href_match[2];  // jun_junはjun_bに変換
+        let link = `http://www.ftbucket.info/scrapshot/ftb/cont/${href_match[1]}.2chan.net_${board}_res_${href_match[3]}/index.htm`;
+        let xhr = new XMLHttpRequest();
+        xhr.timeout = time_out;
+        xhr.addEventListener("load", () => {
+            if (xhr.status == 200) {
+                setLogLink(link, "ftbucket");
+            }
+        });
+        xhr.addEventListener("error", () => {
+            ftbucket_loading = false;
+        });
+        xhr.addEventListener("timeout", () => {
+            ftbucket_loading = false;
+        });
+        xhr.open("HEAD", link);
+        xhr.send();
+        ftbucket_loading = true;
     }
 
     // ふたポ
     link_id = document.getElementById("KOSHIAN_futapo_link");
     if (use_futapo_link && !link_id && href_match
         && `${href_match[1]}_${href_match[2]}`.match(/may_b|img_b/)) {
-        link = `http://kako.futakuro.com/futa/${href_match[1]}_${href_match[2]}/${href_match[3]}/`;
+        let link = `http://kako.futakuro.com/futa/${href_match[1]}_${href_match[2]}/${href_match[3]}/`;
         setLogLink(link, "futapo");
     }
 

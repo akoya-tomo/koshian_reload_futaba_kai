@@ -34,6 +34,7 @@
     },
 
     "permissions":[
+        "*://www.ftbucket.info/*",
         "*://tsumanne.net/*",
         "storage"
     ],
