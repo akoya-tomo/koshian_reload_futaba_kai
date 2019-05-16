@@ -122,7 +122,7 @@ class Reloader {
         if (!force && cur - this.last_reload_time < reload_period) {
             let time = reload_period - cur + this.last_reload_time;
             if (!this.notify.text.textContent || this.notify.text.textContent == " ") {
-                this.notify.setText(`ƒzƒC[ƒ‹ƒŠƒ[ƒh‹K§’†i‚ ‚Æ${time}msecj`);
+                this.notify.setText(`ãƒ›ã‚¤ãƒ¼ãƒ«ãƒªãƒ­ãƒ¼ãƒ‰è¦åˆ¶ä¸­ï¼ˆã‚ã¨${time}msecï¼‰`);
                 timer = setTimeout(() => {
                     timer = null;
                     this.notify.setText(" ");
@@ -147,7 +147,7 @@ class Reloader {
             xhr.addEventListener("timeout", () => { this.onTimeout(); });
             xhr.open("BODY", location.href);
             xhr.send();
-            this.notify.setText(`ƒJƒ^ƒƒOŽæ“¾’†cc`);
+            this.notify.setText(`ã‚«ã‚¿ãƒ­ã‚°å–å¾—ä¸­â€¦â€¦`);
             changeBgColor();
         }
     }
@@ -159,10 +159,10 @@ class Reloader {
                 this.refreshCat(xhr.responseXML);
                 break;
               default:  // eslint-disable-line indent
-                this.notify.setText(`ƒJƒ^ƒƒOŽæ“¾Ž¸”s CODE:${xhr.status}`);
+                this.notify.setText(`ã‚«ã‚¿ãƒ­ã‚°å–å¾—å¤±æ•— CODE:${xhr.status}`);
             }
         }catch(e){
-            this.notify.setText(`ƒJƒ^ƒƒOŽæ“¾Ž¸”s CODE:${xhr.status}`);
+            this.notify.setText(`ã‚«ã‚¿ãƒ­ã‚°å–å¾—å¤±æ•— CODE:${xhr.status}`);
             console.error("KOSHIAN_reload/cat.js - onBodyLoad error: " + e);  // eslint-disable-line no-console
         }
 
@@ -172,14 +172,14 @@ class Reloader {
 
     refreshCat(new_document, undo = false){
         if(!new_document){
-            this.notify.setText(`ƒJƒ^ƒƒO‚ª‹ó‚Å‚·`);
+            this.notify.setText(`ã‚«ã‚¿ãƒ­ã‚°ãŒç©ºã§ã™`);
             return;
         }
 
         let cat = document.getElementById("cattable") || document.querySelector('body > table[border="1"]');
         let new_cat = new_document.getElementById("cattable") || new_document.querySelector('body > table[border="1"]');
         if(!cat || !new_cat){
-            this.notify.setText(`ƒJƒ^ƒƒO‚ª‚ ‚è‚Ü‚¹‚ñ`);
+            this.notify.setText(`ã‚«ã‚¿ãƒ­ã‚°ãŒã‚ã‚Šã¾ã›ã‚“`);
             return;
         }
 
@@ -187,14 +187,14 @@ class Reloader {
             document.documentElement.scrollTop = 0;
         }
 
-        // ƒAƒ“ƒhƒDî•ñŽæ“¾
+        // ã‚¢ãƒ³ãƒ‰ã‚¥æƒ…å ±å–å¾—
         cache = document.cloneNode(true);
-        // VƒJƒ^ƒƒO‚É‘Š·
-        cat.textContent = null; // ƒJƒ^ƒƒO‚ÌŽq—v‘f‚ð‘Síœ
+        // æ–°ã‚«ã‚¿ãƒ­ã‚°ã«æ›¸æ›
+        cat.textContent = null; // ã‚«ã‚¿ãƒ­ã‚°ã®å­è¦ç´ ã‚’å…¨å‰Šé™¤
         cat.appendChild(new_cat.firstChild);
 
         let time = use_reload_time ? `(${getTimeStrings()})` : " ";
-        this.notify.setText(`XVŠ®—¹${time}`);
+        this.notify.setText(`æ›´æ–°å®Œäº†${time}`);
         timer = setTimeout(() => {
             timer = null;
             this.notify.setText(time);
@@ -214,20 +214,20 @@ class Reloader {
 
     onError() {
         this.loading = false;
-        this.notify.setText(`’ÊMŽ¸”s`);
+        this.notify.setText(`é€šä¿¡å¤±æ•—`);
         resetBgColor();
     }
 
     onTimeout() {
         this.loading = false;
-        this.notify.setText(`Ú‘±‚ªƒ^ƒCƒ€ƒAƒEƒg‚µ‚Ü‚µ‚½`);
+        this.notify.setText(`æŽ¥ç¶šãŒã‚¿ã‚¤ãƒ ã‚¢ã‚¦ãƒˆã—ã¾ã—ãŸ`);
         resetBgColor();
     }
 }
 
 /**
- * ŽžŽæ“¾
- * @return {string} Œ»Ý‚ÌŽž‚Ì•¶Žš—ñ h:mm:ss
+ * æ™‚åˆ»å–å¾—
+ * @return {string} ç¾åœ¨ã®æ™‚åˆ»ã®æ–‡å­—åˆ— h:mm:ss
  */
 function getTimeStrings() {
     let now = new Date();
@@ -323,7 +323,7 @@ function main(){
         reload_button.id = "KOSHIAN_cat_reload_button" + id;
         reload_button.style.fontSize = cat_rel_button_size ? `${cat_rel_button_size}px` : "";
         reload_button.style.display = cat_rel_button_size ? "" : "none";
-        anchor.text = "ƒŠƒ[ƒh";
+        anchor.text = "ãƒªãƒ­ãƒ¼ãƒ‰";
         anchor.href = "javascript:void(0)";
         anchor.addEventListener("click", () => {
             reloader.reload(true);
