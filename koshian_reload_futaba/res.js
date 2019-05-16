@@ -13,6 +13,7 @@ const DEFAULT_RELOAD_PERIOD = 5000;
 const DEFAULT_TIME_OUT = 60000;
 const DEFAULT_REPLACE_RELOAD_BUTTON = true;
 const DEFAULT_REPLACE_F5_KEY = false;
+const DEFAULT_CHANGE_BG_COLOR = false;
 const DEFAULT_REFRESH_DELETED_RES = false;
 const DEFAULT_REFRESH_SOUDANE = false;
 const DEFAULT_REFRESH_IDIP = false;
@@ -25,6 +26,7 @@ let reload_period = DEFAULT_RELOAD_PERIOD;
 let time_out = DEFAULT_TIME_OUT;
 let replace_reload_button = DEFAULT_REPLACE_RELOAD_BUTTON;
 let replace_f5_key = DEFAULT_REPLACE_F5_KEY;
+let change_bg_color = DEFAULT_CHANGE_BG_COLOR;
 let refresh_deleted_res = DEFAULT_REFRESH_DELETED_RES;
 let refresh_soudane = DEFAULT_REFRESH_SOUDANE;
 let refresh_idip = DEFAULT_REFRESH_IDIP;
@@ -34,6 +36,7 @@ let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
 let isIdIpThread = checkThreadMail();
 let tsumanne_loading = false;
 let ftbucket_loading = false;
+let timer = null;
 
 class Notify {
     constructor() {
@@ -67,12 +70,20 @@ class Notify {
     }
 
     setText(text) {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
         this.text.textContent = text;
         this.notify.style.color = "";
         this.notify.style.fontWeight = "";
     }
 
     setAlarmText(text) {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
         this.text.textContent = text;
         this.notify.style.color = "red";
         this.notify.style.fontWeight = "bold";
@@ -115,7 +126,14 @@ class Reloader {
         let cur = getTime();
 
         if (!force && cur - this.last_reload_time < reload_period) {
-            if (!this.thread_not_found) this.notify.setText(`ホイールリロード規制中（あと${reload_period - cur + this.last_reload_time}msec）`);  //スレ消滅メッセージ表示を優先
+            if (!this.thread_not_found) {   //スレ消滅メッセージ表示を優先
+                let time = reload_period - cur + this.last_reload_time;
+                this.notify.setText(`ホイールリロード規制中（あと${time}msec）`);
+                timer = setTimeout(() => {
+                    timer = null;
+                    this.notify.setText("　　");
+                }, Math.max(time, 2000));
+            }
             fixFormPosition();
             return;
         } else {
@@ -132,6 +150,7 @@ class Reloader {
         xhr.send();
         this.notify.moveTo(10000);
         this.notify.setText(`レス取得中……`);
+        changeBgColor();
     }
 
     onHeadLoad(header) {
@@ -142,6 +161,7 @@ class Reloader {
                 this.thread_not_found = true;
                 dispLogLink();
                 fixFormPosition();
+                resetBgColor();
                 document.dispatchEvent(new CustomEvent("KOSHIAN_reload_notfound"));
                 return;
             }
@@ -150,6 +170,7 @@ class Reloader {
                 this.notify.setText(`レス取得失敗 CODE:${header.status}`);
                 this.loading = false;
                 fixFormPosition();
+                resetBgColor();
                 return;
             }
 
@@ -162,6 +183,7 @@ class Reloader {
                     this.notify.setText(`新しいレスはありません`);
                     this.loading = false;
                     fixFormPosition();
+                    resetBgColor();
                     return;
                 }
                 this.new_mod = new_mod;
@@ -181,6 +203,7 @@ class Reloader {
             this.loading = false;
             this.notify.setText(`レス取得中失敗`);
             fixFormPosition();
+            resetBgColor();
         }        
     }
 
@@ -205,6 +228,7 @@ class Reloader {
 
         this.loading = false;
         fixFormPosition();
+        resetBgColor();
     }
 
     addNewResponses(new_document){
@@ -425,12 +449,14 @@ class Reloader {
         this.loading = false;
         this.notify.setText(`通信失敗`);
         fixFormPosition();
+        resetBgColor();
     }
 
     onTimeout() {
         this.loading = false;
         this.notify.setText(`接続がタイムアウトしました`);
         fixFormPosition();
+        resetBgColor();
     }
 }
 
@@ -678,7 +704,7 @@ function main() {
     });
 
     document.addEventListener("keydown", (e) => {
-        if (e.key == "F5" && replace_f5_key) {
+        if (e.key == "F5" && !e.ctrlKey && replace_f5_key) {
             e.preventDefault();
             reloader.reload(true);
         }
@@ -713,6 +739,14 @@ function main() {
     fixFormPosition();
 }
 
+function changeBgColor() {
+    if (change_bg_color) document.body.style.backgroundColor = "#EEEEEE";
+}
+
+function resetBgColor() {
+    document.body.style.backgroundColor = "";
+}
+
 function safeGetValue(value, default_value) {
     return value === undefined ? default_value : value;
 }
@@ -723,6 +757,7 @@ browser.storage.local.get().then((result) => {
     reload_period = safeGetValue(result.reload_period, DEFAULT_RELOAD_PERIOD);
     replace_reload_button = safeGetValue(result.replace_reload_button, DEFAULT_REPLACE_RELOAD_BUTTON);
     replace_f5_key = safeGetValue(result.replace_f5_key, DEFAULT_REPLACE_F5_KEY);
+    change_bg_color = safeGetValue(result.change_bg_color, DEFAULT_CHANGE_BG_COLOR);
     refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
@@ -742,6 +777,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     count_to_reload = safeGetValue(changes.count_to_reload.newValue, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(changes.reload_period.newValue, DEFAULT_RELOAD_PERIOD);
     replace_f5_key = safeGetValue(changes.replace_f5_key.newValue, DEFAULT_REPLACE_F5_KEY);
+    change_bg_color = safeGetValue(changes.change_bg_color.newValue, DEFAULT_CHANGE_BG_COLOR);
     refresh_deleted_res = safeGetValue(changes.refresh_deleted_res.newValue, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(changes.refresh_soudane.newValue, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(changes.refresh_idip.newValue, DEFAULT_REFRESH_IDIP);

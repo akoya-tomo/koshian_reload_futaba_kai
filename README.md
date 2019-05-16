@@ -22,15 +22,17 @@
   - リロード時にスレが消えていたらログサイトへのリンクを表示（デフォルト：無効）  
     スレ消滅の表示の横に過去ログへのリンクが表示されます。  
   - カタログでリロード時にページ先頭に移動（デフォルト：無効）  
-    カタログページでリロードしたときにページ先頭へ移動します。  
+    カタログ画面でリロードしたときにページ先頭へ移動します。  
   - F5キーのリロードを置き換える（デフォルト：無効）  
     F5キーによるリロードを新着レス取得に置き換えます。  
+  - ![\(New\)](images/new.png "New") カタログ画面でページ更新無しでカタログを更新  
+    \[UNDO\]ボタンでリロード前に戻すこともできます。  
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v1.10.0/koshian_reload_futaba_kai-1.10.0-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.0.0/koshian_reload_futaba_kai-2.0.0-fx.xpi)
 
-※![\(New\)](images/new.png "New") v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
+※v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
 ※v1.9.0からアドオンのアクセス許可に「」ッチー(`tsumanne.net`)が追加になります。（該当スレのログの有無の確認）  
 ※「接続エラーのため、アドオンをダウンロードできませんでした。」と表示されてインストール出来ないときはリンクを右クリックしてxpiファイルをダウンロードし、メニューのツール→アドオン（またはCtrl+Shift+A）で表示されたアドオンマネージャーのページにxpiファイルをドラッグ＆ドロップして下さい。  
 
@@ -40,14 +42,25 @@
 * 新着レスが削除されていたときは赤破線は表示されません。  
 * 新着レスがしばらく無いスレはスレ消滅時刻が赤字にならないで消えることがあります。  
 * レス本文内の赤字のIP情報については更新対象外です。  
-* ![\(New\)](images/new.png "New") 「」ッチーとFTBucketは該当スレのログが無いときはリンクが表示されません。  
+* 「」ッチーとFTBucketは該当スレのログが無いときはリンクが表示されません。  
+* ![\(New\)](images/new.png "New") 「ホイールリロード規制中」の表示が消えたら規制が解除されています。また、カタログリロード後の「更新完了」の表示が消えたらホイールリロード規制が解除されています。  
 
 ## 注意事項
 * 本アドオンを有効にしたときはオリジナル版を無効にするか削除して下さい。  
 * オリジナル版とは別アドオンなので設定は初期値に戻ります。  
   再度設定をお願い致します。  
+* ![\(New\)](images/new.png "New") KOSHIAN リロード拡張 改 v2と以下のアドオン・ユーザースクリプトを併用する場合は記載のバージョンをご利用ください。  
+  - [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/) v2.0.2以降
+  - [KOSHIAN カタログの画像をポップアップで表示 改](https://github.com/akoya-tomo/koshian_image_popuper_kai/) v1.6.2以降
+  - futaba thread highlighter K \([GreasyFork](https://greasyfork.org/ja/scripts/36639-futaba-thread-highlighter-k)\) v1.6.6rev22以降
+  - futaba catalog NG \([GreasyFork](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng)\) v1.6.5以降
 
 ## 更新履歴
+* v2.0.0 2019-05-17
+  - カタログをページ更新せずにリロードするように修正
+  - リロード中に背景色を変えるオプションを追加
+  - Ctrl + F5キーによるリロードを新着レス取得に置き換えないように修正
+  - ホイールリロード規制が解除されたら「規制中」の表示を消すように修正
 * v1.10.0 2019-05-04
   - FTBucketに該当スレのログが無いときはリンクを表示しないように修正
 * v1.9.0 2019-05-02
