@@ -36,6 +36,7 @@ let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
 let isIdIpThread = checkThreadMail();
 let tsumanne_loading = false;
 let ftbucket_loading = false;
+let timer = null;
 
 class Notify {
     constructor() {
@@ -69,12 +70,20 @@ class Notify {
     }
 
     setText(text) {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
         this.text.textContent = text;
         this.notify.style.color = "";
         this.notify.style.fontWeight = "";
     }
 
     setAlarmText(text) {
+        if (timer) {
+            clearTimeout(timer);
+            timer = null;
+        }
         this.text.textContent = text;
         this.notify.style.color = "red";
         this.notify.style.fontWeight = "bold";
@@ -117,7 +126,14 @@ class Reloader {
         let cur = getTime();
 
         if (!force && cur - this.last_reload_time < reload_period) {
-            if (!this.thread_not_found) this.notify.setText(`ホイールリロード規制中（あと${reload_period - cur + this.last_reload_time}msec）`);  //スレ消滅メッセージ表示を優先
+            if (!this.thread_not_found) {   //スレ消滅メッセージ表示を優先
+                let time = reload_period - cur + this.last_reload_time;
+                this.notify.setText(`ホイールリロード規制中（あと${time}msec）`);
+                timer = setTimeout(() => {
+                    timer = null;
+                    this.notify.setText("　　");
+                }, Math.max(time, 2000));
+            }
             fixFormPosition();
             return;
         } else {
