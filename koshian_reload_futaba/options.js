@@ -10,6 +10,7 @@ const DEFAULT_USE_FUTAPO_LINK = false;
 const DEFAULT_USE_FTBUCKET_LINK = false;
 const DEFAULT_USE_TSUMANNE_LINK = false;
 const DEFAULT_SCROLL_TO_TOP = false;
+const DEFAULT_CHANGE_BG_COLOR = false;
 const DEFAULT_CAT_REL_BUTTON_SIZE = 16;
 const DEFAULT_CAT_UNDO_BUTTON_SIZE = 16;
 const DEFAULT_CAT_NOTIFY_SIZE = 16;
@@ -26,6 +27,7 @@ let use_futapo_link = null;
 let use_ftbucket_link = null;
 let use_tsumanne_link = null;
 let scroll_to_top = null;
+let change_bg_color = null;
 let cat_rel_button_size = null;
 let cat_undo_button_size = null;
 let cat_notify_size = null;
@@ -52,6 +54,7 @@ function saveSetting(e) {
         use_ftbucket_link:use_ftbucket_link.checked,
         use_tsumanne_link:use_tsumanne_link.checked,
         scroll_to_top:scroll_to_top.checked,
+        change_bg_color:change_bg_color.checked,
         cat_rel_button_size: cat_rel_button_size.value,
         cat_undo_button_size: cat_undo_button_size.value,
         cat_notify_size: cat_notify_size.value,
@@ -72,6 +75,7 @@ function setCurrentChoice(result) {
     use_ftbucket_link.checked = safeGetValue(result.use_ftbucket_link, DEFAULT_USE_FTBUCKET_LINK);
     use_tsumanne_link.checked = safeGetValue(result.use_tsumanne_link, DEFAULT_USE_TSUMANNE_LINK);
     scroll_to_top.checked = safeGetValue(result.scroll_to_top, DEFAULT_SCROLL_TO_TOP);    
+    change_bg_color.checked = safeGetValue(result.change_bg_color, DEFAULT_CHANGE_BG_COLOR);    
     cat_rel_button_size.value = safeGetValue(result.cat_rel_button_size, DEFAULT_CAT_REL_BUTTON_SIZE);    
     cat_undo_button_size.value = safeGetValue(result.cat_undo_button_size, DEFAULT_CAT_UNDO_BUTTON_SIZE);    
     cat_notify_size.value = safeGetValue(result.cat_notify_size, DEFAULT_CAT_NOTIFY_SIZE);    
@@ -91,6 +95,7 @@ function onLoad() {
     use_ftbucket_link = document.getElementById("use_ftbucket_link");
     use_tsumanne_link = document.getElementById("use_tsumanne_link");
     scroll_to_top = document.getElementById("scroll_to_top");
+    change_bg_color = document.getElementById("change_bg_color");
     cat_rel_button_size = document.getElementById("cat_rel_button_size");
     cat_undo_button_size = document.getElementById("cat_undo_button_size");
     cat_notify_size = document.getElementById("cat_notify_size");
@@ -108,6 +113,7 @@ function onLoad() {
     use_ftbucket_link.addEventListener("change", saveSetting);
     use_tsumanne_link.addEventListener("change", saveSetting);
     scroll_to_top.addEventListener("change", saveSetting);
+    change_bg_color.addEventListener("change", saveSetting);
     cat_rel_button_size.addEventListener("change", saveSetting);
     cat_undo_button_size.addEventListener("change", saveSetting);
     cat_notify_size.addEventListener("change", saveSetting);

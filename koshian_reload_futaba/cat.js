@@ -3,6 +3,7 @@ const DEFAULT_SCROLL_PERIOD = 500;
 const DEFAULT_COUNT_TO_RELOAD = 10;
 const DEFAULT_RELOAD_PERIOD = 5000;
 const DEFAULT_SCROLL_TO_TOP = false;
+const DEFAULT_CHANGE_BG_COLOR = false;
 const DEFAULT_TIME_OUT = 60000;
 const DEFAULT_REPLACE_F5_KEY = false;
 const DEFAULT_CAT_REL_BUTTON_SIZE = 16;
@@ -13,6 +14,7 @@ let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
 let reload_period = DEFAULT_RELOAD_PERIOD;
 let scroll_to_top = DEFAULT_SCROLL_TO_TOP;
+let change_bg_color = DEFAULT_CHANGE_BG_COLOR;
 let time_out = DEFAULT_TIME_OUT;
 let replace_f5_key = DEFAULT_REPLACE_F5_KEY;
 let cat_rel_button_size = DEFAULT_CAT_REL_BUTTON_SIZE;
@@ -146,6 +148,7 @@ class Reloader {
             xhr.open("BODY", location.href);
             xhr.send();
             this.notify.setText(`カタログ取得中……`);
+            changeBgColor();
         }
     }
 
@@ -164,6 +167,7 @@ class Reloader {
         }
 
         this.loading = false;
+        resetBgColor();
     }
 
     refreshCat(new_document, undo = false){
@@ -211,11 +215,13 @@ class Reloader {
     onError() {
         this.loading = false;
         this.notify.setText(`通信失敗`);
+        resetBgColor();
     }
 
     onTimeout() {
         this.loading = false;
         this.notify.setText(`接続がタイムアウトしました`);
+        resetBgColor();
     }
 }
 
@@ -387,6 +393,14 @@ function setNotifyStyle() {
     }
 }
 
+function changeBgColor() {
+    if (change_bg_color) document.body.style.backgroundColor = "#EEEEEE";
+}
+
+function resetBgColor() {
+    document.body.style.backgroundColor = "";
+}
+
 function safeGetValue(value, default_value) {
     return value === undefined ? default_value : value;
 }
@@ -396,6 +410,7 @@ browser.storage.local.get().then((result) => {
     count_to_reload = safeGetValue(result.count_to_reload, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(result.reload_period, DEFAULT_RELOAD_PERIOD);
     scroll_to_top = safeGetValue(result.scroll_to_top, DEFAULT_SCROLL_TO_TOP);
+    change_bg_color = safeGetValue(result.change_bg_color, DEFAULT_CHANGE_BG_COLOR);
     replace_f5_key = safeGetValue(result.replace_f5_key, DEFAULT_REPLACE_F5_KEY);
     cat_rel_button_size = safeGetValue(result.cat_rel_button_size, DEFAULT_CAT_REL_BUTTON_SIZE);
     cat_undo_button_size = safeGetValue(result.cat_undo_button_size, DEFAULT_CAT_UNDO_BUTTON_SIZE);
@@ -414,6 +429,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     count_to_reload = safeGetValue(changes.count_to_reload.newValue, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(changes.reload_period.newValue, DEFAULT_RELOAD_PERIOD);
     scroll_to_top = safeGetValue(changes.scroll_to_top.newValue, DEFAULT_SCROLL_TO_TOP);
+    change_bg_color = safeGetValue(changes.change_bg_color.newValue, DEFAULT_CHANGE_BG_COLOR);
     replace_f5_key = safeGetValue(changes.replace_f5_key.newValue, DEFAULT_REPLACE_F5_KEY);
     cat_rel_button_size = safeGetValue(changes.cat_rel_button_size.newValue, DEFAULT_CAT_REL_BUTTON_SIZE);
     cat_undo_button_size = safeGetValue(changes.cat_undo_button_size.newValue, DEFAULT_CAT_UNDO_BUTTON_SIZE);
