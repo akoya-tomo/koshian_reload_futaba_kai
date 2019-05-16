@@ -17,7 +17,7 @@
 
     "content_scripts":[
         {
-            "exclude_matches": ["*://*.2chan.net/*/res/*","*://*.2chan.net/*/src/*"],
+            "exclude_matches": ["*://*.2chan.net/*/res/*", "*://*.2chan.net/*/src/*", "*://*.2chan.net/bin/*"],
             "matches":["*://*.2chan.net/*/*"],
             "js":["cat.js"],
             "all_frames": true
