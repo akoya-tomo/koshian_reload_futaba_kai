@@ -10,6 +10,7 @@ const DEFAULT_CAT_REL_BUTTON_SIZE = 16;
 const DEFAULT_CAT_UNDO_BUTTON_SIZE = 16;
 const DEFAULT_CAT_NOTIFY_SIZE = 16;
 const DEFAULT_USE_RELOAD_TIME = true;
+const DEFAULT_SORT_CATALOG = false;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
 let reload_period = DEFAULT_RELOAD_PERIOD;
@@ -21,6 +22,7 @@ let cat_rel_button_size = DEFAULT_CAT_REL_BUTTON_SIZE;
 let cat_undo_button_size = DEFAULT_CAT_UNDO_BUTTON_SIZE;
 let cat_notify_size = DEFAULT_CAT_NOTIFY_SIZE;
 let use_reload_time = DEFAULT_USE_RELOAD_TIME;
+let sort_catalog = DEFAULT_SORT_CATALOG;
 let timer = null;
 let cache = null;
 
@@ -190,6 +192,9 @@ class Reloader {
         // アンドゥ情報取得
         cache = document.cloneNode(true);
         // 新カタログに書換
+        if (sort_catalog) {
+            new_cat.firstChild.style.opacity = 0;
+        }
         cat.textContent = null; // カタログの子要素を全削除
         cat.appendChild(new_cat.firstChild);
 
@@ -208,7 +213,14 @@ class Reloader {
             setUndoButton(this, this.notify.notify2, "2");
         }
 
-        document.dispatchEvent(new CustomEvent("KOSHIAN_cat_reload"));
+        let has_catalog_sort = document.body.hasAttribute("__KOSHIAN_catalog_sort");
+        if (sort_catalog && has_catalog_sort) {
+            document.dispatchEvent(new CustomEvent("KOSHIAN_cat_sort", {
+                detail: undo
+            }));
+        } else {
+            document.dispatchEvent(new CustomEvent("KOSHIAN_cat_reload"));
+        }
 
     }
 
@@ -256,7 +268,7 @@ function isBottom(dy) {
 }
 
 function isCatalog() {
-    return location.search.match(/mode=cat/);
+    return location.search.match(/mode=cat(&sort=.+)?$/);
 }
 
 let last_wheel_time = getTime();
@@ -416,6 +428,7 @@ browser.storage.local.get().then((result) => {
     cat_undo_button_size = safeGetValue(result.cat_undo_button_size, DEFAULT_CAT_UNDO_BUTTON_SIZE);
     cat_notify_size = safeGetValue(result.cat_notify_size, DEFAULT_CAT_NOTIFY_SIZE);
     use_reload_time = safeGetValue(result.use_reload_time, DEFAULT_USE_RELOAD_TIME);
+    sort_catalog = safeGetValue(result.sort_catalog, DEFAULT_SORT_CATALOG);
 
     main();
 }, (error) => {});
@@ -435,6 +448,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     cat_undo_button_size = safeGetValue(changes.cat_undo_button_size.newValue, DEFAULT_CAT_UNDO_BUTTON_SIZE);
     cat_notify_size = safeGetValue(changes.cat_notify_size.newValue, DEFAULT_CAT_NOTIFY_SIZE);
     use_reload_time = safeGetValue(changes.use_reload_time.newValue, DEFAULT_USE_RELOAD_TIME);
+    sort_catalog = safeGetValue(changes.sort_catalog.newValue, DEFAULT_SORT_CATALOG);
 
     setNotifyStyle();
 });
