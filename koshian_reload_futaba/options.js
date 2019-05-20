@@ -15,6 +15,7 @@ const DEFAULT_CAT_REL_BUTTON_SIZE = 16;
 const DEFAULT_CAT_UNDO_BUTTON_SIZE = 16;
 const DEFAULT_CAT_NOTIFY_SIZE = 16;
 const DEFAULT_USE_RELOAD_TIME = true;
+const DEFAULT_SORT_CATALOG = false;
 let scroll_period = null;
 let count_to_reload = null;
 let reload_period = null;
@@ -32,6 +33,7 @@ let cat_rel_button_size = null;
 let cat_undo_button_size = null;
 let cat_notify_size = null;
 let use_reload_time = null;
+let sort_catalog = null;
 
 function onError(error) {
 }
@@ -58,7 +60,8 @@ function saveSetting(e) {
         cat_rel_button_size: cat_rel_button_size.value,
         cat_undo_button_size: cat_undo_button_size.value,
         cat_notify_size: cat_notify_size.value,
-        use_reload_time:use_reload_time.checked
+        use_reload_time:use_reload_time.checked,
+        sort_catalog:sort_catalog.checked
     });
 }
 
@@ -80,6 +83,7 @@ function setCurrentChoice(result) {
     cat_undo_button_size.value = safeGetValue(result.cat_undo_button_size, DEFAULT_CAT_UNDO_BUTTON_SIZE);    
     cat_notify_size.value = safeGetValue(result.cat_notify_size, DEFAULT_CAT_NOTIFY_SIZE);    
     use_reload_time.checked = safeGetValue(result.use_reload_time, DEFAULT_USE_RELOAD_TIME);
+    sort_catalog.checked = safeGetValue(result.sort_catalog, DEFAULT_SORT_CATALOG);
 }
 
 function onLoad() {
@@ -100,6 +104,7 @@ function onLoad() {
     cat_undo_button_size = document.getElementById("cat_undo_button_size");
     cat_notify_size = document.getElementById("cat_notify_size");
     use_reload_time = document.getElementById("use_reload_time");
+    sort_catalog = document.getElementById("sort_catalog");
 
     scroll_period.addEventListener("change", saveSetting);
     count_to_reload.addEventListener("change", saveSetting);
@@ -118,6 +123,7 @@ function onLoad() {
     cat_undo_button_size.addEventListener("change", saveSetting);
     cat_notify_size.addEventListener("change", saveSetting);
     use_reload_time.addEventListener("change", saveSetting);
+    sort_catalog.addEventListener("change", saveSetting);
 
     browser.storage.local.get().then(setCurrentChoice, onError);
 }

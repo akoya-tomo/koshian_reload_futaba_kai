@@ -24,13 +24,16 @@
   - カタログでリロード時にページ先頭に移動（デフォルト：無効）  
     カタログ画面でリロードしたときにページ先頭へ移動します。  
   - F5キーのリロードを置き換える（デフォルト：無効）  
-    F5キーによるリロードを新着レス取得に置き換えます。  
-  - ![\(New\)](images/new.png "New") カタログ画面でページ更新無しでカタログを更新  
+    F5キーによるリロードを新着レス取得やカタログ更新に置き換えます。  
+  - カタログ画面でページ更新無しでカタログを更新  
+    ![\(New\)](images/new.png "New") 「多順」「勢順」などもページ更新無しで切り替えできます。  
     \[UNDO\]ボタンでリロード前に戻すこともできます。  
+  - ![\(New\)](images/new.png "New") 「カタログをレス増加順にソートする」オプションを追加（デフォルト：無効　要 [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/)）  
+    カタログをレス増加順に並び替えます。  
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.0.0/koshian_reload_futaba_kai-2.0.0-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.1.0/koshian_reload_futaba_kai-2.1.0-fx.xpi)
 
 ※v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
 ※v1.9.0からアドオンのアクセス許可に「」ッチー(`tsumanne.net`)が追加になります。（該当スレのログの有無の確認）  
@@ -43,19 +46,24 @@
 * 新着レスがしばらく無いスレはスレ消滅時刻が赤字にならないで消えることがあります。  
 * レス本文内の赤字のIP情報については更新対象外です。  
 * 「」ッチーとFTBucketは該当スレのログが無いときはリンクが表示されません。  
-* ![\(New\)](images/new.png "New") 「ホイールリロード規制中」の表示が消えたら規制が解除されています。また、カタログリロード後の「更新完了」の表示が消えたらホイールリロード規制が解除されています。  
+* 「ホイールリロード規制中」の表示が消えたら規制が解除されています。また、カタログリロード後の「更新完了」の表示が消えたらホイールリロード規制が解除されています。  
+* ![\(New\)](images/new.png "New") カタログのレス増加順ソートは本アドオンのリロード機能を使用時のみ有効です。ブラウザでページ更新したときはソートされません。  
+  
 
 ## 注意事項
 * 本アドオンを有効にしたときはオリジナル版を無効にするか削除して下さい。  
 * オリジナル版とは別アドオンなので設定は初期値に戻ります。  
   再度設定をお願い致します。  
-* ![\(New\)](images/new.png "New") KOSHIAN リロード拡張 改 v2と以下のアドオン・ユーザースクリプトを併用する場合は記載のバージョンをご利用ください。  
-  - [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/) v2.0.2以降
+* ![\(New\)](images/new.png "New") 本アドオンと以下のアドオン・ユーザースクリプトを併用する場合は記載のバージョンの組み合わせでご利用ください。  
+  - [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/) v2.1.0以降
   - [KOSHIAN カタログの画像をポップアップで表示 改](https://github.com/akoya-tomo/koshian_image_popuper_kai/) v1.6.2以降
-  - futaba thread highlighter K \([GreasyFork](https://greasyfork.org/ja/scripts/36639-futaba-thread-highlighter-k)\) v1.6.6rev22以降
-  - futaba catalog NG \([GreasyFork](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng)\) v1.6.5以降
+  - futaba thread highlighter K \([GreasyFork](https://greasyfork.org/ja/scripts/36639-futaba-thread-highlighter-k)\) v1.6.6rev23以降
+  - futaba catalog NG \([GreasyFork](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng)\) v1.6.6以降
 
 ## 更新履歴
+* v2.1.0 2019-05-20
+  - 「カタログをレス増加順にソートする」オプションを追加（要 KOSHIAN カタログマーカー 改）
+  - ページ更新せずに「多順」「勢順」などに切り替えできるように修正
 * v2.0.0 2019-05-17
   - カタログをページ更新せずにリロードするように修正
   - リロード中に背景色を変えるオプションを追加
