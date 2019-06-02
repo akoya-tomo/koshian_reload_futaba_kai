@@ -391,16 +391,18 @@ class Reloader {
             //let refresh_idip_start_time = Date.now(); //処理時間計測用
 
             // スレ
-            let [new_del_id, new_idip_text] = searchIdIp(new_thre);
-            if (new_del_id && new_idip_text) {
-                setIdIp(new_del_id, new_idip_text);
+            let new_idip = searchIdIp(new_thre);
+            if (new_idip.del_id && new_idip.text) {
+                setIdIp(new_idip.del_id, new_idip.text);
             }
 
             // レス
             let new_rtds = new_thre.getElementsByClassName("rtd");
             for (let new_rtd of new_rtds) {
-                [new_del_id, new_idip_text] = searchIdIp(new_rtd);
-                if (new_del_id && new_idip_text) setIdIp(new_del_id, new_idip_text);
+                new_idip = searchIdIp(new_rtd);
+                if (new_idip.del_id && new_idip.text) {
+                    setIdIp(new_idip.del_id, new_idip.text);
+                }
             }
             //console.log("res.js refresh idip processing time: " + (Date.now() - refresh_idip_start_time) + "msec");
         }
@@ -609,30 +611,30 @@ function checkThreadMail() {
 /**
  * レス内のID・IPを探索
  * @param  {Element} elm ID･IPを探索するレスの要素(.threまたは.rtd)
- * @return {Array.<string>} [del_id, idip_text]
- *     {string} del_id    レス内のdelチェックボックスのid名
- *     {string} idip_text 検出したID･IP
+ * @return {Object.<string>} {del_id: del_id, text: text} 探索結果のオブジェクト
+ *     {string} del_id レス内のdelチェックボックスのid名
+ *     {string} text 検出したID･IP
  */
 function searchIdIp(elm) {
     let del_id;
     for (let i = 0; i < elm.childNodes.length; i++) {
         let node = elm.childNodes[i];
-        if (node.tagName == "BLOCKQUOTE") return [null, null];
-        if (node.tagName == "INPUT") {
+        if (node.tagName == "BLOCKQUOTE") {
+            return {del_id: null, text: null};
+        } else if (node.tagName == "INPUT" && node.value == "delete") {
             del_id = node.id;
-        }
-        if (node.nodeValue) {
+        } else if (node.nodeValue) {
             let idip_text = node.nodeValue.match(/I[DP]:\S{8}/);
             if (idip_text) {
                 if (del_id) {
-                    return [del_id, idip_text];
+                    return {del_id: del_id, text: idip_text[0]};
                 } else {
-                    return [null, null];
+                    return {del_id: null, text: null};
                 }
             }
         }
     }
-    return [null, null];
+    return {del_id: null, text: null};
 }
 
 /**
