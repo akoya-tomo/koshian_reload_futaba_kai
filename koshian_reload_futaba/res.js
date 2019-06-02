@@ -520,7 +520,7 @@ function dispLogLink() {
                 if (xhr.status == 200) {
                     let res = xhr.response;
                     if (res.success) {
-                        let link = `http://tsumanne.net${res.path}`;
+                        let link = `${location.protocol}//tsumanne.net${res.path}`;
                         setLogLink(link, "tsumanne");
                     }
                 }
@@ -531,7 +531,7 @@ function dispLogLink() {
             xhr.addEventListener("timeout", () => {
                 tsumanne_loading = false;
             });
-            xhr.open("GET", `http://tsumanne.net/${server}/indexes.php?format=json&sbmt=URL&w=${href_match[3]}`);
+            xhr.open("GET", `${location.protocol}//tsumanne.net/${server}/indexes.php?format=json&sbmt=URL&w=${href_match[3]}`);
             xhr.send();
             tsumanne_loading = true;
         }
@@ -542,7 +542,7 @@ function dispLogLink() {
     if (use_ftbucket_link && !link_id && href_match && !ftbucket_loading
         && `${href_match[1]}_${href_match[2]}`.match(/may_b|img_b|jun_jun|dec_55|dec_60/)) {
         let board = `${href_match[1]}_${href_match[2]}` == "jun_jun" ? "b" : href_match[2];  // jun_junはjun_bに変換
-        let link = `http://www.ftbucket.info/scrapshot/ftb/cont/${href_match[1]}.2chan.net_${board}_res_${href_match[3]}/index.htm`;
+        let link = `${location.protocol}//www.ftbucket.info/scrapshot/ftb/cont/${href_match[1]}.2chan.net_${board}_res_${href_match[3]}/index.htm`;
         let xhr = new XMLHttpRequest();
         xhr.timeout = time_out;
         xhr.addEventListener("load", () => {
@@ -565,7 +565,7 @@ function dispLogLink() {
     link_id = document.getElementById("KOSHIAN_futapo_link");
     if (use_futapo_link && !link_id && href_match
         && `${href_match[1]}_${href_match[2]}`.match(/may_b|img_b/)) {
-        let link = `http://kako.futakuro.com/futa/${href_match[1]}_${href_match[2]}/${href_match[3]}/`;
+        let link = `${location.protocol}//kako.futakuro.com/futa/${href_match[1]}_${href_match[2]}/${href_match[3]}/`;
         setLogLink(link, "futapo");
     }
 
