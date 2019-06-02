@@ -596,7 +596,7 @@ function dispLogLink() {
 
 function checkThreadMail() {
     // メール欄にID・IPスレが設定されているか確認
-    let mail = document.querySelector("html > body > form > div > font > b > a");
+    let mail = document.querySelector(".thre > div > font > b > a") || document.querySelector("body > form > div > font > b > a");
     if (mail && mail.href.match(/^mailto:i[dp]%E8%A1%A8%E7%A4%BA/i)) {
         return true;
     }
