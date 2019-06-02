@@ -405,6 +405,17 @@ class Reloader {
             //console.log("res.js refresh idip processing time: " + (Date.now() - refresh_idip_start_time) + "msec");
         }
 
+        // レス上限表示更新
+        let new_maxres = new_thre.getElementsByClassName("maxres")[0];
+        if (new_maxres && new_maxres.textContent) {
+            let maxreses = document.getElementsByClassName("maxres");
+            for (let maxres of maxreses) {
+                maxres.innerHTML = "";
+                maxres.appendChild(document.createTextNode(new_maxres.textContent));
+                maxres.appendChild(document.createElement("br"));
+            }
+        }
+
         if(res_num == new_res_num){
             this.notify.setText(`新しいレスはありません`);
             return;
