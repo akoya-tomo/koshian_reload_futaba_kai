@@ -36,7 +36,8 @@ let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
 let isIdIpThread = checkThreadMail();
 let tsumanne_loading = false;
 let ftbucket_loading = false;
-let timer = null;
+let timer_notify = null;
+let timer_submit = null;
 
 class Notify {
     constructor() {
@@ -70,9 +71,9 @@ class Notify {
     }
 
     setText(text) {
-        if (timer) {
-            clearTimeout(timer);
-            timer = null;
+        if (timer_notify) {
+            clearTimeout(timer_notify);
+            timer_notify = null;
         }
         this.text.textContent = text;
         this.notify.style.color = "";
@@ -80,9 +81,9 @@ class Notify {
     }
 
     setAlarmText(text) {
-        if (timer) {
-            clearTimeout(timer);
-            timer = null;
+        if (timer_notify) {
+            clearTimeout(timer_notify);
+            timer_notify = null;
         }
         this.text.textContent = text;
         this.notify.style.color = "red";
@@ -115,7 +116,6 @@ class Reloader {
         this.new_mod = null;
         this.thread_not_found = false;
         this.form_submit = false;
-        this.timer = null;
     }
 
     reload(force = false) {
@@ -129,8 +129,8 @@ class Reloader {
             if (!this.thread_not_found) {   //スレ消滅メッセージ表示を優先
                 let time = reload_period - cur + this.last_reload_time;
                 this.notify.setText(`ホイールリロード規制中（あと${time}msec）`);
-                timer = setTimeout(() => {
-                    timer = null;
+                timer_notify = setTimeout(() => {
+                    timer_notify = null;
                     this.notify.setText("　　");
                 }, Math.max(time, 2000));
             }
@@ -735,17 +735,17 @@ function main() {
 
     document.addEventListener("KOSHIAN_form_submit", () => {
         reloader.form_submit = true;
-        reloader.timer = setTimeout(() => {
+        timer_submit = setTimeout(() => {
             reloader.form_submit = false;
-            reloader.timer = null;
+            timer_submit = null;
         }, time_out);
     });
 
     document.addEventListener("KOSHIAN_form_loaded", () => {
         reloader.form_submit = false;
-        if (reloader.timer) {
-            clearTimeout(reloader.timer);
-            reloader.timer = null;
+        if (timer_submit) {
+            clearTimeout(timer_submit);
+            timer_submit = null;
         }
     });
 
