@@ -365,7 +365,7 @@ function main(){
         anchor.addEventListener("click", () => {
             reloader.reload(true);
         });
-        reload_button.append("[", anchor, "]");
+        reload_button.append("[", anchor, "] ");
         let old_reload_button = document.getElementById(reload_button.id);
         if (old_reload_button) old_reload_button.remove();
         target.parentNode.insertBefore(reload_button, target);
@@ -415,7 +415,7 @@ function setUndoButton(reloader, target, id = "") {
     anchor.addEventListener("click", () => {
         reloader.reload(true, true);
     });
-    undo_button.append("[", anchor, "]");
+    undo_button.append("[", anchor, "] ");
     let old_undo_button = document.getElementById(undo_button.id);
     if (old_undo_button) old_undo_button.remove();
     target.parentNode.insertBefore(undo_button, target);
