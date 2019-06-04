@@ -33,11 +33,12 @@ let refresh_idip = DEFAULT_REFRESH_IDIP;
 let use_futapo_link = DEFAULT_USE_FUTAPO_LINK;
 let use_ftbucket_link = DEFAULT_USE_FTBUCKET_LINK;
 let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
-let isIdIpThread = checkThreadMail();
+let is_idip_thread = checkThreadMail();
 let tsumanne_loading = false;
 let ftbucket_loading = false;
 let timer_notify = null;
 let timer_submit = null;
+let reloading_start_time = null;  // eslint-disable-line no-unused-vars
 
 class Notify {
     constructor() {
@@ -112,7 +113,7 @@ class Reloader {
         this.notify = new Notify();
         this.loading = false;
         this.last_reload_time = getTime();
-        this.org_mod = null;
+        this.last_mod = null;
         this.new_mod = null;
         this.thread_not_found = false;
         this.form_submit = false;
@@ -140,6 +141,7 @@ class Reloader {
             this.last_reload_time = cur;
         }
 
+        //reloading_start_time = performance.now();   // リロード全体時間計測用
         this.loading = true;
         let xhr = new XMLHttpRequest();
         xhr.timeout = time_out;
@@ -176,10 +178,12 @@ class Reloader {
 
             let last_mod_header = header.getResponseHeader("last-modified");
             if (last_mod_header) {
-                let org_mod = Date.parse(document.lastModified);
+                if (!this.last_mod) {
+                    this.last_mod = Date.parse(document.lastModified);
+                }
                 let new_mod = Date.parse(last_mod_header);
 
-                if (org_mod == new_mod || this.org_mod == new_mod) {
+                if (this.last_mod == new_mod) {
                     this.notify.setText(`新しいレスはありません`);
                     this.loading = false;
                     fixFormPosition();
@@ -204,26 +208,29 @@ class Reloader {
             this.notify.setText(`レス取得中失敗`);
             fixFormPosition();
             resetBgColor();
+            console.error("KOSHIAN_reload/res.js/Reloader.onHeadLoad - " + e.name + ": " + e.message);
+            console.dir(e);
         }        
     }
 
     onBodyLoad(xhr){
         try{
             switch(xhr.status){
-              case 200:  // eslint-disable-line indent
-                this.addNewResponses(xhr.responseXML);
-                break;
-              case 404:  // eslint-disable-line indent
-                this.notify.setAlarmText(`スレは落ちています CODE:404`);
-                this.thread_not_found = true;
-                document.dispatchEvent(new CustomEvent("KOSHIAN_reload_notfound"));
-                break;
-              default:  // eslint-disable-line indent
-                this.notify.setText(`レス取得失敗`);
+                case 200:
+                    this.addNewResponses(xhr.responseXML);
+                    break;
+                case 404:
+                    this.notify.setAlarmText(`スレは落ちています CODE:404`);
+                    this.thread_not_found = true;
+                    document.dispatchEvent(new CustomEvent("KOSHIAN_reload_notfound"));
+                    break;
+                default:
+                    this.notify.setText(`レス取得失敗`);
             }
         }catch(e){
             this.notify.setText(`レス取得失敗 CODE:${xhr.status}`);
-            console.error("KOSHIAN_reload/res.js - onBodyLoad error: " + e);  // eslint-disable-line no-console
+            console.error("KOSHIAN_reload/res.js/Reloader.onBodyLoad - " + e.name + ": " + e.message);
+            console.dir(e);
         }
 
         this.loading = false;
@@ -232,6 +239,9 @@ class Reloader {
     }
 
     addNewResponses(new_document){
+        //console.log("KOSHIAN_reload/res.js - response loading time: " + (performance.now() - reloading_start_time).toFixed(2) + "ms");
+        //let parsing_start_time = performance.now(); // スレ解析時間計測用
+
         if(!new_document){
             this.notify.setText(`スレが空です`);
             return;
@@ -250,42 +260,61 @@ class Reloader {
         let new_res_num = new_tables ? new_tables.length : 0;
 
         let contdisp = document.getElementById("contdisp");
-
         if (contdisp) {
-            // スレ消滅時間
-            let new_cntds = new_thre.getElementsByClassName("cntd");   // 新式表示
-            let expire_time = null;
-            for (let new_cntd of new_cntds) {
-                expire_time = new_cntd.textContent.match(/.+頃消えます/);
+            let new_cntd = new_thre.getElementsByClassName("cntd")[0];
+            if (new_cntd) {
+                // 新表示
+                // スレ消滅時間
+                let expire_time = new_cntd.textContent.match(/.+頃消えます/);
                 if (expire_time) {
                     contdisp.textContent = expire_time[0];
-                    break;
                 }
-            }
-            if (!expire_time) {
-                let new_smalls = new_thre.getElementsByTagName("small");    //旧式表示
+                // スレ消滅予告
+                for (let elm = new_cntd.nextElementSibling; elm; elm = elm.nextElementSibling) {
+                    if (elm.textContent == "このスレは古いので、もうすぐ消えます。") {
+                        contdisp.style.color = "red";
+                        contdisp.style.fontWeight = "bold";
+                        break;
+                    }
+                }
+            } else {
+                // 旧表示
+                // スレ消滅時間
+                let new_smalls = new_thre.getElementsByTagName("small");
                 for (let new_small of new_smalls) {
-                    expire_time = new_small.textContent.match(/.+頃消えます/);
+                    let expire_time = new_small.textContent.match(/.+頃消えます/);
                     if (expire_time) {
-                        contdisp.textContent = expire_time[0];
+                        if (contdisp) {
+                            contdisp.textContent = expire_time[0];
+                        }
+                        break;
+                    }
+                }
+                // スレ消滅予告
+                let new_fonts = new_thre.getElementsByTagName("font");
+                for (let new_font of new_fonts) {
+                    if (new_font.textContent == "このスレは古いので、もうすぐ消えます。") {
+                        contdisp.style.color = "red";
+                        contdisp.style.fontWeight = "bold";
                         break;
                     }
                 }
             }
+        }
 
-            // スレ消滅予告
-            let new_fonts = new_thre.getElementsByTagName("font");
-            for (let new_font of new_fonts) {
-                if (new_font.textContent == "このスレは古いので、もうすぐ消えます。") {
-                    contdisp.style.color = "red";
-                    contdisp.style.fontWeight = "bold";
-                    break;
-                }
+        // レス上限表示更新
+        let new_maxres = new_thre.getElementsByClassName("maxres")[0];
+        if (new_maxres && new_maxres.textContent) {
+            let maxreses = document.getElementsByClassName("maxres");
+            for (let maxres of maxreses) {
+                maxres.innerHTML = "";
+                maxres.appendChild(document.createTextNode(new_maxres.textContent));
+                maxres.appendChild(document.createElement("br"));
             }
         }
 
         if (refresh_deleted_res) {
-            //let refresh_deleted_res_start_time = Date.now();  //処理時間計測用
+            //let deleted_res_refreshing_start_time = performance.now();    // 処理時間測定用
 
             // スレ本文の削除情報を更新
             let new_blockquote = new_thre.getElementsByTagName("blockquote")[0];
@@ -319,8 +348,8 @@ class Reloader {
 
             if (new_res_num) {
                 // 「削除された記事がx件あります」更新
-                let new_ddel = new_tables[0].previousElementSibling;
-                if (new_ddel && new_ddel.id == "ddel") {
+                let new_ddel = new_document.getElementById("ddel");
+                if (new_ddel) {
                     let ddel = document.getElementById("ddel");
                     if (ddel) {
                         let new_ddnum = new_ddel.firstElementChild;
@@ -345,25 +374,26 @@ class Reloader {
                 // 削除レス情報更新
                 for (let new_deleted of new_deleteds) {
                     let new_deleted_input = new_deleted.getElementsByTagName("input")[0];
-                    if (!new_deleted_input) break;
-                    let deleted_input = document.getElementById(new_deleted_input.id);
-                    if (deleted_input) {
-                        let deleted_table = deleted_input.parentNode.parentNode.parentNode.parentNode;
-                        let deleted_td = deleted_input.parentNode;
-                        if (deleted_table && !deleted_table.classList.contains("deleted")) {
-                            deleted_table.classList.add("deleted");
-                            deleted_td.style.border = "2px dashed red";
-                            let new_deleted_blockquote = new_deleted.getElementsByTagName("blockquote")[0];
-                            if (new_deleted_blockquote) {
-                                let new_deleted_font = new_deleted_blockquote.getElementsByTagName("font")[0];
-                                if (new_deleted_font) {
-                                    let deleted_font = new_deleted_font.cloneNode(true);
-                                    let deleted_br = document.createElement("br");
-                                    let deleted_blockquote = deleted_table.getElementsByTagName("blockquote")[0];
-                                    if (deleted_blockquote) {
-                                        deleted_blockquote.insertBefore(deleted_br, deleted_blockquote.firstChild);
-                                        deleted_blockquote.insertBefore(deleted_font, deleted_blockquote.firstChild);
-                                        deleted_table.style.display = "table";
+                    if (new_deleted_input) {
+                        let deleted_input = document.getElementById(new_deleted_input.id);
+                        if (deleted_input) {
+                            let deleted_td = deleted_input.parentNode;
+                            let deleted_table = deleted_td.parentNode.parentNode.parentNode;
+                            if (deleted_table && deleted_table.className != "deleted") {
+                                deleted_table.className = "deleted";
+                                deleted_td.style.border = "2px dashed red";
+                                let new_deleted_blockquote = new_deleted.getElementsByTagName("blockquote")[0];
+                                if (new_deleted_blockquote) {
+                                    let new_deleted_font = new_deleted_blockquote.getElementsByTagName("font")[0];
+                                    if (new_deleted_font) {
+                                        let deleted_font = new_deleted_font.cloneNode(true);
+                                        let deleted_br = document.createElement("br");
+                                        let deleted_blockquote = deleted_td.getElementsByTagName("blockquote")[0];
+                                        if (deleted_blockquote) {
+                                            deleted_blockquote.insertBefore(deleted_br, deleted_blockquote.firstChild);
+                                            deleted_blockquote.insertBefore(deleted_font, deleted_blockquote.firstChild);
+                                            deleted_table.style.display = "table";
+                                        }
                                     }
                                 }
                             }
@@ -372,23 +402,24 @@ class Reloader {
                 }
             }
 
-            //console.log("res.js refresh deleted res processing time: " + (Date.now() - refresh_deleted_res_start_time) + "msec");
+            //console.log("KOSHIAN_reload/res.js - deleted res refreshing time: " + (performance.now() - deleted_res_refreshing_start_time).toFixed(2) + "msec");
         }
 
         if (refresh_soudane) {
             // そうだね更新
-            //let refresh_soudane_start_time = Date.now();  //処理時間計測用
+            //let soudane_refreshing_start_time = performance.now();    // 処理時間測定用
+
             let new_sods = new_thre.getElementsByClassName("sod");
             for (let new_sod of new_sods) {
                 let sod_id = document.getElementById(new_sod.id);
                 if (sod_id) sod_id.textContent = new_sod.textContent;
             }
-            //console.log("res.js refresh soudane processing time: " + (Date.now() - refresh_soudane_start_time) + "msec");
+            //console.log("KOSHIAN_reload/res.js - soudane refreshing time: " + (performance.now() - soudane_refreshing_start_time).toFixed(2) + "msec");
         }
 
-        if (!isIdIpThread && refresh_idip) {    // ID･IPスレはID･IP情報更新不要
+        if (refresh_idip && !is_idip_thread) {    // ID･IPスレはID･IP情報更新不要
             // ID･IP情報更新
-            //let refresh_idip_start_time = Date.now(); //処理時間計測用
+            //let idip_refreshing_start_time = performance.now();   // 処理時間測定用
 
             // スレ
             let new_idip = searchIdIp(new_thre);
@@ -404,18 +435,7 @@ class Reloader {
                     setIdIp(new_idip.del_id, new_idip.text);
                 }
             }
-            //console.log("res.js refresh idip processing time: " + (Date.now() - refresh_idip_start_time) + "msec");
-        }
-
-        // レス上限表示更新
-        let new_maxres = new_thre.getElementsByClassName("maxres")[0];
-        if (new_maxres && new_maxres.textContent) {
-            let maxreses = document.getElementsByClassName("maxres");
-            for (let maxres of maxreses) {
-                maxres.innerHTML = "";
-                maxres.appendChild(document.createTextNode(new_maxres.textContent));
-                maxres.appendChild(document.createElement("br"));
-            }
+            //console.log("KOSHIAN_reload/res.js - idip refreshing time: " + (performance.now() - idip_refreshing_start_time).toFixed(2) + "msec");
         }
 
         if(res_num == new_res_num){
@@ -450,12 +470,18 @@ class Reloader {
         this.notify.setText(`新着レス:${new_res_num - res_num}`);
         this.notify.moveTo(res_num - 1);
 
+        //console.log("KOSHIAN_reload/res.js/Reloader - reloading time except reload event dispatch: " + (performance.now() - reloading_start_time).toFixed(2) + "ms");
+        //console.log("KOSHIAN_reload/res.js/Reloader - parsing time except reload event dispatch: " + (performance.now() - parsing_start_time).toFixed(2) + "ms");
+
         document.dispatchEvent(new CustomEvent("KOSHIAN_reload"));
 
         // スレの最終更新時刻を更新
         if (this.new_mod) {
             this.org_mod = this.new_mod;
         }
+
+        //console.log("KOSHIAN_reload/res.js/Reloader - reloading time: " + (performance.now() - reloading_start_time).toFixed(2) + "ms");
+        //console.log("KOSHIAN_reload/res.js/Reloader - parsing time: " + (performance.now() - parsing_start_time).toFixed(2) + "ms");
     }
 
     onError() {
@@ -693,7 +719,7 @@ function isBottom(dy) {
 }
 
 function main() {
-    //console.log("res.js isIdIpThread: " + isIdIpThread);
+    //console.log("KOSHIAN_reload/res.js - is_idip_thread: " + is_idip_thread);
 
     let reloader = new Reloader();
 
@@ -726,7 +752,7 @@ function main() {
     if (replace_reload_button) {
         let reload_button = document.getElementById("contres").getElementsByTagName("a")[0];
         if (reload_button) {
-            reload_button.onclick = (e) => {
+            reload_button.onclick = (e) => {    // eslint-disable-line no-unused-vars
                 reloader.reload(true);
                 return false;
             };
@@ -753,7 +779,9 @@ function main() {
 }
 
 function changeBgColor() {
-    if (change_bg_color) document.body.style.backgroundColor = "#EEEEEE";
+    if (change_bg_color) {
+        document.body.style.backgroundColor = "#EEEEEE";
+    }
 }
 
 function resetBgColor() {
@@ -778,7 +806,7 @@ browser.storage.local.get().then((result) => {
     use_tsumanne_link = safeGetValue(result.use_tsumanne_link, DEFAULT_USE_TSUMANNE_LINK);
 
     main();
-}, (error) => { });
+}, (error) => { }); // eslint-disable-line no-unused-vars
 
 browser.storage.onChanged.addListener((changes, areaName) => {
     if (areaName != "local") {
