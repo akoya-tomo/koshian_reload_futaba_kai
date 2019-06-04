@@ -768,7 +768,6 @@ browser.storage.local.get().then((result) => {
     scroll_period = safeGetValue(result.scroll_period, DEFAULT_SCROLL_PERIOD);
     count_to_reload = safeGetValue(result.count_to_reload, DEFAULT_COUNT_TO_RELOAD);
     reload_period = safeGetValue(result.reload_period, DEFAULT_RELOAD_PERIOD);
-    replace_reload_button = safeGetValue(result.replace_reload_button, DEFAULT_REPLACE_RELOAD_BUTTON);
     replace_f5_key = safeGetValue(result.replace_f5_key, DEFAULT_REPLACE_F5_KEY);
     change_bg_color = safeGetValue(result.change_bg_color, DEFAULT_CHANGE_BG_COLOR);
     refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
