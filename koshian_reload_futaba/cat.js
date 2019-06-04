@@ -182,8 +182,8 @@ class Reloader {
             return;
         }
 
-        let cat = document.getElementById("cattable") || document.querySelector('body > table[border="1"]');
-        let new_cat = new_document.getElementById("cattable") || new_document.querySelector('body > table[border="1"]');
+        let cat = document.getElementById("cattable") || document.querySelector('body > table[border]');
+        let new_cat = new_document.getElementById("cattable") || new_document.querySelector('body > table[border]');
         if(!cat || !new_cat){
             this.notify.setText(`カタログがありません`);
             return;
