@@ -789,6 +789,11 @@ function main() {
         }
     }
 
+    let contdisp = document.getElementById("contdisp");
+    if (contdisp && contdisp.style.color == "rgb(255, 0, 0)") {
+        contdisp.style.fontWeight = "bold";
+    }
+
     document.addEventListener("wheel", (e) => {
         let cur = getTime();
 
