@@ -397,8 +397,26 @@ class Reloader {
                         if (new_ddnum) {
                             ddnum.textContent = new_ddnum.textContent;
                         }
-                    } else if (res_num) {
-                        tables[0].parentNode.insertBefore(new_ddel, tables[0]);
+                    } else {
+                        // レスが初めて削除
+                        if (res_num) {
+                            // レス有り
+                            tables[0].parentNode.insertBefore(new_ddel, tables[0]);
+                        } else {
+                            // 0レス
+                            let maxres = thre.getElementsByClassName("maxres")[0];
+                            if (maxres) {
+                                maxres.parentNode.insertBefore(new_ddel, maxres.nextSibling);
+                            }
+                        }
+                        ddbut = document.getElementById("ddbut");
+                        is_ddbut_shown = ddbut ? ddbut.textContent == "隠す" : false;
+                        if (show_deleted_res && !ddbut_clicked && ddbut && !is_ddbut_shown) {
+                            // 削除されたレスを表示する
+                            ddbut.click();
+                            ddbut_clicked = true;
+                            is_ddbut_shown = true;
+                        } 
                     }
                 }
             }
