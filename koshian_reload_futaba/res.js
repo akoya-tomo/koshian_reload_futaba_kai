@@ -288,6 +288,10 @@ class Reloader {
                 // スレ消滅時間
                 let expire_time = new_cntd.textContent.match(/.+頃消えます/);
                 if (expire_time) {
+                    let cntd = document.getElementsByClassName("cntd")[0]; 
+                    if (cntd) {
+                        cntd.textContent = expire_time[0];
+                    }
                     contdisp.textContent = expire_time[0];
                 }
                 // スレ消滅予告
