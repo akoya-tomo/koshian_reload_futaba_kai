@@ -71,14 +71,14 @@ class Notify {
         }
     }
 
-    setText(text) {
+    setText(text, color = "", font_weight = "") {
         if (timer_notify) {
             clearTimeout(timer_notify);
             timer_notify = null;
         }
         this.text.textContent = text;
-        this.notify.style.color = "";
-        this.notify.style.fontWeight = "";
+        this.notify.style.color = color;
+        this.notify.style.fontWeight = font_weight;
     }
 
     setAlarmText(text) {
@@ -89,6 +89,14 @@ class Notify {
         this.text.textContent = text;
         this.notify.style.color = "red";
         this.notify.style.fontWeight = "bold";
+    }
+
+    getText() {
+        return {
+            text: this.text.textContent,
+            color: this.notify.style.color,
+            font_weight: this.notify.style.fontWeight
+        };
     }
 
     moveTo(target = null) {
@@ -125,12 +133,13 @@ class Reloader {
         let cur = getTime();
 
         if (!force && cur - this.last_reload_time < reload_period) {
-            if (!this.thread_not_found) {   //スレ消滅メッセージ表示を優先
+            if (!timer_notify && !this.thread_not_found) {   // ホイールリロード規制中表示とスレ消滅メッセージ表示を優先
                 let time = reload_period - cur + this.last_reload_time;
+                let notify_text = this.notify.getText();
                 this.notify.setText(`ホイールリロード規制中（あと${time}msec）`);
                 timer_notify = setTimeout(() => {
                     timer_notify = null;
-                    this.notify.setText("　　");
+                    this.notify.setText(notify_text.text || "　　", notify_text.color, notify_text.font_weight);
                 }, Math.max(time, 2000));
             }
             fixFormPosition();
