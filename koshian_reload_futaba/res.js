@@ -153,6 +153,8 @@ class Reloader {
 
         //reloading_start_time = performance.now();   // リロード全体時間計測用
         this.loading = true;
+        this.notify.setText(`レス取得中……`);
+        changeBgColor();
         let xhr = new XMLHttpRequest();
         xhr.timeout = time_out;
         if (this.last_etag) {
@@ -167,8 +169,6 @@ class Reloader {
         xhr.addEventListener("timeout", () => { this.onTimeout(); });
         xhr.send();
         this.notify.moveTo();
-        this.notify.setText(`レス取得中……`);
-        changeBgColor();
     }
 
     onHeadLoad(header) {
