@@ -115,6 +115,8 @@ class Reloader {
         this.last_reload_time = getTime();
         this.last_mod = null;
         this.new_mod = null;
+        this.last_etag = null;
+        this.new_etag = null;
         this.thread_not_found = false;
         this.form_submit = false;
     }
@@ -145,10 +147,16 @@ class Reloader {
         this.loading = true;
         let xhr = new XMLHttpRequest();
         xhr.timeout = time_out;
-        xhr.addEventListener("load", () => { this.onHeadLoad(xhr); });
+        if (this.last_etag) {
+            xhr.responseType = "document";
+            xhr.addEventListener("load", () => { this.onBodyLoad(xhr); });
+            xhr.open("GET", location.href);
+        } else {
+            xhr.addEventListener("load", () => { this.onHeadLoad(xhr); });
+            xhr.open("HEAD", location.href + "?" + Math.random());
+        }
         xhr.addEventListener("error", () => { this.onError(); });
         xhr.addEventListener("timeout", () => { this.onTimeout(); });
-        xhr.open("HEAD", location.href);
         xhr.send();
         this.notify.moveTo(10000);
         this.notify.setText(`レス取得中……`);
@@ -215,13 +223,30 @@ class Reloader {
 
     onBodyLoad(xhr){
         try{
+            let new_etag = null;
             switch(xhr.status){
                 case 200:
+                    new_etag = xhr.getResponseHeader("ETag");
+                    //console.log("KOSHIAN_reload/res.js - Reload.last_etag: " + this.last_etag);                    
+                    //console.log("KOSHIAN_reload/res.js - new_etag: " + new_etag);                    
+                    if (new_etag) {
+                        if (this.last_etag == new_etag) {
+                            this.notify.setText(`新しいレスはありません`);
+                            this.loading = false;
+                            fixFormPosition();
+                            resetBgColor();
+                            return;
+                        }
+                        this.new_etag = new_etag;
+                    } else {
+                        this.new_etag = null;
+                    }
                     this.addNewResponses(xhr.responseXML);
                     break;
                 case 404:
                     this.notify.setAlarmText(`スレは落ちています CODE:404`);
                     this.thread_not_found = true;
+                    dispLogLink();
                     document.dispatchEvent(new CustomEvent("KOSHIAN_reload_notfound"));
                     break;
                 default:
@@ -438,6 +463,10 @@ class Reloader {
             //console.log("KOSHIAN_reload/res.js - idip refreshing time: " + (performance.now() - idip_refreshing_start_time).toFixed(2) + "msec");
         }
 
+        // スレの最終更新時刻を更新
+        this.last_mod = this.new_mod;
+        this.last_etag = this.new_etag;
+
         if(res_num == new_res_num){
             this.notify.setText(`新しいレスはありません`);
             return;
@@ -474,11 +503,6 @@ class Reloader {
         //console.log("KOSHIAN_reload/res.js/Reloader - parsing time except reload event dispatch: " + (performance.now() - parsing_start_time).toFixed(2) + "ms");
 
         document.dispatchEvent(new CustomEvent("KOSHIAN_reload"));
-
-        // スレの最終更新時刻を更新
-        if (this.new_mod) {
-            this.org_mod = this.new_mod;
-        }
 
         //console.log("KOSHIAN_reload/res.js/Reloader - reloading time: " + (performance.now() - reloading_start_time).toFixed(2) + "ms");
         //console.log("KOSHIAN_reload/res.js/Reloader - parsing time: " + (performance.now() - parsing_start_time).toFixed(2) + "ms");
