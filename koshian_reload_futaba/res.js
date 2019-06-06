@@ -14,6 +14,7 @@ const DEFAULT_TIME_OUT = 60000;
 const DEFAULT_REPLACE_RELOAD_BUTTON = true;
 const DEFAULT_REPLACE_F5_KEY = false;
 const DEFAULT_CHANGE_BG_COLOR = false;
+const DEFAULT_SHOW_DELETED_RES = true;
 const DEFAULT_REFRESH_DELETED_RES = true;
 const DEFAULT_REFRESH_SOUDANE = true;
 const DEFAULT_REFRESH_IDIP = true;
@@ -27,6 +28,7 @@ let time_out = DEFAULT_TIME_OUT;
 let replace_reload_button = DEFAULT_REPLACE_RELOAD_BUTTON;
 let replace_f5_key = DEFAULT_REPLACE_F5_KEY;
 let change_bg_color = DEFAULT_CHANGE_BG_COLOR;
+let show_deleted_res = DEFAULT_SHOW_DELETED_RES;
 let refresh_deleted_res = DEFAULT_REFRESH_DELETED_RES;
 let refresh_soudane = DEFAULT_REFRESH_SOUDANE;
 let refresh_idip = DEFAULT_REFRESH_IDIP;
@@ -34,6 +36,7 @@ let use_futapo_link = DEFAULT_USE_FUTAPO_LINK;
 let use_ftbucket_link = DEFAULT_USE_FTBUCKET_LINK;
 let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
 let is_idip_thread = checkThreadMail();
+let ddbut_clicked = false;
 let tsumanne_loading = false;
 let ftbucket_loading = false;
 let timer_notify = null;
@@ -347,6 +350,10 @@ class Reloader {
             }
         }
 
+        // 削除されたレスの表示設定を取得
+        let ddbut = document.getElementById("ddbut");
+        let is_ddbut_shown = ddbut ? ddbut.textContent == "隠す" : false;
+
         if (refresh_deleted_res) {
             //let deleted_res_refreshing_start_time = performance.now();    // 処理時間測定用
 
@@ -423,7 +430,7 @@ class Reloader {
                                         if (deleted_blockquote) {
                                             deleted_blockquote.insertBefore(deleted_br, deleted_blockquote.firstChild);
                                             deleted_blockquote.insertBefore(deleted_font, deleted_blockquote.firstChild);
-                                            deleted_table.style.display = "table";
+                                            deleted_table.style.display = is_ddbut_shown ? "table" : "none";
                                         }
                                     }
                                 }
@@ -435,6 +442,15 @@ class Reloader {
 
             //console.log("KOSHIAN_reload/res.js - deleted res refreshing time: " + (performance.now() - deleted_res_refreshing_start_time).toFixed(2) + "msec");
         }
+
+        if (show_deleted_res && !ddbut_clicked) {
+            // 削除されたレスを表示する
+            let ddbut = document.getElementById("ddbut");
+            if (ddbut && ddbut.textContent == "見る") {
+                ddbut.click();
+                ddbut_clicked = true;
+            }
+        } 
 
         if (refresh_soudane) {
             // そうだね更新
@@ -487,10 +503,6 @@ class Reloader {
             this.notify.setText(`スレの取得に失敗しました`);
             return;
         }
-
-        // 削除されたレスの表示設定を取得
-        let ddbut = document.getElementById("ddbut");
-        let show_deleted_res = ddbut ? ddbut.textContent == "隠す" : false;
 
         // 新着レスを断片に集約
         let fragment = document.createDocumentFragment();
@@ -768,6 +780,15 @@ function main() {
 
     let reloader = new Reloader();
 
+    if (show_deleted_res && !ddbut_clicked) {
+        // 削除されたレスを表示する
+        let ddbut = document.getElementById("ddbut");
+        if (ddbut && ddbut.textContent == "見る") {
+            ddbut.click();
+            ddbut_clicked = true;
+        }
+    }
+
     document.addEventListener("wheel", (e) => {
         let cur = getTime();
 
@@ -843,6 +864,7 @@ browser.storage.local.get().then((result) => {
     reload_period = safeGetValue(result.reload_period, DEFAULT_RELOAD_PERIOD);
     replace_f5_key = safeGetValue(result.replace_f5_key, DEFAULT_REPLACE_F5_KEY);
     change_bg_color = safeGetValue(result.change_bg_color, DEFAULT_CHANGE_BG_COLOR);
+    show_deleted_res = safeGetValue(result.show_deleted_res, DEFAULT_SHOW_DELETED_RES);
     refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
@@ -863,10 +885,21 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     reload_period = safeGetValue(changes.reload_period.newValue, DEFAULT_RELOAD_PERIOD);
     replace_f5_key = safeGetValue(changes.replace_f5_key.newValue, DEFAULT_REPLACE_F5_KEY);
     change_bg_color = safeGetValue(changes.change_bg_color.newValue, DEFAULT_CHANGE_BG_COLOR);
+    show_deleted_res = safeGetValue(changes.show_deleted_res.newValue, DEFAULT_SHOW_DELETED_RES);
     refresh_deleted_res = safeGetValue(changes.refresh_deleted_res.newValue, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(changes.refresh_soudane.newValue, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(changes.refresh_idip.newValue, DEFAULT_REFRESH_IDIP);
     use_futapo_link = safeGetValue(changes.use_futapo_link.newValue, DEFAULT_USE_FUTAPO_LINK);
     use_ftbucket_link = safeGetValue(changes.use_ftbucket_link.newValue, DEFAULT_USE_FTBUCKET_LINK);
     use_tsumanne_link = safeGetValue(changes.use_tsumanne_link.newValue, DEFAULT_USE_TSUMANNE_LINK);
+
+    if (show_deleted_res && !ddbut_clicked) {
+        let ddbut = document.getElementById("ddbut");
+        if (ddbut && ddbut.textContent == "見る") {
+            // 削除されたレスを表示する
+            ddbut.click();
+            ddbut_clicked = true;
+        }
+    }
+
 });
