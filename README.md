@@ -33,7 +33,7 @@
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.2.0/koshian_reload_futaba_kai-2.2.0-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.2.1/koshian_reload_futaba_kai-2.2.1-fx.xpi)
 
 ※v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
 ※v1.9.0からアドオンのアクセス許可に「」ッチー(`tsumanne.net`)が追加になります。（該当スレのログの有無の確認）  
@@ -57,7 +57,7 @@
   - futaba catalog NG \([GreasyFork](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng)\) v1.6.6以降
 
 ## 更新履歴
-* v2.2.0 2019-06-07
+* v2.2.1 2019-06-07
   - 新着レス取得と既読レス情報更新のリロード速度を改善
   - 「削除されたレスを表示する」オプションを追加
   - その他細かい修正とコードの整理
