@@ -8,17 +8,14 @@
 ## 機能
 * オリジナルの機能（KOSHIAN リロード拡張）
   - ページ上下端で一定回数マウスホイールをスクロールでカタログやスレをリロード
-  - スレ画面でページを更新することなく新着レスを取得
+  - レス送信モードでページを更新することなく新着レスを取得
 * 追加された機能（KOSHIAN リロード拡張 改）
-  - リロード時にページ下段のスレ消滅時刻を更新  
-    リロード時に最新のスレ消滅時刻を取得してページ下段の表示を書き換えます。  
-    スレがもうすぐ消える時は時刻の文字が赤の太字になります。  
-  - リロード時に既読レスの削除情報を更新（デフォルト：無効）  
-    削除された既読レスを赤破線で囲み、削除理由を赤字で追記します。  
-  - リロード時に既読レスのそうだねの情報を更新（デフォルト：無効）  
-    既読レスのそうだねの数字を更新します。  
-  - リロード時に既読レスのID表示情報を更新（デフォルト：無効）  
-    既読レスのID表示情報を更新します。IDカウンター[（WebExtensions版）](http://toshiakisp.github.io/akahuku-firefox-sp/#others)・[（userscript版）](https://github.com/toshiakisp/idcounter-userscript/)または[futaba ID+IP popup](https://greasyfork.org/ja/scripts/8189-futaba-id-ip-popup/)との併用も可能です。  
+  - リロード時にスレ消滅時刻を更新  
+    リロード時に最新のスレ消滅時刻を取得して表示を書き換えます。  
+    スレがもうすぐ消える時はページ下段の時刻の文字が赤の太字になります。  
+  - リロード時に既読レスの情報を更新（デフォルト：有効）  
+    既読レスの削除・そうだね・ID表示の情報を更新します。  
+    IDカウンター[（WebExtensions版）](http://toshiakisp.github.io/akahuku-firefox-sp/#others)・[（userscript版）](https://github.com/toshiakisp/idcounter-userscript/)または[futaba ID+IP popup](https://greasyfork.org/ja/scripts/8189-futaba-id-ip-popup/)との併用も可能です。  
   - リロード時にスレが消えていたらログサイトへのリンクを表示（デフォルト：無効）  
     スレ消滅の表示の横に過去ログへのリンクが表示されます。  
   - カタログでリロード時にページ先頭に移動（デフォルト：無効）  
@@ -26,14 +23,17 @@
   - F5キーのリロードを置き換える（デフォルト：無効）  
     F5キーによるリロードを新着レス取得やカタログ更新に置き換えます。  
   - カタログ画面でページ更新無しでカタログを更新  
-    ![\(New\)](images/new.png "New") 「多順」「勢順」などもページ更新無しで切り替えできます。  
+    「多順」「勢順」などもページ更新無しで切り替えできます。  
     \[UNDO\]ボタンでリロード前に戻すこともできます。  
-  - ![\(New\)](images/new.png "New") 「カタログをレス増加順にソートする」オプションを追加（デフォルト：無効　要 [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/)）  
+  - 「カタログをレス増加順にソートする」オプション（デフォルト：無効　要 [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/)）  
     カタログをレス増加順に並び替えます。  
+  - ![\(New\)](images/new.png "New") 「削除されたレスを表示する」オプション（デフォルト：有効）  
+    デフォルトで非表示になっている削除されたレスを表示します。  
+    「削除された記事がx件あります.」の横のボタンで表示・非表示を切り替えできます。  
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.1.0/koshian_reload_futaba_kai-2.1.0-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.2.0/koshian_reload_futaba_kai-2.2.0-fx.xpi)
 
 ※v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
 ※v1.9.0からアドオンのアクセス許可に「」ッチー(`tsumanne.net`)が追加になります。（該当スレのログの有無の確認）  
@@ -41,26 +41,26 @@
 
 ## 追加機能の補足
 * 既読レスのID情報は表示されたときのみ更新されます。その後IDが消えても画面上では表示されたままです。  
-* 赤破線の削除レスを隠したいときは、スレ本文の下にある「削除された記事がx件あります」の横の「隠す」ボタンを押すと新着の削除レスと一緒に隠すことができます。  
-* 新着レスが削除されていたときは赤破線は表示されません。  
-* 新着レスがしばらく無いスレはスレ消滅時刻が赤字にならないで消えることがあります。  
 * レス本文内の赤字のIP情報については更新対象外です。  
 * 「」ッチーとFTBucketは該当スレのログが無いときはリンクが表示されません。  
 * 「ホイールリロード規制中」の表示が消えたら規制が解除されています。また、カタログリロード後の「更新完了」の表示が消えたらホイールリロード規制が解除されています。  
-* ![\(New\)](images/new.png "New") カタログのレス増加順ソートは本アドオンのリロード機能を使用時のみ有効です。ブラウザでページ更新したときはソートされません。  
-  
+* カタログのレス増加順ソートは本アドオンのリロード機能を使用時のみ有効です。ブラウザでページ更新したときはソートされません。    
 
 ## 注意事項
 * 本アドオンを有効にしたときはオリジナル版を無効にするか削除して下さい。  
 * オリジナル版とは別アドオンなので設定は初期値に戻ります。  
   再度設定をお願い致します。  
-* ![\(New\)](images/new.png "New") 本アドオンと以下のアドオン・ユーザースクリプトを併用する場合は記載のバージョンの組み合わせでご利用ください。  
+* 本アドオンと以下のアドオン・ユーザースクリプトを併用する場合は記載のバージョンの組み合わせでご利用ください。  
   - [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/) v2.1.0以降
   - [KOSHIAN カタログの画像をポップアップで表示 改](https://github.com/akoya-tomo/koshian_image_popuper_kai/) v1.6.2以降
   - futaba thread highlighter K \([GreasyFork](https://greasyfork.org/ja/scripts/36639-futaba-thread-highlighter-k)\) v1.6.6rev23以降
   - futaba catalog NG \([GreasyFork](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng)\) v1.6.6以降
 
 ## 更新履歴
+* v2.2.0 2019-06-07
+  - 新着レス取得と既読レス情報更新のリロード速度を改善
+  - 「削除されたレスを表示する」オプションを追加
+  - その他細かい修正とコードの整理
 * v2.1.0 2019-05-20
   - 「カタログをレス増加順にソートする」オプションを追加（要 KOSHIAN カタログマーカー 改）
   - ページ更新せずに「多順」「勢順」などに切り替えできるように修正
