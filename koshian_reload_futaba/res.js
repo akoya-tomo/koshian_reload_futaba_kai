@@ -67,7 +67,7 @@ class Notify {
             this.notify.appendChild(this.text);
             document.body.appendChild(this.notify);
 
-            this.moveTo(10000);
+            this.moveTo();
         }
     }
 
@@ -91,15 +91,11 @@ class Notify {
         this.notify.style.fontWeight = "bold";
     }
 
-    moveTo(index) {
-        let tables = this.thre.getElementsByTagName("table");
-
-        if (tables.length == 0 || index == -1) { // 0レス
-            let blockquotes = this.thre.getElementsByTagName("blockquote");
-            this.thre.insertBefore(this.notify, blockquotes[0].nextElementSibling);
+    moveTo(target = null) {
+        if (target) {
+            this.thre.insertBefore(this.notify, target.nextElementSibling);
         } else {
-            index = Math.min(index, tables.length - 1);
-            this.thre.insertBefore(this.notify, tables[index].nextElementSibling);
+            this.thre.appendChild(this.notify);
         }
     }
 
@@ -158,7 +154,7 @@ class Reloader {
         xhr.addEventListener("error", () => { this.onError(); });
         xhr.addEventListener("timeout", () => { this.onTimeout(); });
         xhr.send();
-        this.notify.moveTo(10000);
+        this.notify.moveTo();
         this.notify.setText(`レス取得中……`);
         changeBgColor();
     }
@@ -375,14 +371,11 @@ class Reloader {
                 // 「削除された記事がx件あります」更新
                 let new_ddel = new_document.getElementById("ddel");
                 if (new_ddel) {
-                    let ddel = document.getElementById("ddel");
-                    if (ddel) {
-                        let new_ddnum = new_ddel.firstElementChild;
-                        if (new_ddnum && new_ddnum.id == "ddnum") {
-                            let ddnum = document.getElementById("ddnum");
-                            if (ddnum) {
-                                ddnum.textContent = new_ddnum.textContent;
-                            }
+                    let ddnum = document.getElementById("ddnum");
+                    if (ddnum) {
+                        let new_ddnum = new_document.getElementById("ddnum");
+                        if (new_ddnum) {
+                            ddnum.textContent = new_ddnum.textContent;
                         }
                     } else if (res_num) {
                         tables[0].parentNode.insertBefore(new_ddel, tables[0]);
@@ -435,9 +428,14 @@ class Reloader {
             //let soudane_refreshing_start_time = performance.now();    // 処理時間測定用
 
             let new_sods = new_thre.getElementsByClassName("sod");
-            for (let new_sod of new_sods) {
-                let sod_id = document.getElementById(new_sod.id);
-                if (sod_id) sod_id.textContent = new_sod.textContent;
+            for (let i = 0, new_sods_num = new_sods.length; i < new_sods_num; ++i) {
+                let sod_id = document.getElementById(new_sods[i].id);
+                if (sod_id) {
+                    let new_sod_text = new_sods[i].textContent;
+                    if (new_sod_text != sod_id.textContent) {
+                        sod_id.textContent = new_sod_text;
+                    }
+                }
             }
             //console.log("KOSHIAN_reload/res.js - soudane refreshing time: " + (performance.now() - soudane_refreshing_start_time).toFixed(2) + "msec");
         }
@@ -454,8 +452,8 @@ class Reloader {
 
             // レス
             let new_rtds = new_thre.getElementsByClassName("rtd");
-            for (let new_rtd of new_rtds) {
-                new_idip = searchIdIp(new_rtd);
+            for (let i = 0, new_rtds_num = new_rtds.length; i < new_rtds_num; ++i) {
+                new_idip = searchIdIp(new_rtds[i]);
                 if (new_idip.del_id && new_idip.text) {
                     setIdIp(new_idip.del_id, new_idip.text);
                 }
@@ -481,26 +479,32 @@ class Reloader {
         let ddbut = document.getElementById("ddbut");
         let show_deleted_res = ddbut ? ddbut.textContent == "隠す" : false;
 
-        // スクロール位置を保存
-        let scroll_top = document.documentElement.scrollTop;
-
-        // 新着レスを挿入
-        for (let i = res_num, inserted = res_num == 0 ? thre.getElementsByTagName("blockquote")[0] : tables[res_num - 1]; i < new_res_num; ++i) {
-            inserted = thre.insertBefore(new_tables[res_num], inserted.nextElementSibling);
+        // 新着レスを断片に集約
+        let fragment = document.createDocumentFragment();
+        for (let i = res_num; i < new_res_num; ++i) {
+            let inserted = fragment.appendChild(new_tables[res_num]);
             // 削除された新着レスへ削除レス表示設定を反映
-            if (inserted.classList.contains("deleted")) {
-                inserted.style.display = show_deleted_res ? "table" : "none";
+            if (inserted.className == "deleted") {
+                inserted.style.display = is_ddbut_shown ? "table" : "none";
             }
         }
 
-        // スクロール位置を新着レス挿入前に戻す(Fx66+対策)
-        document.documentElement.scrollTop = scroll_top;
+        // スクロール位置を保存
+        let doc_elm = document.documentElement;
+        let scroll_top = doc_elm.scrollTop;
+
+        // 新着レスを挿入
+        thre.appendChild(fragment);
+
+        // スクロール位置を新着レス挿入前に戻す(Fx66+ スクロールアンカー対策)
+        doc_elm.scrollTop = scroll_top;
 
         this.notify.setText(`新着レス:${new_res_num - res_num}`);
-        this.notify.moveTo(res_num - 1);
 
-        //console.log("KOSHIAN_reload/res.js/Reloader - reloading time except reload event dispatch: " + (performance.now() - reloading_start_time).toFixed(2) + "ms");
-        //console.log("KOSHIAN_reload/res.js/Reloader - parsing time except reload event dispatch: " + (performance.now() - parsing_start_time).toFixed(2) + "ms");
+        resetBgColor();
+
+        //console.log("KOSHIAN_reload/res.js/Reloader - reloading time except reload event: " + (performance.now() - reloading_start_time).toFixed(2) + "ms");
+        //console.log("KOSHIAN_reload/res.js/Reloader - parsing time except reload event: " + (performance.now() - parsing_start_time).toFixed(2) + "ms");
 
         document.dispatchEvent(new CustomEvent("KOSHIAN_reload"));
 
@@ -661,27 +665,28 @@ function checkThreadMail() {
 /**
  * レス内のID・IPを探索
  * @param  {Element} elm ID･IPを探索するレスの要素(.threまたは.rtd)
+ * @param  {boolean} ip IPを探索するか
  * @return {Object.<string>} {del_id: del_id, text: text} 探索結果のオブジェクト
  *     {string} del_id レス内のdelチェックボックスのid名
  *     {string} text 検出したID･IP
  */
-function searchIdIp(elm) {
-    let del_id;
-    for (let i = 0; i < elm.childNodes.length; i++) {
-        let node = elm.childNodes[i];
-        if (node.tagName == "BLOCKQUOTE") {
-            return {del_id: null, text: null};
+function searchIdIp(elm, ip = false) {
+    let del_id = null;
+    let regex = /ID:\S{8}/;
+    if (ip) {
+        regex = /ID:\S{8}|IP:[^\s[]+/;
+    }
+
+    for (let node = elm.firstElementChild; node; node = node.nextSibling) {
+        if (node.nodeValue) {
+            let idip_text = node.nodeValue.match(regex);
+            if (idip_text) {
+                return {del_id: del_id, text: idip_text[0]};
+            }
         } else if (node.tagName == "INPUT" && node.value == "delete") {
             del_id = node.id;
-        } else if (node.nodeValue) {
-            let idip_text = node.nodeValue.match(/I[DP]:\S{8}/);
-            if (idip_text) {
-                if (del_id) {
-                    return {del_id: del_id, text: idip_text[0]};
-                } else {
-                    return {del_id: null, text: null};
-                }
-            }
+        } else if (node.className == "del") {
+            return {del_id: null, text: null};
         }
     }
     return {del_id: null, text: null};
@@ -693,38 +698,41 @@ function searchIdIp(elm) {
  * @param {string} new_idip   設定するID･IP文字列
  */
 function setIdIp(new_del_id, new_idip) {
-    if (!new_del_id || !new_idip) return;
+    if (!new_del_id || !new_idip) {
+        return;
+    }
+
     let del_elm = document.getElementById(new_del_id);
-    if (!del_elm || del_elm.classList.contains("KOSHIAN_reload_idip")) return;
-    let parent = del_elm.parentNode;
-    let time_node = null, time_text;
-    for (let i = 0; i < parent.childNodes.length; i++) {
-        let node = parent.childNodes[i];
-        if (node.tagName == "BLOCKQUOTE") {
-            if (time_node) {
-                time_node.nodeValue = time_text[1] + " " + new_idip + time_text[2];
-                del_elm.classList.add("KOSHIAN_reload_idip");
+    if (!del_elm || del_elm.classList.contains("KOSHIAN_reload_idip")) {
+        return;
+    }
+
+    let time_node = null, time_match = null;
+    for (let node = del_elm.nextSibling; node; node = node.nextSibling) {
+        if (node.nodeValue) {
+            if (!time_node) {
+                time_match = node.nodeValue.match(/^( ?\d{2}\/\d{2}\/\d{2}\([^)]+\)\d{2}:\d{2}:\d{2})(.*)/);
+                if (time_match) {
+                    // 時刻表示のテキストノード
+                    time_node = node;
+                }
             }
-            return;
-        } else if (node.tagName == "A") {
-            if (node.name == new_idip) {
+            if (time_node && node.nodeValue.indexOf(new_idip) > -1) {
                 del_elm.classList.add("KOSHIAN_reload_idip");
                 return;
             }
-        } else if (node.nodeValue) {
-            if (!time_node) {
-                let time_match = node.nodeValue.match(/^( ?\d{2}\/\d{2}\/\d{2}\([^)]+\)\d{2}:\d{2}:\d{2})(.*)/);
-                if (time_match) {
-                    time_node = node;
-                    time_text = time_match;
-                }
-            }
+        } else if (node.name == new_idip && node.tagName == "A") {
+            // futaba ID+IP popup
+            del_elm.classList.add("KOSHIAN_reload_idip");
+            return;
+        } else if (node.className == "del") {
+            // delボタンで探索終了
             if (time_node) {
-                if (node.nodeValue.indexOf(new_idip) > -1) {
-                    del_elm.classList.add("KOSHIAN_reload_idip");
-                    return;
-                }
+                // 時刻表示のテキストノードがあればID・IPを付与する
+                time_node.nodeValue = time_match[1] + " " + new_idip + time_match[2];
+                del_elm.classList.add("KOSHIAN_reload_idip");
             }
+            return;
         }
     }
 }
