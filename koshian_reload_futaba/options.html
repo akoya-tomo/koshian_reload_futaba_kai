@@ -4,6 +4,11 @@
 
 <head>
     <meta charset="utf-8">
+    <style type="text/css">
+        .group {margin-bottom: 1.5em;}
+        .sub {margin-left: 1.5em;}
+        .last {margin-bottom: 1em;}
+    </style>
 </head>
 
 <body>
@@ -25,48 +30,58 @@
         <input type="checkbox" id="change_bg_color">
         <label for="change_bg_color">リロード中は背景色を変える</label>
     </p>
-    <p>
-        <input type="checkbox" id="refresh_deleted_res">
-        <label for="refresh_deleted_res">既読レスの削除情報を更新する</label>
-        <br>
-        <input type="checkbox" id="refresh_soudane">
-        <label for="refresh_soudane">既読レスのそうだねの情報を更新する</label>
-        <br>
-        <input type="checkbox" id="refresh_idip">
-        <label for="refresh_idip">既読レスのID情報を更新する</label>
-    </p>
-    <p>
-        リロード時にスレが消えていたらログサイトへのリンクを表示する<br>
-        <input type="checkbox" id="use_futapo_link">
-        <label for="use_futapo_link">ふたポ（二次元裏may・img）</label>
-        <br>
-        <input type="checkbox" id="use_ftbucket_link">
-        <label for="use_ftbucket_link">FTBucket（二次元裏may・img・jun・東方裏・艦これ）</label>
-        <br>
-        <input type="checkbox" id="use_tsumanne_link">
-        <label for="use_tsumanne_link">「」ッチー（二次元裏may・img・dat）</label>
-    </p>
-    <p>
-        <input type="checkbox" id="scroll_to_top">
-        <label for="scroll_to_top">カタログのリロード時に先頭へ</label>
-    </p>
-    <p>
-        <input type="number" id="cat_rel_button_size" min="0">
-        <label for="cat_rel_button_size">(px) カタログのリロードボタンサイズ（0=非表示）</label>
-        <br>
-        <input type="number" id="cat_undo_button_size" min="0">
-        <label for="cat_undo_button_size">(px) カタログのUNDOボタンサイズ（0=非表示）</label>
-        <br>
-        <input type="number" id="cat_notify_size" min="1">
-        <label for="cat_notify_size">(px) カタログのリロードメッセージサイズ</label>
-        <br>
-        <input type="checkbox" id="use_reload_time">
-        <label for="use_reload_time">カタログの更新時刻を表示する</label>
-    </p>
-    <p>
-        <input type="checkbox" id="sort_catalog">
-        <label for="sort_catalog">カタログをレス増加順にソートする（要 KOSHIAN カタログマーカー 改）</label>
-    </p>
+    <fieldset style="min-width: min-content;" class="group">
+        <legend>既読レスの更新</legend>
+        <p>
+            <input type="checkbox" id="refresh_deleted_res">
+            <label for="refresh_deleted_res">削除情報を更新する</label>
+            <br>
+            <input type="checkbox" id="refresh_soudane">
+            <label for="refresh_soudane">そうだねを更新する</label>
+            <br>
+            <input type="checkbox" id="refresh_idip">
+            <label for="refresh_idip">ID表示を更新する</label>
+        </p>
+    </fieldset>
+    <fieldset style="min-width: min-content;" class="group">
+        <legend>
+            リロード時にスレが消えていたらログサイトへのリンクを表示する
+        </legend>
+        <p>
+            <input type="checkbox" id="use_futapo_link">
+            <label for="use_futapo_link">ふたポ（二次元裏may・img）</label>
+            <br>
+            <input type="checkbox" id="use_ftbucket_link">
+            <label for="use_ftbucket_link">FTBucket（二次元裏may・img・jun・東方裏・艦これ）</label>
+            <br>
+            <input type="checkbox" id="use_tsumanne_link">
+            <label for="use_tsumanne_link">「」ッチー（二次元裏may・img・dat）</label>
+        </p>
+    </fieldset>
+    <fieldset style="min-width: min-content;" class="group">
+        <legend>カタログ</legend>
+        <p>
+            <input type="checkbox" id="scroll_to_top">
+            <label for="scroll_to_top">リロード時に先頭へ</label>
+            <br>
+            <input type="checkbox" id="use_reload_time">
+            <label for="use_reload_time">更新時刻を表示する</label>
+            <br>
+            <input type="checkbox" id="sort_catalog">
+            <label for="sort_catalog">レス増加順にソートする（要 KOSHIAN カタログマーカー 改）</label>
+        </p>
+        <p>
+            <input type="number" id="cat_rel_button_size" min="0">
+            <label for="cat_rel_button_size">(px) リロードボタンサイズ（0=非表示）</label>
+            <br>
+            <input type="number" id="cat_undo_button_size" min="0">
+            <label for="cat_undo_button_size">(px) UNDOボタンサイズ（0=非表示）</label>
+            <br>
+            <input type="number" id="cat_notify_size" min="1">
+            <label for="cat_notify_size">(px) リロードメッセージサイズ</label>
+            <br>
+        </p>
+    </fieldset>
 
     <script src="./options.js"></script>
 
