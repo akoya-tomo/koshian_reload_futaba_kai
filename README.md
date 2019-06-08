@@ -51,10 +51,11 @@
 * オリジナル版とは別アドオンなので設定は初期値に戻ります。  
   再度設定をお願い致します。  
 * 本アドオンと以下のアドオン・ユーザースクリプトを併用する場合は記載のバージョンの組み合わせでご利用ください。  
+  尚、オリジナル版のKOSHIAN カタログマーカー・KOSHIAN カタログの画像をポップアップで表示・futaba thread highlighterはカタログリロードで動作しなくなりました。代替として下のアドオン・ユーザースクリプトをご利用ください。  
   - [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/) v2.1.0以降
   - [KOSHIAN カタログの画像をポップアップで表示 改](https://github.com/akoya-tomo/koshian_image_popuper_kai/) v1.6.2以降
-  - futaba thread highlighter K \([GreasyFork](https://greasyfork.org/ja/scripts/36639-futaba-thread-highlighter-k)\) v1.6.6rev23以降
-  - futaba catalog NG \([GreasyFork](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng)\) v1.6.6以降
+  - [futaba thread highlighter K](https://greasyfork.org/ja/scripts/36639-futaba-thread-highlighter-k) \(GreasyFork\) v1.6.6rev23以降
+  - [futaba catalog NG](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng) \(GreasyFork\) v1.6.6以降
 
 ## 更新履歴
 * v2.2.1 2019-06-07
