@@ -143,6 +143,8 @@ class Reloader {
                 timer_notify = setTimeout(() => {
                     timer_notify = null;
                     this.notify.setText(notify_text.text || "　　", notify_text.color, notify_text.font_weight);
+                    last_bottom_scroll = getTime();
+                    bottom_scroll_count = 0;
                 }, Math.max(time, 2000));
             }
             fixFormPosition();
@@ -180,6 +182,8 @@ class Reloader {
                 dispLogLink();
                 fixFormPosition();
                 resetBgColor();
+                last_bottom_scroll = getTime();
+                bottom_scroll_count = 0;
                 document.dispatchEvent(new CustomEvent("KOSHIAN_reload_notfound"));
                 return;
             }
@@ -189,6 +193,8 @@ class Reloader {
                 this.loading = false;
                 fixFormPosition();
                 resetBgColor();
+                last_bottom_scroll = getTime();
+                bottom_scroll_count = 0;
                 return;
             }
 
@@ -204,6 +210,8 @@ class Reloader {
                     this.loading = false;
                     fixFormPosition();
                     resetBgColor();
+                    last_bottom_scroll = getTime();
+                    bottom_scroll_count = 0;
                     return;
                 }
                 this.new_mod = new_mod;
@@ -224,6 +232,8 @@ class Reloader {
             this.notify.setText(`レス取得中失敗`);
             fixFormPosition();
             resetBgColor();
+            last_bottom_scroll = getTime();
+            bottom_scroll_count = 0;
             console.error("KOSHIAN_reload/res.js/Reloader.onHeadLoad - " + e.name + ": " + e.message);
             console.dir(e);
         }        
@@ -243,6 +253,8 @@ class Reloader {
                             this.loading = false;
                             fixFormPosition();
                             resetBgColor();
+                            last_bottom_scroll = getTime();
+                            bottom_scroll_count = 0;
                             return;
                         }
                         this.new_etag = new_etag;
@@ -269,6 +281,8 @@ class Reloader {
         this.loading = false;
         fixFormPosition();
         resetBgColor();
+        last_bottom_scroll = getTime();
+        bottom_scroll_count = 0;
     }
 
     addNewResponses(new_document){
@@ -560,6 +574,8 @@ class Reloader {
         this.notify.setText(`通信失敗`);
         fixFormPosition();
         resetBgColor();
+        last_bottom_scroll = getTime();
+        bottom_scroll_count = 0;
     }
 
     onTimeout() {
@@ -567,6 +583,8 @@ class Reloader {
         this.notify.setText(`接続がタイムアウトしました`);
         fixFormPosition();
         resetBgColor();
+        last_bottom_scroll = getTime();
+        bottom_scroll_count = 0;
     }
 }
 
@@ -816,7 +834,7 @@ function main() {
         let cur = getTime();
 
         if (isBottom(e.deltaY)) {
-            if (cur - last_bottom_scroll < scroll_period) {
+            if (cur - last_bottom_scroll < scroll_period && !reloader.loading && !timer_notify) {
                 ++bottom_scroll_count;
                 if (bottom_scroll_count > count_to_reload) {
                     bottom_scroll_count = 0;

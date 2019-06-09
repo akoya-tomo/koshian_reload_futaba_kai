@@ -97,13 +97,15 @@ class Reloader {
 
         let cur = getTime();
 
-        if (!force && cur - this.last_reload_time < reload_period) {
+        if (!force && cur - this.last_reload_time < reload_period && !timer) {
             let time = reload_period - cur + this.last_reload_time;
             if (!this.notify.text.textContent || this.notify.text.textContent == " ") {
                 this.notify.setText(`ホイールリロード規制中（あと${time}msec）`);
                 timer = setTimeout(() => {
                     timer = null;
                     this.notify.setText(" ");
+                    last_wheel_time = getTime();
+                    wheel_count = 0;
                 }, Math.max(time, 2000));
             }
             return;
@@ -122,6 +124,8 @@ class Reloader {
                 this.refreshCat(cache, true);
             }
             this.loading = false;
+            last_wheel_time = getTime();
+            wheel_count = 0;
             return;
         } else {
             let xhr = new XMLHttpRequest();
@@ -154,6 +158,8 @@ class Reloader {
 
         this.loading = false;
         resetBgColor();
+        last_wheel_time = getTime();
+        wheel_count = 0;
     }
 
     refreshCat(new_document, undo = false){
@@ -223,12 +229,16 @@ class Reloader {
         this.loading = false;
         this.notify.setText(`通信失敗`);
         resetBgColor();
+        last_wheel_time = getTime();
+        wheel_count = 0;
     }
 
     onTimeout() {
         this.loading = false;
         this.notify.setText(`接続がタイムアウトしました`);
         resetBgColor();
+        last_wheel_time = getTime();
+        wheel_count = 0;
     }
 }
 
@@ -296,7 +306,7 @@ function main(){
         let cur = getTime();
 
         if(isBottom(e.deltaY) || isTop(e.deltaY)){
-            if(cur - last_wheel_time < scroll_period){
+            if(cur - last_wheel_time < scroll_period && !reloader.loading && !timer){
                 ++wheel_count;
                 if(wheel_count > count_to_reload){
                     wheel_count = 0;
