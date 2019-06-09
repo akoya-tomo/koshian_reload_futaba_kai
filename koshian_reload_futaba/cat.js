@@ -22,7 +22,7 @@ let cat_rel_button_size = DEFAULT_CAT_REL_BUTTON_SIZE;
 let cat_undo_button_size = DEFAULT_CAT_UNDO_BUTTON_SIZE;
 let cat_notify_size = DEFAULT_CAT_NOTIFY_SIZE;
 let time_out = DEFAULT_TIME_OUT;
-let timer = null;
+let timer_notify = null;
 let cache = null;
 let previous_sort = null;
 
@@ -64,9 +64,9 @@ class Notify {
     }
 
     setText(text, color = "", font_weight = "") {
-        if (timer) {
-            clearTimeout(timer);
-            timer = null;
+        if (timer_notify) {
+            clearTimeout(timer_notify);
+            timer_notify = null;
         }
         this.text.textContent = text;
         this.notify.style.color = color;
@@ -77,7 +77,7 @@ class Notify {
         this.notify2.style.fontWeight = font_weight;
     }
 
-    static hasNotify(id) {
+    static hasNotify(id = "KOSHIAN_NOTIFY") {
         return document.getElementById(id);
     }
 }
@@ -87,7 +87,6 @@ class Reloader {
         this.notify = new Notify();
         this.loading = false;
         this.last_reload_time = getTime();
-        this.timer = null;
     }
 
     reload(force = false, undo = false, href = location.href) {
@@ -97,12 +96,12 @@ class Reloader {
 
         let cur = getTime();
 
-        if (!force && cur - this.last_reload_time < reload_period && !timer) {
+        if (!force && cur - this.last_reload_time < reload_period && !timer_notify) {
             let time = reload_period - cur + this.last_reload_time;
             if (!this.notify.text.textContent || this.notify.text.textContent == " ") {
                 this.notify.setText(`ホイールリロード規制中（あと${time}msec）`);
-                timer = setTimeout(() => {
-                    timer = null;
+                timer_notify = setTimeout(() => {
+                    timer_notify = null;
                     this.notify.setText(" ");
                     last_wheel_time = getTime();
                     wheel_count = 0;
@@ -121,7 +120,7 @@ class Reloader {
         this.loading = true;
         if (undo) {
             if (cache) {
-                this.refreshCat(cache, true);
+                this.refreshCatalog(cache, true);
             }
             this.loading = false;
             last_wheel_time = getTime();
@@ -145,7 +144,7 @@ class Reloader {
         try{
             switch(xhr.status){
                 case 200:
-                    this.refreshCat(xhr.responseXML);
+                    this.refreshCatalog(xhr.responseXML);
                     break;
                 default:
                     this.notify.setText(`カタログ取得失敗 CODE:${xhr.status}`);
@@ -162,7 +161,7 @@ class Reloader {
         wheel_count = 0;
     }
 
-    refreshCat(new_document, undo = false){
+    refreshCatalog(new_document, undo = false){
         if(!new_document){
             this.notify.setText(`カタログが空です`);
             return;
@@ -191,14 +190,14 @@ class Reloader {
 
         let time = use_reload_time ? `(${getTimeStrings()})` : " ";
         this.notify.setText(`更新完了${time}`);
-        timer = setTimeout(() => {
-            timer = null;
+        timer_notify = setTimeout(() => {
+            timer_notify = null;
             this.notify.setText(time);
         }, Math.max(reload_period, 2000));
 
         if (undo) {
             removeUndoButton();
-            removeUndoButton("2");
+            removeUndoButton("KOSHIAN_cat_undo_button2");
             if (previous_sort) {
                 let cat_bold = document.getElementById("KOSHIAN_reload_cat_bold");
                 if (cat_bold) {
@@ -211,7 +210,7 @@ class Reloader {
             }
         } else {
             setUndoButton(this, this.notify.notify);
-            setUndoButton(this, this.notify.notify2, "2");
+            setUndoButton(this, this.notify.notify2, "KOSHIAN_cat_undo_button2");
         }
 
         let has_catalog_sort = document.body.hasAttribute("__KOSHIAN_catalog_sort");
@@ -294,10 +293,10 @@ function main(){
         }
         let notify2 = document.getElementById("KOSHIAN_NOTIFY2");
         if (notify2) {
-            setReloadButton(notify2, "2");
+            setReloadButton(notify2, "KOSHIAN_cat_reload_button2");
         }
         removeUndoButton();
-        removeUndoButton("2");
+        removeUndoButton("KOSHIAN_cat_undo_button2");
 
         setCatalogSortEvent();
     }
@@ -306,7 +305,7 @@ function main(){
         let cur = getTime();
 
         if(isBottom(e.deltaY) || isTop(e.deltaY)){
-            if(cur - last_wheel_time < scroll_period && !reloader.loading && !timer){
+            if(cur - last_wheel_time < scroll_period && !reloader.loading && !timer_notify){
                 ++wheel_count;
                 if(wheel_count > count_to_reload){
                     wheel_count = 0;
@@ -345,10 +344,10 @@ function main(){
         }
     });
 
-    function setReloadButton(target, id = "") {
+    function setReloadButton(target, id = "KOSHIAN_cat_reload_button") {
         let reload_button = document.createElement("span");
         let anchor = document.createElement("a");
-        reload_button.id = "KOSHIAN_cat_reload_button" + id;
+        reload_button.id = id;
         reload_button.style.fontSize = cat_rel_button_size > 0 ? `${cat_rel_button_size}px` : "";
         reload_button.style.display = cat_rel_button_size > 0 ? "" : "none";
         anchor.text = "リロード";
@@ -397,10 +396,10 @@ function main(){
     }
 }
 
-function setUndoButton(reloader, target, id = "") {
+function setUndoButton(reloader, target, id = "KOSHIAN_cat_undo_button") {
     let undo_button = document.createElement("span");
     let anchor = document.createElement("a");
-    undo_button.id = "KOSHIAN_cat_undo_button" + id;
+    undo_button.id = id;
     undo_button.style.fontSize = cat_undo_button_size > 0 ? `${cat_undo_button_size}px` : "";
     undo_button.style.display = cat_undo_button_size > 0 ? "" : "none";
     anchor.text = "UNDO";
@@ -416,8 +415,8 @@ function setUndoButton(reloader, target, id = "") {
     target.parentNode.insertBefore(undo_button, target);
 }
 
-function removeUndoButton(id = "") {
-    let undo_button = document.getElementById("KOSHIAN_cat_undo_button" + id);
+function removeUndoButton(id = "KOSHIAN_cat_undo_button") {
+    let undo_button = document.getElementById(id);
     if (undo_button) {
         undo_button.remove();
     }

@@ -236,7 +236,7 @@ class Reloader {
             bottom_scroll_count = 0;
             console.error("KOSHIAN_reload/res.js/Reloader.onHeadLoad - " + e.name + ": " + e.message);
             console.dir(e);
-        }        
+        }
     }
 
     onBodyLoad(xhr){
@@ -245,8 +245,8 @@ class Reloader {
             switch(xhr.status){
                 case 200:
                     new_etag = xhr.getResponseHeader("ETag");
-                    //console.log("KOSHIAN_reload/res.js - Reload.last_etag: " + this.last_etag);                    
-                    //console.log("KOSHIAN_reload/res.js - new_etag: " + new_etag);                    
+                    //console.log("KOSHIAN_reload/res.js - Reload.last_etag: " + this.last_etag);
+                    //console.log("KOSHIAN_reload/res.js - new_etag: " + new_etag);
                     if (new_etag) {
                         if (this.last_etag == new_etag) {
                             this.notify.setText(`新しいレスはありません`);
