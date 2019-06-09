@@ -3,7 +3,7 @@
 
     "name":"KOSHIAN リロード拡張 改",
 
-    "version":"2.2.1",
+    "version":"2.2.2",
 
     "description":"マウスホイールでカタログやレス画面をリロードします",
 
@@ -38,11 +38,11 @@
         "*://tsumanne.net/*",
         "storage"
     ],
-    
+
     "applications":{
         "gecko":{
             "id":"{E5F040CA-E22F-11E7-8D70-447F1843E317}",
             "update_url": "https://raw.githubusercontent.com/akoya-tomo/koshian_reload_futaba_kai/master/updates.json"
         }
-    }    
+    }
 }
