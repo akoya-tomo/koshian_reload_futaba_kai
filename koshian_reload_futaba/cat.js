@@ -28,6 +28,8 @@ let timer_notify = null;
 let undo_cache = null;
 let reorder_cache = null;
 let previous_sort = null;
+let undo_time = "";
+let previous_time = "";
 
 class Notify {
     constructor() {
@@ -216,12 +218,14 @@ class Reloader {
         reorder_cache = document.cloneNode(true);
 
         if (!reorder) {
-            let time = use_reload_time ? `(${getTimeStrings()})` : " ";
+            let time = use_reload_time ? (undo ? undo_time : `(${getTimeStrings()})`) : " ";
             this.notify.setText(`更新完了${time}`);
             timer_notify = setTimeout(() => {
                 timer_notify = null;
                 this.notify.setText(time);
             }, Math.max(reload_period, 2000));
+            undo_time = previous_time;
+            previous_time = time;
         }
 
         if (undo) {
@@ -340,6 +344,8 @@ function main(){
         removeButton("KOSHIAN_cat_reorder_inc_button2");
 
         setCatalogSortEvent();
+
+        previous_time = `(${getTimeStrings()})`;
     }
 
     document.addEventListener("wheel", (e) => {
