@@ -16,6 +16,7 @@ const DEFAULT_SORT_CATALOG = false;
 const DEFAULT_CAT_REL_BUTTON_SIZE = 16;
 const DEFAULT_CAT_UNDO_BUTTON_SIZE = 16;
 const DEFAULT_CAT_NOTIFY_SIZE = 16;
+const DEFAULT_CAT_REORDER_BUTTON_SIZE = 16;
 let scroll_period = null;
 let count_to_reload = null;
 let reload_period = null;
@@ -34,6 +35,7 @@ let sort_catalog = null;
 let cat_rel_button_size = null;
 let cat_undo_button_size = null;
 let cat_notify_size = null;
+let cat_reorder_button_size = null;
 
 function onError(error) {   // eslint-disable-line no-unused-vars
 }
@@ -61,7 +63,8 @@ function saveSetting(e) {   // eslint-disable-line no-unused-vars
         sort_catalog:sort_catalog.checked,
         cat_rel_button_size: cat_rel_button_size.value,
         cat_undo_button_size: cat_undo_button_size.value,
-        cat_notify_size: cat_notify_size.value
+        cat_notify_size: cat_notify_size.value,
+        cat_reorder_button_size: cat_reorder_button_size.value
     });
 }
 
@@ -84,6 +87,7 @@ function setCurrentChoice(result) {
     cat_rel_button_size.value = safeGetValue(result.cat_rel_button_size, DEFAULT_CAT_REL_BUTTON_SIZE);
     cat_undo_button_size.value = safeGetValue(result.cat_undo_button_size, DEFAULT_CAT_UNDO_BUTTON_SIZE);
     cat_notify_size.value = safeGetValue(result.cat_notify_size, DEFAULT_CAT_NOTIFY_SIZE);
+    cat_reorder_button_size.value = safeGetValue(result.cat_reorder_button_size, DEFAULT_CAT_REORDER_BUTTON_SIZE);
 }
 
 function onLoad() {
@@ -105,6 +109,7 @@ function onLoad() {
     cat_rel_button_size = document.getElementById("cat_rel_button_size");
     cat_undo_button_size = document.getElementById("cat_undo_button_size");
     cat_notify_size = document.getElementById("cat_notify_size");
+    cat_reorder_button_size = document.getElementById("cat_reorder_button_size");
 
     let inputs = document.getElementsByTagName("input");
     for (let input of inputs) {
