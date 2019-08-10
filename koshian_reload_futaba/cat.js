@@ -9,6 +9,7 @@ const DEFAULT_SORT_CATALOG = false;
 const DEFAULT_CAT_REL_BUTTON_SIZE = 16;
 const DEFAULT_CAT_UNDO_BUTTON_SIZE = 16;
 const DEFAULT_CAT_NOTIFY_SIZE = 16;
+const DEFAULT_CAT_REORDER_BUTTON_SIZE = 16;
 const DEFAULT_TIME_OUT = 60000;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
@@ -21,9 +22,11 @@ let sort_catalog = DEFAULT_SORT_CATALOG;
 let cat_rel_button_size = DEFAULT_CAT_REL_BUTTON_SIZE;
 let cat_undo_button_size = DEFAULT_CAT_UNDO_BUTTON_SIZE;
 let cat_notify_size = DEFAULT_CAT_NOTIFY_SIZE;
+let cat_reorder_button_size = DEFAULT_CAT_REORDER_BUTTON_SIZE;
 let time_out = DEFAULT_TIME_OUT;
 let timer_notify = null;
-let cache = null;
+let undo_cache = null;
+let reorder_cache = null;
 let previous_sort = null;
 
 class Notify {
@@ -48,16 +51,25 @@ class Notify {
             return [notify, text];
 
         } else {
+            let container = document.createElement("div");
+            let left_item = document.createElement("div");
+            let right_item = document.createElement("div");
             let notify = document.createElement("span");
             let text = document.createTextNode("");
 
+            container.id = `${id}_container`;
+            container.style.display = "flex";
+            container.style.justifyContent = "space-between";
+            left_item.id = `${id}_left_item`;
+            right_item.id = `${id}_right_item`;
             notify.id = id;
             notify.style.fontSize = `${cat_notify_size}px`;
             notify.appendChild(text);
-            document.body.appendChild(notify);
+            left_item.appendChild(notify);
+            container.append(left_item,right_item);
 
             if (target) {
-                target.parentNode.insertBefore(notify, target);
+                target.parentNode.insertBefore(container, target);
             }
             return [notify, text];
         }
@@ -89,7 +101,7 @@ class Reloader {
         this.last_reload_time = getTime();
     }
 
-    reload(force = false, undo = false, href = location.href) {
+    reload(force = false, undo = false, reorder = false, href = location.href) {
         if (this.loading) {
             return;
         }
@@ -108,7 +120,7 @@ class Reloader {
                 }, Math.max(time, 2000));
             }
             return;
-        } else {
+        } else if (!reorder) {
             this.last_reload_time = cur;
         }
 
@@ -119,8 +131,16 @@ class Reloader {
 
         this.loading = true;
         if (undo) {
-            if (cache) {
-                this.refreshCatalog(cache, true);
+            if (undo_cache) {
+                this.refreshCatalog(undo_cache, true);
+            }
+            this.loading = false;
+            last_wheel_time = getTime();
+            wheel_count = 0;
+            return;
+        } else if (reorder) {
+            if (reorder_cache) {
+                this.refreshCatalog(reorder_cache, false, true);
             }
             this.loading = false;
             last_wheel_time = getTime();
@@ -161,7 +181,7 @@ class Reloader {
         wheel_count = 0;
     }
 
-    refreshCatalog(new_document, undo = false){
+    refreshCatalog(new_document, undo = false, reorder = false) {
         if(!new_document){
             this.notify.setText(`カタログが空です`);
             return;
@@ -178,26 +198,35 @@ class Reloader {
             document.documentElement.scrollTop = 0;
         }
 
-        // アンドゥ情報取得
-        cache = document.cloneNode(true);
+        // アンドゥ情報記憶
+        if (!reorder) {
+            undo_cache = document.cloneNode(true);
+        }
 
         // 新カタログに書換
-        if (sort_catalog) {
-            new_cat.firstChild.style.opacity = 0;
+        let new_tbody = new_cat.firstChild.cloneNode(true);
+        let has_catalog_sort = document.body.hasAttribute("__KOSHIAN_catalog_sort");
+        if (sort_catalog && has_catalog_sort) {
+            new_tbody.style.opacity = 0;
         }
         cat.textContent = null; // カタログの子要素を全削除
-        cat.appendChild(new_cat.firstChild);
+        cat.appendChild(new_tbody);
 
-        let time = use_reload_time ? `(${getTimeStrings()})` : " ";
-        this.notify.setText(`更新完了${time}`);
-        timer_notify = setTimeout(() => {
-            timer_notify = null;
-            this.notify.setText(time);
-        }, Math.max(reload_period, 2000));
+        // 通常順情報記憶
+        reorder_cache = document.cloneNode(true);
+
+        if (!reorder) {
+            let time = use_reload_time ? `(${getTimeStrings()})` : " ";
+            this.notify.setText(`更新完了${time}`);
+            timer_notify = setTimeout(() => {
+                timer_notify = null;
+                this.notify.setText(time);
+            }, Math.max(reload_period, 2000));
+        }
 
         if (undo) {
-            removeUndoButton();
-            removeUndoButton("KOSHIAN_cat_undo_button2");
+            removeButton("KOSHIAN_cat_undo_button");
+            removeButton("KOSHIAN_cat_undo_button2");
             if (previous_sort) {
                 let cat_bold = document.getElementById("KOSHIAN_reload_cat_bold");
                 if (cat_bold) {
@@ -208,15 +237,23 @@ class Reloader {
                 previous_sort.style.fontWeight = "bold";
                 previous_sort = null;
             }
-        } else {
+        } else if (!reorder) {
             setUndoButton(this, this.notify.notify);
             setUndoButton(this, this.notify.notify2, "KOSHIAN_cat_undo_button2");
         }
 
-        let has_catalog_sort = document.body.hasAttribute("__KOSHIAN_catalog_sort");
-        if (sort_catalog && has_catalog_sort) {
+        if (has_catalog_sort) {
+            setReorderButton(this, "KOSHIAN_NOTIFY_right_item", "KOSHIAN_cat_reorder_normal_button", "KOSHIAN_cat_reorder_inc_button");
+            setReorderButton(this, "KOSHIAN_NOTIFY2_right_item", "KOSHIAN_cat_reorder_normal_button2", "KOSHIAN_cat_reorder_inc_button2");
+        } else {
+            removeButton("KOSHIAN_cat_reorder_normal_button");
+            removeButton("KOSHIAN_cat_reorder_normal_button2");
+            removeButton("KOSHIAN_cat_reorder_inc_button");
+            removeButton("KOSHIAN_cat_reorder_inc_button2");
+        }
+        if ((sort_catalog || reorder) && has_catalog_sort) {
             document.dispatchEvent(new CustomEvent("KOSHIAN_cat_sort", {
-                detail: undo
+                detail: sort_catalog * 1 + undo * 2 + reorder * 4
             }));
         } else {
             document.dispatchEvent(new CustomEvent("KOSHIAN_cat_reload"));
@@ -295,8 +332,12 @@ function main(){
         if (notify2) {
             setReloadButton(notify2, "KOSHIAN_cat_reload_button2");
         }
-        removeUndoButton();
-        removeUndoButton("KOSHIAN_cat_undo_button2");
+        removeButton("KOSHIAN_cat_undo_button");
+        removeButton("KOSHIAN_cat_undo_button2");
+        removeButton("KOSHIAN_cat_reorder_normal_button");
+        removeButton("KOSHIAN_cat_reorder_normal_button2");
+        removeButton("KOSHIAN_cat_reorder_inc_button");
+        removeButton("KOSHIAN_cat_reorder_inc_button2");
 
         setCatalogSortEvent();
     }
@@ -386,7 +427,7 @@ function main(){
                     }
                     e.target.id = "KOSHIAN_reload_cat_bold";
                     e.target.style.fontWeight = "bold";
-                    reloader.reload(true, false, e.target.href);
+                    reloader.reload(true, false, false, e.target.href);
                 });
             }
         }
@@ -408,18 +449,78 @@ function setUndoButton(reloader, target, id = "KOSHIAN_cat_undo_button") {
         reloader.reload(true, true);
     });
     undo_button.append("[", anchor, "] ");
-    let old_undo_button = document.getElementById(undo_button.id);
-    if (old_undo_button) {
-        old_undo_button.remove();
-    }
+
+    removeButton(undo_button.id);
     target.parentNode.insertBefore(undo_button, target);
 }
 
-function removeUndoButton(id = "KOSHIAN_cat_undo_button") {
-    let undo_button = document.getElementById(id);
-    if (undo_button) {
-        undo_button.remove();
+function removeButton(id) {
+    let button = document.getElementById(id);
+    if (button) {
+        button.remove();
     }
+}
+
+function setReorderButton(reloader, parent_id, normal_id, inc_id) {
+    let parent = document.getElementById(parent_id);
+    let reorder_normal_button = document.createElement("span");
+    let anchor_normal = document.createElement("a");
+    reorder_normal_button.id = normal_id;
+    reorder_normal_button.style.fontSize = cat_reorder_button_size > 0 ? `${cat_reorder_button_size}px` : "";
+    reorder_normal_button.style.display = cat_reorder_button_size > 0 ? "" : "none";
+    anchor_normal.className = "KOSHIAN_cat_reorder_normal_anchor";
+    anchor_normal.text = "通常順";
+    anchor_normal.href = "javascript:void(0)";
+    anchor_normal.addEventListener("click", () => {
+        if (sort_catalog) {
+            let normal_anchors = document.getElementsByClassName("KOSHIAN_cat_reorder_normal_anchor");
+            for (let anchor of normal_anchors) {
+                anchor.style.fontWeight = "bold";
+            }
+            let inc_anchors = document.getElementsByClassName("KOSHIAN_cat_reorder_inc_anchor");
+            for (let anchor of inc_anchors) {
+                anchor.style.fontWeight = "";
+            }
+            sort_catalog = false;
+            reloader.reload(true, false, true);
+        }
+    });
+    reorder_normal_button.append("[", anchor_normal, "] ");
+
+    let reorder_inc_button = document.createElement("span");
+    let anchor_inc = document.createElement("a");
+    reorder_inc_button.id = inc_id;
+    reorder_inc_button.style.fontSize = cat_reorder_button_size > 0 ? `${cat_reorder_button_size}px` : "";
+    reorder_inc_button.style.display = cat_reorder_button_size > 0 ? "" : "none";
+    anchor_inc.className = "KOSHIAN_cat_reorder_inc_anchor";
+    anchor_inc.text = "増加順";
+    anchor_inc.href = "javascript:void(0)";
+    anchor_inc.addEventListener("click", () => {
+        if (!sort_catalog) {
+            let normal_anchors = document.getElementsByClassName("KOSHIAN_cat_reorder_normal_anchor");
+            for (let anchor of normal_anchors) {
+                anchor.style.fontWeight = "";
+            }
+            let inc_anchors = document.getElementsByClassName("KOSHIAN_cat_reorder_inc_anchor");
+            for (let anchor of inc_anchors) {
+                anchor.style.fontWeight = "bold";
+            }
+            sort_catalog = true;
+            reloader.reload(true, false, true);
+        }
+    });
+    reorder_inc_button.append("[", anchor_inc, "] ");
+    if (sort_catalog) {
+        anchor_normal.style.fontWeight = "";
+        anchor_inc.style.fontWeight = "bold";
+    } else {
+        anchor_normal.style.fontWeight = "bold";
+        anchor_inc.style.fontWeight = "";
+    }
+
+    removeButton(normal_id);
+    removeButton(inc_id);
+    parent.append(reorder_normal_button, reorder_inc_button);
 }
 
 function setNotifyStyle() {
@@ -430,6 +531,10 @@ function setNotifyStyle() {
         {id: "KOSHIAN_cat_undo_button2", size: Math.max(cat_undo_button_size, 0)},
         {id: "KOSHIAN_NOTIFY", size: Math.max(cat_notify_size, 1)},
         {id: "KOSHIAN_NOTIFY2", size: Math.max(cat_notify_size, 1)},
+        {id: "KOSHIAN_cat_reorder_normal_button", size: Math.max(cat_reorder_button_size, 0)},
+        {id: "KOSHIAN_cat_reorder_normal_button2", size: Math.max(cat_reorder_button_size, 0)},
+        {id: "KOSHIAN_cat_reorder_inc_button", size: Math.max(cat_reorder_button_size, 0)},
+        {id: "KOSHIAN_cat_reorder_inc_button2", size: Math.max(cat_reorder_button_size, 0)},
     ];
     for (let notify of notify_list) {
         let notify_elm = document.getElementById(notify.id);
@@ -466,6 +571,7 @@ browser.storage.local.get().then((result) => {
     cat_rel_button_size = Math.max(Number(safeGetValue(result.cat_rel_button_size, DEFAULT_CAT_REL_BUTTON_SIZE)), 0);
     cat_undo_button_size = Math.max(Number(safeGetValue(result.cat_undo_button_size, DEFAULT_CAT_UNDO_BUTTON_SIZE)), 0);
     cat_notify_size = Math.max(Number(safeGetValue(result.cat_notify_size, DEFAULT_CAT_NOTIFY_SIZE)), 1);
+    cat_reorder_button_size = Math.max(Number(safeGetValue(result.cat_reorder_button_size, DEFAULT_CAT_REORDER_BUTTON_SIZE)), 0);
 
     main();
 }, (error) => {});  // eslint-disable-line no-unused-vars
@@ -486,6 +592,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     cat_rel_button_size = Math.max(Number(safeGetValue(changes.cat_rel_button_size.newValue, DEFAULT_CAT_REL_BUTTON_SIZE)), 0);
     cat_undo_button_size = Math.max(Number(safeGetValue(changes.cat_undo_button_size.newValue, DEFAULT_CAT_UNDO_BUTTON_SIZE)), 0);
     cat_notify_size = Math.max(Number(safeGetValue(changes.cat_notify_size.newValue, DEFAULT_CAT_NOTIFY_SIZE)),1);
+    cat_reorder_button_size = Math.max(Number(safeGetValue(changes.cat_reorder_button_size.newValue, DEFAULT_CAT_REORDER_BUTTON_SIZE)), 0);
 
     setNotifyStyle();
 });
