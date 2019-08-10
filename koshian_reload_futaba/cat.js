@@ -242,7 +242,7 @@ class Reloader {
                 previous_sort = null;
             }
         } else if (!reorder) {
-            setUndoButton(this, this.notify.notify);
+            setUndoButton(this, this.notify.notify, "KOSHIAN_cat_undo_button");
             setUndoButton(this, this.notify.notify2, "KOSHIAN_cat_undo_button2");
         }
 
@@ -330,7 +330,7 @@ function main(){
     if (isCatalog()) {
         let notify = document.getElementById("KOSHIAN_NOTIFY");
         if (notify) {
-            setReloadButton(notify);
+            setReloadButton(notify, "KOSHIAN_cat_reload_button");
         }
         let notify2 = document.getElementById("KOSHIAN_NOTIFY2");
         if (notify2) {
@@ -391,7 +391,7 @@ function main(){
         }
     });
 
-    function setReloadButton(target, id = "KOSHIAN_cat_reload_button") {
+    function setReloadButton(target, id) {
         let reload_button = document.createElement("span");
         let anchor = document.createElement("a");
         reload_button.id = id;
@@ -443,7 +443,7 @@ function main(){
     }
 }
 
-function setUndoButton(reloader, target, id = "KOSHIAN_cat_undo_button") {
+function setUndoButton(reloader, target, id) {
     let undo_button = document.createElement("span");
     let anchor = document.createElement("a");
     undo_button.id = id;
