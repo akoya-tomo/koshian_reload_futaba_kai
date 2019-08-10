@@ -21,15 +21,15 @@
   - カタログ画面でページ更新無しでカタログを更新  
     「多順」「勢順」などのソートもページ更新無しで切り替えできます。  
     \[UNDO\]ボタンでリロード前に戻すこともできます。  
-  - 「カタログをレス増加順にソートする」オプション（デフォルト：無効　要 [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/)）  
-    カタログをレス増加順に並び替えます。  
-  - ![\(New\)](images/new.png "New") 「削除されたレスを表示する」オプション（デフォルト：有効）  
+  - ![\(New\)](images/new.png "New") 「カタログのソートのデフォルトをレス増加順にする」オプション（デフォルト：無効　要 [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/)）  
+    カタログを開いたときにスレをレス増加順に並び替えます。\[通常順\]\[増加順\]ボタンで切り替えできます。  
+  - 「削除されたレスを表示する」オプション（デフォルト：有効）  
     デフォルトで非表示になっている削除されたレスを表示します。  
     「削除された記事がx件あります.」の横のボタンで表示・非表示を切り替えできます。  
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.2.2/koshian_reload_futaba_kai-2.2.2-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.3.0/koshian_reload_futaba_kai-2.3.0-fx.xpi)
 
 ※v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
 ※v1.9.0からアドオンのアクセス許可に「」ッチー(`tsumanne.net`)が追加になります。（該当スレのログの有無の確認）  
@@ -49,12 +49,17 @@
 * 本アドオンと以下のアドオン・ユーザースクリプトを併用する場合は記載のバージョンの組み合わせでご利用ください。  
   尚、オリジナル版のKOSHIAN カタログマーカー・KOSHIAN カタログの画像をポップアップで表示・futaba thread highlighterは本アドオンのv2.0.0からカタログリロードで動作しなくなりました。代替として下のアドオン・ユーザースクリプトをご利用ください。  
 
-  - [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/) v2.1.0以降
+  - [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/) v2.2.0以降
   - [KOSHIAN カタログの画像をポップアップで表示 改](https://github.com/akoya-tomo/koshian_image_popuper_kai/) v1.6.2以降
   - [futaba thread highlighter K](https://greasyfork.org/ja/scripts/36639-futaba-thread-highlighter-k) v1.6.6rev23以降 \(GreasyFork\)
   - [futaba catalog NG](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng) v1.6.6以降 \(GreasyFork\)
 
 ## 更新履歴
+* v2.3.0 2019-08-10
+  - \[通常順\]\[増加順\]ボタンを追加
+  - オプション名を「レス増加順にソートする」→「カタログのソートのデフォルトをレス増加順にする」に変更
+  - UNDOしたときに前回の更新時刻を表示するように修正
+  - ホイールリロードの条件を修正
 * v2.2.2 2019-06-09
   - ホイールリロードのカウント条件を修正
 * v2.2.1 2019-06-07
