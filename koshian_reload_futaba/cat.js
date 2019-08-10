@@ -303,7 +303,7 @@ function isNoScroll() { // eslint-disable-line no-unused-vars
 }
 
 function isTop(dy) {
-    return (document.documentElement.scrollTop == 0) && (dy < 0);
+    return (document.documentElement.scrollTop <= 1) && (dy < 0);
 }
 
 function isBottom(dy) {
