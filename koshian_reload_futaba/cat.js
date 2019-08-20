@@ -206,7 +206,7 @@ class Reloader {
         }
 
         // 新カタログに書換
-        let new_tbody = new_cat.firstChild.cloneNode(true);
+        let new_tbody = document.importNode(new_cat.firstChild, true);
         let has_catalog_sort = document.body.hasAttribute("__KOSHIAN_catalog_sort");
         if (sort_catalog && has_catalog_sort) {
             new_tbody.style.opacity = 0;
