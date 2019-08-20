@@ -29,7 +29,7 @@
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.3.0/koshian_reload_futaba_kai-2.3.0-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.3.1/koshian_reload_futaba_kai-2.3.1-fx.xpi)
 
 ※v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
 ※v1.9.0からアドオンのアクセス許可に「」ッチー(`tsumanne.net`)が追加になります。（該当スレのログの有無の確認）  
@@ -55,6 +55,9 @@
   - [futaba catalog NG](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng) v1.6.6以降 \(GreasyFork\)
 
 ## 更新履歴
+* v2.3.1 2019-08-20
+  - ID・IPスレの検出の不具合を修正
+  - 新着レスおよび更新カタログの既存ページへの挿入方法を修正
 * v2.3.0 2019-08-10
   - \[通常順\]\[増加順\]ボタンを追加
   - オプション名を「レス増加順にソートする」→「カタログのソートのデフォルトをレス増加順にする」に変更
