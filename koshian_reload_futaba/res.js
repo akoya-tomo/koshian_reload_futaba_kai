@@ -412,15 +412,16 @@ class Reloader {
                             ddnum.textContent = new_ddnum.textContent;
                         }
                     } else {
+                        let clone_new_ddel = document.importNode(new_ddel, true);
                         // レスが初めて削除
                         if (res_num) {
                             // レス有り
-                            tables[0].parentNode.insertBefore(new_ddel, tables[0]);
+                            tables[0].parentNode.insertBefore(clone_new_ddel, tables[0]);
                         } else {
                             // 0レス
                             let maxres = thre.getElementsByClassName("maxres")[0];
                             if (maxres) {
-                                maxres.parentNode.insertBefore(new_ddel, maxres.nextSibling);
+                                maxres.parentNode.insertBefore(clone_new_ddel, maxres.nextSibling);
                             }
                         }
                         ddbut = document.getElementById("ddbut");
@@ -539,7 +540,7 @@ class Reloader {
         // 新着レスを断片に集約
         let fragment = document.createDocumentFragment();
         for (let i = res_num; i < new_res_num; ++i) {
-            let inserted = fragment.appendChild(new_tables[res_num]);
+            let inserted = fragment.appendChild(document.adoptNode(new_tables[res_num]));
             // 削除された新着レスへ削除レス表示設定を反映
             if (inserted.className == "deleted") {
                 inserted.style.display = is_ddbut_shown ? "table" : "none";
