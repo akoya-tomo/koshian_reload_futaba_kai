@@ -29,7 +29,7 @@
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.3.1/koshian_reload_futaba_kai-2.3.1-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.3.2/koshian_reload_futaba_kai-2.3.2-fx.xpi)
 
 ※v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
 ※v1.9.0からアドオンのアクセス許可に「」ッチー(`tsumanne.net`)が追加になります。（該当スレのログの有無の確認）  
@@ -55,6 +55,8 @@
   - [futaba catalog NG](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng) v1.6.6以降 \(GreasyFork\)
 
 ## 更新履歴
+* v2.3.2 2019-09-05
+  - ID・IP表示板の検出漏れの不具合を修正
 * v2.3.1 2019-08-20
   - ID・IPスレの検出の不具合を修正
   - 新着レスおよび更新カタログの既存ページへの挿入方法を修正

@@ -35,7 +35,7 @@ let refresh_idip = DEFAULT_REFRESH_IDIP;
 let use_futapo_link = DEFAULT_USE_FUTAPO_LINK;
 let use_ftbucket_link = DEFAULT_USE_FTBUCKET_LINK;
 let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
-let is_idip_thread = checkThreadMail();
+let is_idip_thread = checkIdIpThread();
 let ddbut_clicked = false;
 let tsumanne_loading = false;
 let ftbucket_loading = false;
@@ -710,7 +710,13 @@ function dispLogLink() {
     }
 }
 
-function checkThreadMail() {
+function checkIdIpThread() {
+    // ID・IP表示板か確認
+    let ftb2 = document.getElementsByClassName("ftb2")[0];
+    if (ftb2 && ftb2.textContent.match(/(IPアドレスが表示されます|IDが表示されます)/)) {
+        return true;
+    }
+
     // メール欄にID・IPスレが設定されているか確認
     // may形式
     let mail = document.querySelector(".thre > font > b > a");
