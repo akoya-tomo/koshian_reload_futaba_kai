@@ -540,7 +540,7 @@ class Reloader {
         // 新着レスを断片に集約
         let fragment = document.createDocumentFragment();
         for (let i = res_num; i < new_res_num; ++i) {
-            let inserted = fragment.appendChild(document.adoptNode(new_tables[res_num]));
+            let inserted = fragment.appendChild(document.importNode(new_tables[i], true));
             // 削除された新着レスへ削除レス表示設定を反映
             if (inserted.className == "deleted") {
                 inserted.style.display = is_ddbut_shown ? "table" : "none";
