@@ -61,9 +61,13 @@ class Notify {
 
             container.id = `${id}_container`;
             container.style.display = "flex";
-            container.style.justifyContent = "space-between";
+            container.style.justifyContent = "center";
+            container.style.position = "relative";
             left_item.id = `${id}_left_item`;
+            left_item.style.position = "absolute";
+            left_item.style.left = "0";
             right_item.id = `${id}_right_item`;
+            right_item.textContent = "　";
             notify.id = id;
             notify.style.fontSize = `${cat_notify_size}px`;
             notify.appendChild(text);
@@ -173,7 +177,7 @@ class Reloader {
             }
         }catch(e){
             this.notify.setText(`カタログ取得失敗 CODE:${xhr.status}`);
-            console.error("KOSHIAN_reload/cat.js/Reloader.onBodyLoad - " + e.name + ": " + e.message);
+            console.error("KOSHIAN_reload/cat.js/Reloader.onBodyLoad - " + e.lineNumber + ": " + e.name + ": " + e.message);
             console.dir(e);
         }
 
@@ -524,9 +528,8 @@ function setReorderButton(reloader, parent_id, normal_id, inc_id) {
         anchor_inc.style.fontWeight = "";
     }
 
-    removeButton(normal_id);
-    removeButton(inc_id);
-    parent.append(reorder_normal_button, reorder_inc_button);
+    parent.textContent = null;
+    parent.append("　", reorder_normal_button, reorder_inc_button, "　");
 }
 
 function setNotifyStyle() {

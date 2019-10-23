@@ -234,7 +234,7 @@ class Reloader {
             resetBgColor();
             last_bottom_scroll = getTime();
             bottom_scroll_count = 0;
-            console.error("KOSHIAN_reload/res.js/Reloader.onHeadLoad - " + e.name + ": " + e.message);
+            console.error("KOSHIAN_reload/res.js/Reloader.onHeadLoad - " + e.lineNumber + ": " + e.name + ": " + e.message);
             console.dir(e);
         }
     }
@@ -274,7 +274,7 @@ class Reloader {
             }
         }catch(e){
             this.notify.setText(`レス取得失敗 CODE:${xhr.status}`);
-            console.error("KOSHIAN_reload/res.js/Reloader.onBodyLoad - " + e.name + ": " + e.message);
+            console.error("KOSHIAN_reload/res.js/Reloader.onBodyLoad - " + e.lineNumber + ": " + e.name + ": " + e.message);
             console.dir(e);
         }
 
@@ -382,7 +382,7 @@ class Reloader {
                             blockquote.style.border = "2px dashed red";
                             let blockquote_font = document.createElement("font");
                             blockquote_font.style.color = "red";
-                            blockquote_font.textContent = new_blockquote.textContent;
+                            blockquote_font.textContent = new_blockquote_text;
                             let blockquote_br = document.createElement("br");
                             blockquote.insertBefore(blockquote_br, blockquote.firstChild);
                             blockquote.insertBefore(blockquote_font, blockquote.firstChild);
@@ -457,7 +457,7 @@ class Reloader {
                                 if (new_deleted_blockquote) {
                                     let new_deleted_font = new_deleted_blockquote.getElementsByTagName("font")[0];
                                     if (new_deleted_font) {
-                                        let deleted_font = new_deleted_font.cloneNode(true);
+                                        let deleted_font = document.importNode(new_deleted_font, true);
                                         let deleted_br = document.createElement("br");
                                         let deleted_blockquote = deleted_td.getElementsByTagName("blockquote")[0];
                                         if (deleted_blockquote) {

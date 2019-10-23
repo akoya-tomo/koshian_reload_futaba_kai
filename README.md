@@ -29,7 +29,7 @@
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.3.3/koshian_reload_futaba_kai-2.3.3-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.3.4/koshian_reload_futaba_kai-2.3.4-fx.xpi)
 
 ※v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
 ※v1.9.0からアドオンのアクセス許可に「」ッチー(`tsumanne.net`)が追加になります。（該当スレのログの有無の確認）  
@@ -55,6 +55,9 @@
   - [futaba catalog NG](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng) v1.6.6以降 \(GreasyFork\)
 
 ## 更新履歴
+* v2.3.4 2019-10-23
+  - Firefox 71以降で既読レスの削除情報の更新がエラーになる不具合を修正
+  - カタログのレス増加順ソートボタンの位置を右揃えから中央揃えに変更
 * v2.3.3 2019-10-16
   - Firefox 71以降で新着レスが取得できない不具合を修正
 * v2.3.2 2019-09-05
