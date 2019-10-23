@@ -382,7 +382,7 @@ class Reloader {
                             blockquote.style.border = "2px dashed red";
                             let blockquote_font = document.createElement("font");
                             blockquote_font.style.color = "red";
-                            blockquote_font.textContent = new_blockquote.textContent;
+                            blockquote_font.textContent = new_blockquote_text;
                             let blockquote_br = document.createElement("br");
                             blockquote.insertBefore(blockquote_br, blockquote.firstChild);
                             blockquote.insertBefore(blockquote_font, blockquote.firstChild);
