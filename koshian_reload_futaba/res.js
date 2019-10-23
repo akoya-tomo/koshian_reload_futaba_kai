@@ -234,7 +234,7 @@ class Reloader {
             resetBgColor();
             last_bottom_scroll = getTime();
             bottom_scroll_count = 0;
-            console.error("KOSHIAN_reload/res.js/Reloader.onHeadLoad - " + e.name + ": " + e.message);
+            console.error("KOSHIAN_reload/res.js/Reloader.onHeadLoad - " + e.lineNumber + ": " + e.name + ": " + e.message);
             console.dir(e);
         }
     }
@@ -274,7 +274,7 @@ class Reloader {
             }
         }catch(e){
             this.notify.setText(`レス取得失敗 CODE:${xhr.status}`);
-            console.error("KOSHIAN_reload/res.js/Reloader.onBodyLoad - " + e.name + ": " + e.message);
+            console.error("KOSHIAN_reload/res.js/Reloader.onBodyLoad - " + e.lineNumber + ": " + e.name + ": " + e.message);
             console.dir(e);
         }
 

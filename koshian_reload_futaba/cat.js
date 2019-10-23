@@ -177,7 +177,7 @@ class Reloader {
             }
         }catch(e){
             this.notify.setText(`カタログ取得失敗 CODE:${xhr.status}`);
-            console.error("KOSHIAN_reload/cat.js/Reloader.onBodyLoad - " + e.name + ": " + e.message);
+            console.error("KOSHIAN_reload/cat.js/Reloader.onBodyLoad - " + e.lineNumber + ": " + e.name + ": " + e.message);
             console.dir(e);
         }
 
