@@ -457,7 +457,7 @@ class Reloader {
                                 if (new_deleted_blockquote) {
                                     let new_deleted_font = new_deleted_blockquote.getElementsByTagName("font")[0];
                                     if (new_deleted_font) {
-                                        let deleted_font = new_deleted_font.cloneNode(true);
+                                        let deleted_font = document.importNode(new_deleted_font, true);
                                         let deleted_br = document.createElement("br");
                                         let deleted_blockquote = deleted_td.getElementsByTagName("blockquote")[0];
                                         if (deleted_blockquote) {
