@@ -325,13 +325,20 @@ let wheel_count = 0;
 
 function main(){
 
-    let reloader = new Reloader();
+    let reloader;
+    let cat = document.getElementById("cattable");
+    if (cat && cat.tagName != "TABLE") {
+        // 新カタログでは動作させない
+        reloader = null;
+    } else {
+        reloader = new Reloader();
+    }
 
     if (scroll_to_top) {
         document.documentElement.scrollTop = 0;
     }
 
-    if (isCatalog()) {
+    if (isCatalog() && reloader) {
         let notify = document.getElementById("KOSHIAN_NOTIFY");
         if (notify) {
             setReloadButton(notify, "KOSHIAN_cat_reload_button");
@@ -356,11 +363,11 @@ function main(){
         let cur = getTime();
 
         if(isBottom(e.deltaY) || isTop(e.deltaY)){
-            if(cur - last_wheel_time < scroll_period && !reloader.loading && !timer_notify){
+            if(cur - last_wheel_time < scroll_period && (!reloader || !reloader.loading) && !timer_notify){
                 ++wheel_count;
                 if(wheel_count > count_to_reload){
                     wheel_count = 0;
-                    if (isCatalog()) {
+                    if (isCatalog() && reloader) {
                         reloader.reload(false);
                     } else {
                         location.reload(false);
@@ -379,7 +386,7 @@ function main(){
         if (e.key == "F5" && !e.ctrlKey) {
             e.preventDefault();
             if (replace_f5_key) {
-                if (isCatalog()) {
+                if (isCatalog() && reloader) {
                     reloader.reload(true);
                 } else {
                     location.reload(false);
