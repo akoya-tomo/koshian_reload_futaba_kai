@@ -2,9 +2,9 @@
   "addons": {
     "{E5F040CA-E22F-11E7-8D70-447F1843E317}": {
       "updates": [
-        { "version": "2.4.0",
-          "update_link": "https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.4.0/koshian_reload_futaba_kai-2.4.0-fx.xpi",
-          "update_info_url": "https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.4.0/update_info.html"
+        { "version": "2.5.0",
+          "update_link": "https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.5.0/koshian_reload_futaba_kai-2.5.0-fx.xpi",
+          "update_info_url": "https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.5.0/update_info.html"
         }
       ]
     }

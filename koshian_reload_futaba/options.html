@@ -63,6 +63,18 @@
     </fieldset>
     <fieldset style="min-width: min-content;" class="group">
         <legend>カタログ</legend>
+
+        <fieldset style="min-width: min-content;">
+            <legend>リロード方式（設定変更後にカタログをページ再読み込みで反映）</legend>
+            <p>
+                <input id="use_catpage_reload" type="radio" name="reload_type">
+                <label for="use_catpage_reload">ページ全体：カタログページ全体を再読み込み（スレのプルダウンメニューが使用可　レス増加順ソートが使用不可）</label>
+                <br>
+                <input id="use_cattable_reload" type="radio" name="reload_type">
+                <label for="use_cattable_reload">カタログのみ：カタログテーブルだけを更新（レス増加順ソートが使用可　スレのプルダウンメニューが使用不可）</label>
+            </p>
+        </fieldset>
+
         <p>
             <input type="checkbox" id="scroll_to_top">
             <label for="scroll_to_top">リロード時に先頭へ</label>

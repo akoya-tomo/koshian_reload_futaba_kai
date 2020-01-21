@@ -719,12 +719,12 @@ function checkIdIpThread() {
 
     // メール欄にID・IPスレが設定されているか確認
     // may形式
-    let mail = document.querySelector(".thre > font > b > a");
+    let mail = document.querySelector(".thre > .cnm > a") || document.querySelector(".thre > font > b > a");
     if (mail && mail.href.match(/^mailto:i[dp]%E8%A1%A8%E7%A4%BA/i)) {
         return true;
     }
     // img形式
-    let anchors = document.querySelectorAll(".thre > a");
+    let anchors = document.querySelectorAll(".thre > .cnw > a") || document.querySelectorAll(".thre > a");
     for (let anchor of anchors) {
         if (anchor.href && anchor.href.match(/^mailto:i[dp]%E8%A1%A8%E7%A4%BA/i)) {
             return true;
@@ -735,6 +735,7 @@ function checkIdIpThread() {
     if (mail && mail.textContent.match(/^\[i[dp]表示/i)) {
         return true;
     }
+
     return false;
 }
 
@@ -759,9 +760,16 @@ function searchIdIp(elm, ip = false) {
             if (idip_text) {
                 return {del_id: del_id, text: idip_text[0]};
             }
+        } else if (node.classList.contains("cnw") && node.textContent.match(regex)) {
+            let idip_text = node.textContent.match(regex);
+            if (idip_text) {
+                return {del_id: del_id, text: idip_text[0]};
+            }
         } else if (node.tagName == "INPUT" && node.value == "delete") {
             del_id = node.id;
-        } else if (node.className == "del") {
+        } else if (node.tagName == "SPAN" && node.id && node.id.match(/^delcheck\d+$/)) {
+            del_id = node.id;
+        } else if (node.tagName == "BLOCKQUOTE") {
             return {del_id: null, text: null};
         }
     }
@@ -783,32 +791,43 @@ function setIdIp(new_del_id, new_idip) {
         return;
     }
 
-    let time_node = null, time_match = null;
-    for (let node = del_elm.nextSibling; node; node = node.nextSibling) {
-        if (node.nodeValue) {
-            if (!time_node) {
-                time_match = node.nodeValue.match(/^( ?\d{2}\/\d{2}\/\d{2}\([^)]+\)\d{2}:\d{2}:\d{2})(.*)/);
-                if (time_match) {
-                    // 時刻表示のテキストノード
-                    time_node = node;
+    let cnw = del_elm.parentNode.querySelector(":scope > .cnw");
+    if (cnw) {
+        // 新
+        if (cnw.textContent.indexOf(new_idip) == -1) {
+            cnw.textContent = `${cnw.textContent} ${new_idip}`;
+        }
+        del_elm.classList.add("KOSHIAN_reload_idip");
+        return;
+    } else {
+        // 旧
+        let time_node = null, time_match = null;
+        for (let node = del_elm.nextSibling; node; node = node.nextSibling) {
+            if (node.nodeValue) {
+                if (!time_node) {
+                    time_match = node.nodeValue.match(/^( ?\d{2}\/\d{2}\/\d{2}\([^)]+\)\d{2}:\d{2}:\d{2})(.*)/);
+                    if (time_match) {
+                        // 時刻表示のテキストノード
+                        time_node = node;
+                    }
                 }
-            }
-            if (time_node && node.nodeValue.indexOf(new_idip) > -1) {
+                if (time_node && node.nodeValue.indexOf(new_idip) > -1) {
+                    del_elm.classList.add("KOSHIAN_reload_idip");
+                    return;
+                }
+            } else if (node.name == new_idip && node.tagName == "A") {
+                // futaba ID+IP popup
                 del_elm.classList.add("KOSHIAN_reload_idip");
                 return;
+            } else if (node.className == "del") {
+                // delボタンで探索終了
+                if (time_node) {
+                    // 時刻表示のテキストノードがあればID・IPを付与する
+                    time_node.nodeValue = time_match[1] + " " + new_idip + time_match[2];
+                    del_elm.classList.add("KOSHIAN_reload_idip");
+                }
+                return;
             }
-        } else if (node.name == new_idip && node.tagName == "A") {
-            // futaba ID+IP popup
-            del_elm.classList.add("KOSHIAN_reload_idip");
-            return;
-        } else if (node.className == "del") {
-            // delボタンで探索終了
-            if (time_node) {
-                // 時刻表示のテキストノードがあればID・IPを付与する
-                time_node.nodeValue = time_match[1] + " " + new_idip + time_match[2];
-                del_elm.classList.add("KOSHIAN_reload_idip");
-            }
-            return;
         }
     }
 }
