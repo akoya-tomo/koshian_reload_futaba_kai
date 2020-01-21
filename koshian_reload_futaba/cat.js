@@ -3,6 +3,8 @@ const DEFAULT_COUNT_TO_RELOAD = 10;
 const DEFAULT_RELOAD_PERIOD = 5000;
 const DEFAULT_REPLACE_F5_KEY = false;
 const DEFAULT_CHANGE_BG_COLOR = false;
+const DEFAULT_USE_CATPAGE_RELOAD = false;
+const DEFAULT_USE_CATTABLE_RELOAD = true;
 const DEFAULT_SCROLL_TO_TOP = false;
 const DEFAULT_USE_RELOAD_TIME = true;
 const DEFAULT_SORT_CATALOG = false;
@@ -16,6 +18,8 @@ let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
 let reload_period = DEFAULT_RELOAD_PERIOD;
 let replace_f5_key = DEFAULT_REPLACE_F5_KEY;
 let change_bg_color = DEFAULT_CHANGE_BG_COLOR;
+let use_catpage_reload = DEFAULT_USE_CATPAGE_RELOAD;
+let use_cattable_reload = DEFAULT_USE_CATTABLE_RELOAD;
 let scroll_to_top = DEFAULT_SCROLL_TO_TOP;
 let use_reload_time = DEFAULT_USE_RELOAD_TIME;
 let sort_catalog = DEFAULT_SORT_CATALOG;
@@ -325,12 +329,8 @@ let wheel_count = 0;
 
 function main(){
 
-    let reloader;
-    let cat = document.getElementById("cattable");
-    if (cat && cat.tagName != "TABLE") {
-        // 新カタログでは動作させない
-        reloader = null;
-    } else {
+    let reloader = null;
+    if (use_cattable_reload) {
         reloader = new Reloader();
     }
 
@@ -581,6 +581,8 @@ browser.storage.local.get().then((result) => {
     reload_period = safeGetValue(result.reload_period, DEFAULT_RELOAD_PERIOD);
     replace_f5_key = safeGetValue(result.replace_f5_key, DEFAULT_REPLACE_F5_KEY);
     change_bg_color = safeGetValue(result.change_bg_color, DEFAULT_CHANGE_BG_COLOR);
+    use_catpage_reload = safeGetValue(result.use_catpage_reload, DEFAULT_USE_CATPAGE_RELOAD);
+    use_cattable_reload = safeGetValue(result.use_cattable_reload, DEFAULT_USE_CATTABLE_RELOAD);
     scroll_to_top = safeGetValue(result.scroll_to_top, DEFAULT_SCROLL_TO_TOP);
     use_reload_time = safeGetValue(result.use_reload_time, DEFAULT_USE_RELOAD_TIME);
     sort_catalog = safeGetValue(result.sort_catalog, DEFAULT_SORT_CATALOG);
@@ -602,6 +604,8 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     reload_period = safeGetValue(changes.reload_period.newValue, DEFAULT_RELOAD_PERIOD);
     replace_f5_key = safeGetValue(changes.replace_f5_key.newValue, DEFAULT_REPLACE_F5_KEY);
     change_bg_color = safeGetValue(changes.change_bg_color.newValue, DEFAULT_CHANGE_BG_COLOR);
+    //use_catpage_reload = safeGetValue(changes.use_catpage_reload.newValue, DEFAULT_USE_CATPAGE_RELOAD);
+    //use_cattable_reload = safeGetValue(changes.use_cattable_reload.newValue, DEFAULT_USE_CATTABLE_RELOAD);
     scroll_to_top = safeGetValue(changes.scroll_to_top.newValue, DEFAULT_SCROLL_TO_TOP);
     use_reload_time = safeGetValue(changes.use_reload_time.newValue, DEFAULT_USE_RELOAD_TIME);
     sort_catalog = safeGetValue(changes.sort_catalog.newValue, DEFAULT_SORT_CATALOG);
