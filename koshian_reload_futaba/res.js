@@ -444,7 +444,7 @@ class Reloader {
             if (deleted_num < new_deleted_num) {
                 // 削除レス情報更新
                 for (let new_deleted of new_deleteds) {
-                    let new_deleted_input = new_deleted.getElementsByTagName("input")[0];
+                    let new_deleted_input = new_deleted.getElementsByClassName("rsc")[0] || new_deleted.getElementsByTagName("input")[0];
                     if (new_deleted_input) {
                         let deleted_input = document.getElementById(new_deleted_input.id);
                         if (deleted_input) {
