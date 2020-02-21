@@ -444,7 +444,7 @@ class Reloader {
             if (deleted_num < new_deleted_num) {
                 // 削除レス情報更新
                 for (let new_deleted of new_deleteds) {
-                    let new_deleted_input = new_deleted.getElementsByTagName("input")[0];
+                    let new_deleted_input = new_deleted.getElementsByClassName("rsc")[0] || new_deleted.getElementsByTagName("input")[0];
                     if (new_deleted_input) {
                         let deleted_input = document.getElementById(new_deleted_input.id);
                         if (deleted_input) {
@@ -507,7 +507,7 @@ class Reloader {
             //let idip_refreshing_start_time = performance.now();   // 処理時間測定用
 
             // スレ
-            let new_idip = searchIdIp(new_thre);
+            let new_idip = searchIdIp(new_thre, true);
             if (new_idip.del_id && new_idip.text) {
                 setIdIp(new_idip.del_id, new_idip.text);
             }
@@ -742,35 +742,49 @@ function checkIdIpThread() {
 /**
  * レス内のID・IPを探索
  * @param  {Element} elm ID･IPを探索するレスの要素(.threまたは.rtd)
+ * @param  {boolean} thre スレ先頭の探索か
  * @param  {boolean} ip IPを探索するか
  * @return {Object.<string>} {del_id: del_id, text: text} 探索結果のオブジェクト
- *     {string} del_id レス内のdelチェックボックスのid名
+ *     {string} del_id レス内の削除チェックボックス or レス番号のid名
  *     {string} text 検出したID･IP
  */
-function searchIdIp(elm, ip = false) {
+function searchIdIp(elm, thre = false, ip = false) {
     let del_id = null;
-    let regex = /ID:\S{8}/;
-    if (ip) {
-        regex = /ID:\S{8}|IP:[^\s[]+/;
-    }
-
-    for (let node = elm.firstElementChild; node; node = node.nextSibling) {
-        if (node.nodeValue) {
-            let idip_text = node.nodeValue.match(regex);
-            if (idip_text) {
-                return {del_id: del_id, text: idip_text[0]};
+    let regex = ip ? /ID:\S{8}|IP:[^\s[]+/ : /ID:\S{8}/;
+    let cnw = elm.getElementsByClassName("cnw")[0];
+    if (cnw) {
+        // 新レイアウト
+        let cnw_idip_text = cnw.textContent.match(regex);
+        if (cnw_idip_text) {
+            if (thre) {
+                // スレ
+                let span = elm.querySelector(":scope > span[id]");
+                if (span) {
+                    return {del_id: span.id, text: cnw_idip_text[0]};
+                }
+            } else {
+                // レス
+                let rsc = elm.getElementsByClassName("rsc")[0];
+                if (rsc) {
+                    return {del_id: rsc.id, text: cnw_idip_text[0]};
+                }
             }
-        } else if (node.classList.contains("cnw") && node.textContent.match(regex)) {
-            let idip_text = node.textContent.match(regex);
-            if (idip_text) {
-                return {del_id: del_id, text: idip_text[0]};
+        }
+    } else {
+        // 旧レイアウト
+        for (let node = elm.firstElementChild; node; node = node.nextSibling) {
+            if (node.nodeValue) {
+                let idip_text = node.nodeValue.match(regex);
+                if (idip_text) {
+                    // ID・IPテキストノード
+                    return {del_id: del_id, text: idip_text[0]};
+                }
+            } else if (node.tagName == "INPUT" && node.value == "delete") {
+                // 削除チェックボックス
+                del_id = node.id;
+            } else if (node.tagName == "BLOCKQUOTE") {
+                break;
             }
-        } else if (node.tagName == "INPUT" && node.value == "delete") {
-            del_id = node.id;
-        } else if (node.tagName == "SPAN" && node.id && node.id.match(/^delcheck\d+$/)) {
-            del_id = node.id;
-        } else if (node.tagName == "BLOCKQUOTE") {
-            return {del_id: null, text: null};
         }
     }
     return {del_id: null, text: null};
@@ -778,7 +792,7 @@ function searchIdIp(elm, ip = false) {
 
 /**
  * 既存レスへID・IPを設定
- * @param {string} new_del_id 既存レス内のdelチェックボックスのid名
+ * @param {string} new_del_id 既存レス内の削除チェックボックス or レス番号のid名
  * @param {string} new_idip   設定するID･IP文字列
  */
 function setIdIp(new_del_id, new_idip) {
@@ -791,16 +805,16 @@ function setIdIp(new_del_id, new_idip) {
         return;
     }
 
-    let cnw = del_elm.parentNode.querySelector(":scope > .cnw");
+    let cnw = del_elm.parentNode.getElementsByClassName("cnw")[0];
     if (cnw) {
-        // 新
+        // 新レイアウト
         if (cnw.textContent.indexOf(new_idip) == -1) {
             cnw.textContent = `${cnw.textContent} ${new_idip}`;
         }
         del_elm.classList.add("KOSHIAN_reload_idip");
         return;
     } else {
-        // 旧
+        // 旧レイアウト
         let time_node = null, time_match = null;
         for (let node = del_elm.nextSibling; node; node = node.nextSibling) {
             if (node.nodeValue) {
