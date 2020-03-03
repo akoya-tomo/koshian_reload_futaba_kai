@@ -73,7 +73,12 @@ function saveSetting(e) {   // eslint-disable-line no-unused-vars
         cat_reorder_button_size: cat_reorder_button_size.value
     });
 
+    use_reload_time.disabled = use_catpage_reload.checked;
     sort_catalog.disabled = use_catpage_reload.checked;
+    cat_rel_button_size.disabled = use_catpage_reload.checked;
+    cat_undo_button_size.disabled = use_catpage_reload.checked;
+    cat_notify_size.disabled = use_catpage_reload.checked;
+    cat_reorder_button_size.disabled = use_catpage_reload.checked;
 }
 
 function setCurrentChoice(result) {
@@ -99,7 +104,12 @@ function setCurrentChoice(result) {
     cat_notify_size.value = safeGetValue(result.cat_notify_size, DEFAULT_CAT_NOTIFY_SIZE);
     cat_reorder_button_size.value = safeGetValue(result.cat_reorder_button_size, DEFAULT_CAT_REORDER_BUTTON_SIZE);
 
+    use_reload_time.disabled = use_catpage_reload.checked;
     sort_catalog.disabled = use_catpage_reload.checked;
+    cat_rel_button_size.disabled = use_catpage_reload.checked;
+    cat_undo_button_size.disabled = use_catpage_reload.checked;
+    cat_notify_size.disabled = use_catpage_reload.checked;
+    cat_reorder_button_size.disabled = use_catpage_reload.checked;
 }
 
 function onLoad() {

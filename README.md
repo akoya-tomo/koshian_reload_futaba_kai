@@ -31,7 +31,7 @@
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.5.1/koshian_reload_futaba_kai-2.5.1-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.6.0/koshian_reload_futaba_kai-2.6.0-fx.xpi)
 
 ※v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
 ※v1.9.0からアドオンのアクセス許可に「」ッチー(`tsumanne.net`)が追加になります。（該当スレのログの有無の確認）  
@@ -42,21 +42,29 @@
 * レス本文内の赤字のIP情報については更新対象外です。  
 * 「」ッチーとFTBucketは該当スレのログがあるときだけリンクが表示されます。  
 * 「ホイールリロード規制中」の表示が消えたら規制が解除されています。また、カタログリロード後の「更新完了」の表示が消えたらホイールリロード規制が解除されています。  
-* カタログのレス増加順ソートは本アドオンのリロード機能を使用時のみ有効です。ブラウザでページ更新したときはソートされません。  
+* カタログのレス増加順ソートはカタログのリロード方式が「カタログのみ」で本アドオンのリロード機能を使用時のみ有効です。ブラウザでページ更新したときはソートされません。  
 
 ## 注意事項
 * 本アドオンを有効にしたときはオリジナル版を無効にするか削除して下さい。  
 * オリジナル版とは別アドオンなので設定は初期値に戻ります。  
   再度設定をお願い致します。  
 * 本アドオンと以下のアドオン・ユーザースクリプトを併用する場合は記載のバージョンの組み合わせでご利用ください。  
-  尚、オリジナル版のKOSHIAN カタログマーカー・KOSHIAN カタログの画像をポップアップで表示・futaba thread highlighterは本アドオンのv2.0.0からカタログリロードで動作しなくなりました。代替として下のアドオン・ユーザースクリプトをご利用ください。  
+  尚、オリジナル版のKOSHIAN カタログマーカー・KOSHIAN カタログの画像をポップアップで表示・futaba thread highlighterはカタログのリロード方式が「カタログのみ」のときに動作しなくなりました。代替として下のアドオン・ユーザースクリプトをご利用ください。  
 
   - [KOSHIAN カタログマーカー 改](https://github.com/akoya-tomo/koshian_catalog_marker_kai/) v2.2.0以降
   - [KOSHIAN カタログの画像をポップアップで表示 改](https://github.com/akoya-tomo/koshian_image_popuper_kai/) v1.6.2以降
   - [futaba thread highlighter K](https://greasyfork.org/ja/scripts/36639-futaba-thread-highlighter-k) v1.6.6rev23以降 \(GreasyFork\)
   - [futaba catalog NG](https://greasyfork.org/ja/scripts/37565-futaba-catalog-ng) v1.6.6以降 \(GreasyFork\)
 
+* ![\(New\)](images/new.png "New") カタログのリロード方式が「カタログのみ」のとき、スレのプルダウンメニューは最初にカタログを開いたときの項目で固定になります。  
+  「見歴から削除」や「履歴から削除」を表示させたいときは「見歴」「履歴」のリンクを新しいタブで開くか、カタログのリロード方式を「ページ全体」にしてください。
+
+## ライセンス
+* スレのプルダウンメニューボタン設置の処理でふたば☆ちゃんねるのcat.jsのコードの一部を改変して使用しています。  
+
 ## 更新履歴
+* v2.6.0 2020-03-03
+  - カタログのリロード方式が「カタログのみ」でもスレのプルダウンメニューボタンを設置するように修正
 * v2.5.1 2020-02-21
   - 削除された既読レスの情報が更新されない不具合を修正
 * v2.5.0 2020-01-21
