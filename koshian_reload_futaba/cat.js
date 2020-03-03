@@ -225,6 +225,21 @@ class Reloader {
         // 通常順情報記憶
         reorder_cache = document.cloneNode(true);
 
+        // プルダウンメニューボタン設置
+        let ca=cat.getElementsByTagName("a");
+        for (let i = 0; i < ca.length; i++) {
+            let ci = ca[i];
+            let cn = ci.href.match(/res\/([0-9]+)\.htm/)[1];
+            if (cn == null) {
+                continue;
+            }
+            let cd = document.createElement("div");
+            cd.className = "pdmc";
+            cd.setAttribute("data-no", cn);
+            ci.parentNode.appendChild(cd);
+        }
+        hidetd();
+
         if (!reorder) {
             let time = use_reload_time ? (undo ? undo_time : `(${getTimeStrings()})`) : " ";
             this.notify.setText(`更新完了${time}`);
@@ -288,6 +303,92 @@ class Reloader {
         last_wheel_time = getTime();
         wheel_count = 0;
     }
+}
+
+function hidetd(){
+    let catmode = getParam("sort");
+    if (catmode != "9" && catmode != "7") {
+        return;
+    }
+    let histhide = gethistory(catmode);
+    let cathide = histhide.cathide;
+    let ct = document.getElementById("cattable");
+    let ca = ct.getElementsByTagName("a");
+    for (let i = 0; i < ca.length; i++) {
+        let ci = ca[i];
+        let cn = ci.href.match(/res\/([0-9]+)\.htm/)[1];
+        if (cn == null) {
+            continue;
+        }
+        if (cn > 0 && cathide.indexOf(cn) != -1) {
+            ci.parentNode.style.display="none";
+        }
+    }
+}
+
+function getParam(name, url) {
+    if (name == "sort" && url == null) {
+        let cat_bold = document.getElementById("KOSHIAN_reload_cat_bold");
+        if (cat_bold) {
+            url = cat_bold.href;
+        }
+    }
+    if (!url) {
+        url = window.location.href;
+    }
+    name = name.replace(/[\[\]]/g, "\\$&");
+    let regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) {
+        return null;
+    }
+    if (!results[2]) {
+        return '';
+    }
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+function gethistory(catmode){
+    let cathists;
+    if (catmode == "9") {
+        cathists = getCookie("cathists");
+    } else {
+        cathists = getCookie("catviews");
+    }
+    let cathist,cathide;
+    if (cathists == "") {
+        cathist=[];
+        cathide=[];
+    } else {
+        let cattmp = cathists.split('/');
+        if (cattmp[0] == "") {
+            cathist=[];
+        } else {
+            cathist = cattmp[0].split('-');
+        }
+        if  (cattmp[1] == "") {
+            cathide = [];
+        } else {
+            cathide = cattmp[1].split('-');
+        }
+    }
+    return {"cathist":cathist,"cathide":cathide};
+}
+
+function getCookie(key, tmp1, tmp2, xx1, xx2, xx3){  //get cookie
+    tmp1 = " " + document.cookie + ";";
+    xx1 = xx2 = 0;
+    let len = tmp1.length;
+    while (xx1 < len) {
+        xx2 = tmp1.indexOf(";", xx1);
+        tmp2 = tmp1.substring(xx1 + 1, xx2);
+        xx3 = tmp2.indexOf("=");
+        if (tmp2.substring(0, xx3) == key) {
+            return (unescape(tmp2.substring(xx3 + 1, xx2 - xx1 - 1)));
+        }
+        xx1 = xx2 + 1;
+    }
+    return("");
 }
 
 /**
