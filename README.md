@@ -31,7 +31,7 @@
 
 ## インストール
 **GitHub**  
-[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.6.0/koshian_reload_futaba_kai-2.6.0-fx.xpi)
+[![インストールボタン](images/install_button.png "クリックでアドオンをインストール")](https://github.com/akoya-tomo/koshian_reload_futaba_kai/releases/download/v2.6.1/koshian_reload_futaba_kai-2.6.1-fx.xpi)
 
 ※v1.10.0からアドオンのアクセス許可にFTBucket(`www.ftbucket.info`)が追加になります。（該当スレのログの有無の確認）  
 ※v1.9.0からアドオンのアクセス許可に「」ッチー(`tsumanne.net`)が追加になります。（該当スレのログの有無の確認）  
@@ -63,6 +63,8 @@
 * スレのプルダウンメニューボタン設置の処理でふたば☆ちゃんねるのcat.jsのコードの一部を改変して使用しています。  
 
 ## 更新履歴
+* v2.6.1 2020-03-10
+  - カタログリロード時にプルダウンメニューを消去するように修正
 * v2.6.0 2020-03-03
   - カタログのリロード方式が「カタログのみ」でもスレのプルダウンメニューボタンを設置するように修正
 * v2.5.1 2020-02-21
