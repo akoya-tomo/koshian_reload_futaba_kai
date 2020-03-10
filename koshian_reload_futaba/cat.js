@@ -240,6 +240,12 @@ class Reloader {
         }
         hidetd();
 
+        // 既存のプルダウンメニューを消去
+        let pdm = document.getElementById("pdm");
+        if (pdm) {
+            pdm.remove();
+        }
+
         if (!reorder) {
             let time = use_reload_time ? (undo ? undo_time : `(${getTimeStrings()})`) : " ";
             this.notify.setText(`更新完了${time}`);
