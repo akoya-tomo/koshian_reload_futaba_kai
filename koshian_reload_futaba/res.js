@@ -21,6 +21,7 @@ const DEFAULT_REFRESH_IDIP = true;
 const DEFAULT_USE_FUTAPO_LINK = false;
 const DEFAULT_USE_FTBUCKET_LINK = false;
 const DEFAULT_USE_TSUMANNE_LINK = false;
+const DEFAULT_USE_FUTAFUTA_LINK = false;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
 let reload_period = DEFAULT_RELOAD_PERIOD;
@@ -35,6 +36,7 @@ let refresh_idip = DEFAULT_REFRESH_IDIP;
 let use_futapo_link = DEFAULT_USE_FUTAPO_LINK;
 let use_ftbucket_link = DEFAULT_USE_FTBUCKET_LINK;
 let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
+let use_futafuta_link = DEFAULT_USE_FUTAFUTA_LINK;
 let is_idip_thread = checkIdIpThread();
 let ddbut_clicked = false;
 let tsumanne_loading = false;
@@ -687,6 +689,14 @@ function dispLogLink() {
         setLogLink(link, "futapo");
     }
 
+    // ふたふた
+    link_id = document.getElementById("KOSHIAN_futafuta_link");
+    if (use_futafuta_link && !link_id && href_match
+        && `${href_match[1]}_${href_match[2]}`.match(/may_b|img_b|jun_jun/)) {
+        let link = `${location.protocol}//futafuta.site/thread/${href_match[1]}/${href_match[3]}.htm`;
+        setLogLink(link, "futafuta");
+    }
+
     /**
      * 過去ログへのリンクを設定
      * @param {string} link 過去ログのアドレス
@@ -960,6 +970,7 @@ browser.storage.local.get().then((result) => {
     use_futapo_link = safeGetValue(result.use_futapo_link, DEFAULT_USE_FUTAPO_LINK);
     use_ftbucket_link = safeGetValue(result.use_ftbucket_link, DEFAULT_USE_FTBUCKET_LINK);
     use_tsumanne_link = safeGetValue(result.use_tsumanne_link, DEFAULT_USE_TSUMANNE_LINK);
+    use_futafuta_link = safeGetValue(result.use_futafuta_link, DEFAULT_USE_FUTAFUTA_LINK);
 
     main();
 }, (error) => { }); // eslint-disable-line no-unused-vars
@@ -981,6 +992,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     use_futapo_link = safeGetValue(changes.use_futapo_link.newValue, DEFAULT_USE_FUTAPO_LINK);
     use_ftbucket_link = safeGetValue(changes.use_ftbucket_link.newValue, DEFAULT_USE_FTBUCKET_LINK);
     use_tsumanne_link = safeGetValue(changes.use_tsumanne_link.newValue, DEFAULT_USE_TSUMANNE_LINK);
+    use_futafuta_link = safeGetValue(changes.use_futafuta_link.newValue, DEFAULT_USE_FUTAFUTA_LINK);
 
     if (show_deleted_res && !ddbut_clicked) {
         let ddbut = document.getElementById("ddbut");
