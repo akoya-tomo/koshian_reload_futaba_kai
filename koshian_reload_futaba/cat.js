@@ -226,16 +226,16 @@ class Reloader {
         reorder_cache = document.cloneNode(true);
 
         // プルダウンメニューボタン設置
-        let ca=cat.getElementsByTagName("a");
+        let ca = cat.getElementsByTagName("a");
         for (let i = 0; i < ca.length; i++) {
             let ci = ca[i];
-            let cn = ci.href.match(/res\/([0-9]+)\.htm/)[1];
+            let cn = ci.href.match(/res\/([0-9]+)\.htm/);
             if (cn == null) {
                 continue;
             }
             let cd = document.createElement("div");
             cd.className = "pdmc";
-            cd.setAttribute("data-no", cn);
+            cd.setAttribute("data-no", cn[1]);
             ci.parentNode.appendChild(cd);
         }
         hidetd();
