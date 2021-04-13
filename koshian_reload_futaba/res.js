@@ -15,6 +15,8 @@ const DEFAULT_REPLACE_RELOAD_BUTTON = true;
 const DEFAULT_REPLACE_F5_KEY = false;
 const DEFAULT_CHANGE_BG_COLOR = false;
 const DEFAULT_SHOW_DELETED_RES = true;
+const DEFAULT_USE_FUTABA_RELOAD = false;
+const DEFAULT_USE_KOSHIAN_RELOAD = true;
 const DEFAULT_REFRESH_DELETED_RES = true;
 const DEFAULT_REFRESH_SOUDANE = true;
 const DEFAULT_REFRESH_IDIP = true;
@@ -30,6 +32,8 @@ let replace_reload_button = DEFAULT_REPLACE_RELOAD_BUTTON;
 let replace_f5_key = DEFAULT_REPLACE_F5_KEY;
 let change_bg_color = DEFAULT_CHANGE_BG_COLOR;
 let show_deleted_res = DEFAULT_SHOW_DELETED_RES;
+let use_futaba_reload = DEFAULT_USE_FUTABA_RELOAD;
+let use_koshian_reload = DEFAULT_USE_KOSHIAN_RELOAD;
 let refresh_deleted_res = DEFAULT_REFRESH_DELETED_RES;
 let refresh_soudane = DEFAULT_REFRESH_SOUDANE;
 let refresh_idip = DEFAULT_REFRESH_IDIP;
@@ -43,6 +47,8 @@ let tsumanne_loading = false;
 let ftbucket_loading = false;
 let timer_notify = null;
 let timer_submit = null;
+let rtd_num = document.getElementsByClassName("rtd").length;
+let new_rtd_num = rtd_num;
 let reloading_start_time = null;  // eslint-disable-line no-unused-vars
 
 class Notify {
@@ -128,6 +134,7 @@ class Reloader {
         this.new_etag = null;
         this.thread_not_found = false;
         this.form_submit = false;
+        this.button = document.getElementById("contres").getElementsByTagName("a")[0];
     }
 
     reload(force = false) {
@@ -155,24 +162,28 @@ class Reloader {
             this.last_reload_time = cur;
         }
 
-        //reloading_start_time = performance.now();   // リロード全体時間計測用
-        this.loading = true;
-        this.notify.setText(`レス取得中……`);
-        changeBgColor();
-        let xhr = new XMLHttpRequest();
-        xhr.timeout = time_out;
-        if (this.last_etag) {
-            xhr.responseType = "document";
-            xhr.addEventListener("load", () => { this.onBodyLoad(xhr); });
-            xhr.open("GET", location.href);
-        } else {
-            xhr.addEventListener("load", () => { this.onHeadLoad(xhr); });
-            xhr.open("HEAD", location.href + "?" + Math.random());
+        if (use_futaba_reload && this.button) {
+            this.button.click();
+        } else if (use_koshian_reload) {
+            //reloading_start_time = performance.now();   // リロード全体時間計測用
+            this.loading = true;
+            this.notify.setText(`レス取得中……`);
+            changeBgColor();
+            let xhr = new XMLHttpRequest();
+            xhr.timeout = time_out;
+            if (this.last_etag) {
+                xhr.responseType = "document";
+                xhr.addEventListener("load", () => { this.onBodyLoad(xhr); });
+                xhr.open("GET", location.href);
+            } else {
+                xhr.addEventListener("load", () => { this.onHeadLoad(xhr); });
+                xhr.open("HEAD", location.href + "?" + Math.random());
+            }
+            xhr.addEventListener("error", () => { this.onError(); });
+            xhr.addEventListener("timeout", () => { this.onTimeout(); });
+            xhr.send();
+            this.notify.moveTo();
         }
-        xhr.addEventListener("error", () => { this.onError(); });
-        xhr.addEventListener("timeout", () => { this.onTimeout(); });
-        xhr.send();
-        this.notify.moveTo();
     }
 
     onHeadLoad(header) {
@@ -914,14 +925,11 @@ function main() {
         }
     });
 
-    if (replace_reload_button) {
-        let reload_button = document.getElementById("contres").getElementsByTagName("a")[0];
-        if (reload_button) {
-            reload_button.onclick = (e) => {    // eslint-disable-line no-unused-vars
-                reloader.reload(true);
-                return false;
-            };
-        }
+    if (replace_reload_button && use_koshian_reload && reloader.button) {
+        reloader.button.onclick = (e) => {    // eslint-disable-line no-unused-vars
+            reloader.reload(true);
+            return false;
+        };
     }
 
     document.addEventListener("KOSHIAN_form_submit", () => {
@@ -939,6 +947,50 @@ function main() {
             timer_submit = null;
         }
     });
+
+    // ふたばリロード監視
+    if (use_futaba_reload && contdisp) {
+        checkFutabaReload(contdisp);
+    }
+    function checkFutabaReload(target) {
+        let status = "";
+        let doc_elm = document.documentElement;
+        let scroll_top;
+
+        let config = { childList: true };
+        let observer = new MutationObserver(() => {
+            if (target.textContent == status) {
+                return;
+            }
+            status = target.textContent;
+            if (status == "・・・") {
+                changeBgColor();
+                scroll_top = doc_elm.scrollTop;
+                reloader.loading = true;
+                reloader.notify.setText("");
+                reloader.notify.moveTo();
+            } else if (reloader.loading && status.endsWith("頃消えます")) {
+                resetBgColor();
+                countNewRes();
+                doc_elm.scrollTop = scroll_top;
+                reloader.loading = false;
+            } else if (reloader.loading && status == "スレッドがありません") {
+                resetBgColor();
+                dispLogLink();
+                reloader.loading = false;
+            } else {
+                resetBgColor();
+                reloader.loading = false;
+            }
+        });
+        observer.observe(target, config);
+
+        function countNewRes() {
+            rtd_num = new_rtd_num;
+            new_rtd_num = document.getElementsByClassName("rtd").length;
+            reloader.notify.setText(`新着レス:${new_rtd_num - rtd_num}`);
+        }
+    }
 
     fixFormPosition();
 }
@@ -964,6 +1016,8 @@ browser.storage.local.get().then((result) => {
     replace_f5_key = safeGetValue(result.replace_f5_key, DEFAULT_REPLACE_F5_KEY);
     change_bg_color = safeGetValue(result.change_bg_color, DEFAULT_CHANGE_BG_COLOR);
     show_deleted_res = safeGetValue(result.show_deleted_res, DEFAULT_SHOW_DELETED_RES);
+    use_futaba_reload = safeGetValue(result.use_futaba_reload, DEFAULT_USE_FUTABA_RELOAD);
+    use_koshian_reload = safeGetValue(result.use_koshian_reload, DEFAULT_USE_KOSHIAN_RELOAD);
     refresh_deleted_res = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
@@ -986,6 +1040,8 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     replace_f5_key = safeGetValue(changes.replace_f5_key.newValue, DEFAULT_REPLACE_F5_KEY);
     change_bg_color = safeGetValue(changes.change_bg_color.newValue, DEFAULT_CHANGE_BG_COLOR);
     show_deleted_res = safeGetValue(changes.show_deleted_res.newValue, DEFAULT_SHOW_DELETED_RES);
+    //use_futaba_reload = safeGetValue(changes.use_futaba_reload.newValue, DEFAULT_USE_FUTABA_RELOAD);
+    //use_koshian_reload = safeGetValue(changes.use_koshian_reload.newValue, DEFAULT_USE_KOSHIAN_RELOAD);
     refresh_deleted_res = safeGetValue(changes.refresh_deleted_res.newValue, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane = safeGetValue(changes.refresh_soudane.newValue, DEFAULT_REFRESH_SOUDANE);
     refresh_idip = safeGetValue(changes.refresh_idip.newValue, DEFAULT_REFRESH_IDIP);

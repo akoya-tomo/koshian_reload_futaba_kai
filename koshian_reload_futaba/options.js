@@ -4,6 +4,8 @@ const DEFAULT_RELOAD_PERIOD = 5000;
 const DEFAULT_REPLACE_F5_KEY = false;
 const DEFAULT_CHANGE_BG_COLOR = false;
 const DEFAULT_SHOW_DELETED_RES = true;
+const DEFAULT_USE_FUTABA_RELOAD = false;
+const DEFAULT_USE_KOSHIAN_RELOAD = true;
 const DEFAULT_REFRESH_DELETED_RES = true;
 const DEFAULT_REFRESH_SOUDANE = true;
 const DEFAULT_REFRESH_IDIP = true;
@@ -26,6 +28,8 @@ let reload_period = null;
 let replace_f5_key = null;
 let change_bg_color = null;
 let show_deleted_res = null;
+let use_futaba_reload = null;
+let use_koshian_reload = null;
 let refresh_deleted_res = null;
 let refresh_soudane = null;
 let refresh_idip = null;
@@ -58,6 +62,8 @@ function saveSetting(e) {   // eslint-disable-line no-unused-vars
         replace_f5_key:replace_f5_key.checked,
         change_bg_color:change_bg_color.checked,
         show_deleted_res:show_deleted_res.checked,
+        use_futaba_reload:use_futaba_reload.checked,
+        use_koshian_reload:use_koshian_reload.checked,
         refresh_deleted_res:refresh_deleted_res.checked,
         refresh_soudane:refresh_soudane.checked,
         refresh_idip:refresh_idip.checked,
@@ -91,6 +97,8 @@ function setCurrentChoice(result) {
     replace_f5_key.checked = safeGetValue(result.replace_f5_key, DEFAULT_REPLACE_F5_KEY);
     change_bg_color.checked = safeGetValue(result.change_bg_color, DEFAULT_CHANGE_BG_COLOR);
     show_deleted_res.checked = safeGetValue(result.show_deleted_res, DEFAULT_SHOW_DELETED_RES);
+    use_futaba_reload.checked = safeGetValue(result.use_futaba_reload, DEFAULT_USE_FUTABA_RELOAD);
+    use_koshian_reload.checked = safeGetValue(result.use_koshian_reload, DEFAULT_USE_KOSHIAN_RELOAD);
     refresh_deleted_res.checked = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
     refresh_soudane.checked = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
     refresh_idip.checked = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
@@ -123,6 +131,8 @@ function onLoad() {
     replace_f5_key = document.getElementById("replace_f5_key");
     change_bg_color = document.getElementById("change_bg_color");
     show_deleted_res = document.getElementById("show_deleted_res");
+    use_futaba_reload = document.getElementById("use_futaba_reload");
+    use_koshian_reload = document.getElementById("use_koshian_reload");
     refresh_deleted_res = document.getElementById("refresh_deleted_res");
     refresh_soudane = document.getElementById("refresh_soudane");
     refresh_idip = document.getElementById("refresh_idip");

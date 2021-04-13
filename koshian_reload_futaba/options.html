@@ -34,46 +34,62 @@
         <label for="show_deleted_res">削除されたレスを表示する</label>
     </p>
     <fieldset style="min-width: min-content;" class="group">
-        <legend>既読レスの更新</legend>
-        <p>
-            <input type="checkbox" id="refresh_deleted_res">
-            <label for="refresh_deleted_res">削除情報を更新する</label>
-            <br>
-            <input type="checkbox" id="refresh_soudane">
-            <label for="refresh_soudane">そうだねを更新する</label>
-            <br>
-            <input type="checkbox" id="refresh_idip">
-            <label for="refresh_idip">ID表示を更新する</label>
-        </p>
-    </fieldset>
-    <fieldset style="min-width: min-content;" class="group">
-        <legend>
-            リロード時にスレが消えていたらログサイトへのリンクを表示する
-        </legend>
-        <p>
-            <input type="checkbox" id="use_futapo_link">
-            <label for="use_futapo_link">ふたポ（二次元裏may・img）</label>
-            <br>
-            <input type="checkbox" id="use_ftbucket_link">
-            <label for="use_ftbucket_link">FTBucket（二次元裏may・img・jun・東方裏・艦これ）</label>
-            <br>
-            <input type="checkbox" id="use_tsumanne_link">
-            <label for="use_tsumanne_link">「」ッチー（二次元裏may・img・dat）</label>
-            <br>
-            <input type="checkbox" id="use_futafuta_link">
-            <label for="use_futafuta_link">ふたふた（二次元裏may・img・jun）</label>
-        </p>
+        <legend>レス送信モード</legend>
+
+        <fieldset style="min-width: min-content;" class="group">
+            <legend>リロード方式（設定変更後にスレを再読み込みで反映）</legend>
+            <p>
+                <input id="use_koshian_reload" type="radio" name="thre_reload_type">
+                <label for="use_koshian_reload">全文取得（転送量大）：既読レスの削除・ID表示情報更新有り</label>
+                <br>
+                <input id="use_futaba_reload" type="radio" name="thre_reload_type">
+                <label for="use_futaba_reload">差分取得（転送量小）：既読レスの削除・ID表示情報更新無し</label>
+            </p>
+        </fieldset>
+
+        <fieldset style="min-width: min-content;" class="group">
+            <legend>既読レスの更新</legend>
+            <p>
+                <input type="checkbox" id="refresh_deleted_res">
+                <label for="refresh_deleted_res">削除情報を更新する</label>
+                <br>
+                <input type="checkbox" id="refresh_soudane">
+                <label for="refresh_soudane">そうだねを更新する</label>
+                <br>
+                <input type="checkbox" id="refresh_idip">
+                <label for="refresh_idip">ID表示を更新する</label>
+            </p>
+        </fieldset>
+
+        <fieldset style="min-width: min-content;" class="group">
+            <legend>
+                リロード時にスレが消えていたらログサイトへのリンクを表示する
+            </legend>
+            <p>
+                <input type="checkbox" id="use_futapo_link">
+                <label for="use_futapo_link">ふたポ（二次元裏may・img）</label>
+                <br>
+                <input type="checkbox" id="use_ftbucket_link">
+                <label for="use_ftbucket_link">FTBucket（二次元裏may・img・jun・東方裏・艦これ）</label>
+                <br>
+                <input type="checkbox" id="use_tsumanne_link">
+                <label for="use_tsumanne_link">「」ッチー（二次元裏may・img・dat）</label>
+                <br>
+                <input type="checkbox" id="use_futafuta_link">
+                <label for="use_futafuta_link">ふたふた（二次元裏may・img・jun）</label>
+            </p>
+        </fieldset>
     </fieldset>
     <fieldset style="min-width: min-content;" class="group">
         <legend>カタログ</legend>
 
         <fieldset style="min-width: min-content;">
-            <legend>リロード方式（設定変更後にカタログをページ再読み込みで反映）</legend>
+            <legend>リロード方式（設定変更後にカタログを再読み込みで反映）</legend>
             <p>
-                <input id="use_catpage_reload" type="radio" name="reload_type">
+                <input id="use_catpage_reload" type="radio" name="cat_reload_type">
                 <label for="use_catpage_reload">ページ全体：カタログページ全体を再読み込み（レス増加順ソートが使用不可）</label>
                 <br>
-                <input id="use_cattable_reload" type="radio" name="reload_type">
+                <input id="use_cattable_reload" type="radio" name="cat_reload_type">
                 <label for="use_cattable_reload">カタログのみ：カタログテーブルだけを更新（レス増加順ソートが使用可）</label>
             </p>
         </fieldset>
