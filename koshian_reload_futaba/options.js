@@ -6,9 +6,9 @@ const DEFAULT_CHANGE_BG_COLOR = false;
 const DEFAULT_SHOW_DELETED_RES = true;
 const DEFAULT_USE_FUTABA_RELOAD = false;
 const DEFAULT_USE_KOSHIAN_RELOAD = true;
-const DEFAULT_REFRESH_DELETED_RES = true;
-const DEFAULT_REFRESH_SOUDANE = true;
-const DEFAULT_REFRESH_IDIP = true;
+//const DEFAULT_REFRESH_DELETED_RES = true;
+//const DEFAULT_REFRESH_SOUDANE = true;
+//const DEFAULT_REFRESH_IDIP = true;
 const DEFAULT_USE_FUTAPO_LINK = false;
 const DEFAULT_USE_FTBUCKET_LINK = false;
 const DEFAULT_USE_TSUMANNE_LINK = false;
@@ -30,9 +30,9 @@ let change_bg_color = null;
 let show_deleted_res = null;
 let use_futaba_reload = null;
 let use_koshian_reload = null;
-let refresh_deleted_res = null;
-let refresh_soudane = null;
-let refresh_idip = null;
+//let refresh_deleted_res = null;
+//let refresh_soudane = null;
+//let refresh_idip = null;
 let use_futapo_link = null;
 let use_ftbucket_link = null;
 let use_tsumanne_link = null;
@@ -64,9 +64,9 @@ function saveSetting(e) {   // eslint-disable-line no-unused-vars
         show_deleted_res:show_deleted_res.checked,
         use_futaba_reload:use_futaba_reload.checked,
         use_koshian_reload:use_koshian_reload.checked,
-        refresh_deleted_res:refresh_deleted_res.checked,
-        refresh_soudane:refresh_soudane.checked,
-        refresh_idip:refresh_idip.checked,
+        //refresh_deleted_res:refresh_deleted_res.checked,
+        //refresh_soudane:refresh_soudane.checked,
+        //refresh_idip:refresh_idip.checked,
         use_futapo_link:use_futapo_link.checked,
         use_ftbucket_link:use_ftbucket_link.checked,
         use_tsumanne_link:use_tsumanne_link.checked,
@@ -99,9 +99,9 @@ function setCurrentChoice(result) {
     show_deleted_res.checked = safeGetValue(result.show_deleted_res, DEFAULT_SHOW_DELETED_RES);
     use_futaba_reload.checked = safeGetValue(result.use_futaba_reload, DEFAULT_USE_FUTABA_RELOAD);
     use_koshian_reload.checked = safeGetValue(result.use_koshian_reload, DEFAULT_USE_KOSHIAN_RELOAD);
-    refresh_deleted_res.checked = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
-    refresh_soudane.checked = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
-    refresh_idip.checked = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
+    //refresh_deleted_res.checked = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
+    //refresh_soudane.checked = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
+    //refresh_idip.checked = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
     use_futapo_link.checked = safeGetValue(result.use_futapo_link, DEFAULT_USE_FUTAPO_LINK);
     use_ftbucket_link.checked = safeGetValue(result.use_ftbucket_link, DEFAULT_USE_FTBUCKET_LINK);
     use_tsumanne_link.checked = safeGetValue(result.use_tsumanne_link, DEFAULT_USE_TSUMANNE_LINK);
@@ -133,9 +133,9 @@ function onLoad() {
     show_deleted_res = document.getElementById("show_deleted_res");
     use_futaba_reload = document.getElementById("use_futaba_reload");
     use_koshian_reload = document.getElementById("use_koshian_reload");
-    refresh_deleted_res = document.getElementById("refresh_deleted_res");
-    refresh_soudane = document.getElementById("refresh_soudane");
-    refresh_idip = document.getElementById("refresh_idip");
+    //refresh_deleted_res = document.getElementById("refresh_deleted_res");
+    //refresh_soudane = document.getElementById("refresh_soudane");
+    //refresh_idip = document.getElementById("refresh_idip");
     use_futapo_link = document.getElementById("use_futapo_link");
     use_ftbucket_link = document.getElementById("use_ftbucket_link");
     use_tsumanne_link = document.getElementById("use_tsumanne_link");
