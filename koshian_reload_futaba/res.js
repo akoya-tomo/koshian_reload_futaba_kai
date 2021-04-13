@@ -24,6 +24,7 @@ const DEFAULT_USE_FUTAPO_LINK = false;
 const DEFAULT_USE_FTBUCKET_LINK = false;
 const DEFAULT_USE_TSUMANNE_LINK = false;
 const DEFAULT_USE_FUTAFUTA_LINK = false;
+const DEFAULT_USE_FOREST_LINK = false;
 let scroll_period = DEFAULT_SCROLL_PERIOD;
 let count_to_reload = DEFAULT_COUNT_TO_RELOAD;
 let reload_period = DEFAULT_RELOAD_PERIOD;
@@ -41,6 +42,7 @@ let use_futapo_link = DEFAULT_USE_FUTAPO_LINK;
 let use_ftbucket_link = DEFAULT_USE_FTBUCKET_LINK;
 let use_tsumanne_link = DEFAULT_USE_TSUMANNE_LINK;
 let use_futafuta_link = DEFAULT_USE_FUTAFUTA_LINK;
+let use_forest_link = DEFAULT_USE_FOREST_LINK;
 let is_idip_thread = checkIdIpThread();
 let ddbut_clicked = false;
 let tsumanne_loading = false;
@@ -708,6 +710,14 @@ function dispLogLink() {
         setLogLink(link, "futafuta");
     }
 
+    // ふたばフォレスト
+    link_id = document.getElementById("KOSHIAN_forest_link");
+    if (use_forest_link && !link_id && href_match
+        && `${href_match[1]}_${href_match[2]}`.match(/may_b/)) {
+        let link = `http://futabaforest.net/${href_match[2]}/res/${href_match[3]}.htm`;
+        setLogLink(link, "forest");
+    }
+
     /**
      * 過去ログへのリンクを設定
      * @param {string} link 過去ログのアドレス
@@ -1025,6 +1035,7 @@ browser.storage.local.get().then((result) => {
     use_ftbucket_link = safeGetValue(result.use_ftbucket_link, DEFAULT_USE_FTBUCKET_LINK);
     use_tsumanne_link = safeGetValue(result.use_tsumanne_link, DEFAULT_USE_TSUMANNE_LINK);
     use_futafuta_link = safeGetValue(result.use_futafuta_link, DEFAULT_USE_FUTAFUTA_LINK);
+    use_forest_link = safeGetValue(result.use_forest_link, DEFAULT_USE_FOREST_LINK);
 
     main();
 }, (error) => { }); // eslint-disable-line no-unused-vars
@@ -1049,6 +1060,7 @@ browser.storage.onChanged.addListener((changes, areaName) => {
     use_ftbucket_link = safeGetValue(changes.use_ftbucket_link.newValue, DEFAULT_USE_FTBUCKET_LINK);
     use_tsumanne_link = safeGetValue(changes.use_tsumanne_link.newValue, DEFAULT_USE_TSUMANNE_LINK);
     use_futafuta_link = safeGetValue(changes.use_futafuta_link.newValue, DEFAULT_USE_FUTAFUTA_LINK);
+    use_forest_link = safeGetValue(changes.use_forest_link.newValue, DEFAULT_USE_FOREST_LINK);
 
     if (show_deleted_res && !ddbut_clicked) {
         let ddbut = document.getElementById("ddbut");

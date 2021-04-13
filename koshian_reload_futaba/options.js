@@ -13,6 +13,7 @@ const DEFAULT_USE_FUTAPO_LINK = false;
 const DEFAULT_USE_FTBUCKET_LINK = false;
 const DEFAULT_USE_TSUMANNE_LINK = false;
 const DEFAULT_USE_FUTAFUTA_LINK = false;
+const DEFAULT_USE_FOREST_LINK = false;
 const DEFAULT_USE_CATPAGE_RELOAD = false;
 const DEFAULT_USE_CATTABLE_RELOAD = true;
 const DEFAULT_SCROLL_TO_TOP = false;
@@ -37,6 +38,7 @@ let use_futapo_link = null;
 let use_ftbucket_link = null;
 let use_tsumanne_link = null;
 let use_futafuta_link = null;
+let use_forest_link = null;
 let use_catpage_reload = null;
 let use_cattable_reload = null;
 let scroll_to_top = null;
@@ -71,6 +73,7 @@ function saveSetting(e) {   // eslint-disable-line no-unused-vars
         use_ftbucket_link:use_ftbucket_link.checked,
         use_tsumanne_link:use_tsumanne_link.checked,
         use_futafuta_link:use_futafuta_link.checked,
+        use_forest_link:use_forest_link.checked,
         use_catpage_reload:use_catpage_reload.checked,
         use_cattable_reload:use_cattable_reload.checked,
         scroll_to_top:scroll_to_top.checked,
@@ -106,6 +109,7 @@ function setCurrentChoice(result) {
     use_ftbucket_link.checked = safeGetValue(result.use_ftbucket_link, DEFAULT_USE_FTBUCKET_LINK);
     use_tsumanne_link.checked = safeGetValue(result.use_tsumanne_link, DEFAULT_USE_TSUMANNE_LINK);
     use_futafuta_link.checked = safeGetValue(result.use_futafuta_link, DEFAULT_USE_FUTAFUTA_LINK);
+    use_forest_link.checked = safeGetValue(result.use_forest_link, DEFAULT_USE_FOREST_LINK);
     use_catpage_reload.checked = safeGetValue(result.use_catpage_reload, DEFAULT_USE_CATPAGE_RELOAD);
     use_cattable_reload.checked = safeGetValue(result.use_cattable_reload, DEFAULT_USE_CATTABLE_RELOAD);
     scroll_to_top.checked = safeGetValue(result.scroll_to_top, DEFAULT_SCROLL_TO_TOP);
@@ -140,6 +144,7 @@ function onLoad() {
     use_ftbucket_link = document.getElementById("use_ftbucket_link");
     use_tsumanne_link = document.getElementById("use_tsumanne_link");
     use_futafuta_link = document.getElementById("use_futafuta_link");
+    use_forest_link = document.getElementById("use_forest_link");
     use_catpage_reload = document.getElementById("use_catpage_reload");
     use_cattable_reload = document.getElementById("use_cattable_reload");
     scroll_to_top = document.getElementById("scroll_to_top");
