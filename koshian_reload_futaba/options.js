@@ -4,13 +4,16 @@ const DEFAULT_RELOAD_PERIOD = 5000;
 const DEFAULT_REPLACE_F5_KEY = false;
 const DEFAULT_CHANGE_BG_COLOR = false;
 const DEFAULT_SHOW_DELETED_RES = true;
-const DEFAULT_REFRESH_DELETED_RES = true;
-const DEFAULT_REFRESH_SOUDANE = true;
-const DEFAULT_REFRESH_IDIP = true;
+const DEFAULT_USE_FUTABA_RELOAD = false;
+const DEFAULT_USE_KOSHIAN_RELOAD = true;
+//const DEFAULT_REFRESH_DELETED_RES = true;
+//const DEFAULT_REFRESH_SOUDANE = true;
+//const DEFAULT_REFRESH_IDIP = true;
 const DEFAULT_USE_FUTAPO_LINK = false;
 const DEFAULT_USE_FTBUCKET_LINK = false;
 const DEFAULT_USE_TSUMANNE_LINK = false;
 const DEFAULT_USE_FUTAFUTA_LINK = false;
+const DEFAULT_USE_FOREST_LINK = false;
 const DEFAULT_USE_CATPAGE_RELOAD = false;
 const DEFAULT_USE_CATTABLE_RELOAD = true;
 const DEFAULT_SCROLL_TO_TOP = false;
@@ -26,13 +29,16 @@ let reload_period = null;
 let replace_f5_key = null;
 let change_bg_color = null;
 let show_deleted_res = null;
-let refresh_deleted_res = null;
-let refresh_soudane = null;
-let refresh_idip = null;
+let use_futaba_reload = null;
+let use_koshian_reload = null;
+//let refresh_deleted_res = null;
+//let refresh_soudane = null;
+//let refresh_idip = null;
 let use_futapo_link = null;
 let use_ftbucket_link = null;
 let use_tsumanne_link = null;
 let use_futafuta_link = null;
+let use_forest_link = null;
 let use_catpage_reload = null;
 let use_cattable_reload = null;
 let scroll_to_top = null;
@@ -58,13 +64,16 @@ function saveSetting(e) {   // eslint-disable-line no-unused-vars
         replace_f5_key:replace_f5_key.checked,
         change_bg_color:change_bg_color.checked,
         show_deleted_res:show_deleted_res.checked,
-        refresh_deleted_res:refresh_deleted_res.checked,
-        refresh_soudane:refresh_soudane.checked,
-        refresh_idip:refresh_idip.checked,
+        use_futaba_reload:use_futaba_reload.checked,
+        use_koshian_reload:use_koshian_reload.checked,
+        //refresh_deleted_res:refresh_deleted_res.checked,
+        //refresh_soudane:refresh_soudane.checked,
+        //refresh_idip:refresh_idip.checked,
         use_futapo_link:use_futapo_link.checked,
         use_ftbucket_link:use_ftbucket_link.checked,
         use_tsumanne_link:use_tsumanne_link.checked,
         use_futafuta_link:use_futafuta_link.checked,
+        use_forest_link:use_forest_link.checked,
         use_catpage_reload:use_catpage_reload.checked,
         use_cattable_reload:use_cattable_reload.checked,
         scroll_to_top:scroll_to_top.checked,
@@ -91,13 +100,16 @@ function setCurrentChoice(result) {
     replace_f5_key.checked = safeGetValue(result.replace_f5_key, DEFAULT_REPLACE_F5_KEY);
     change_bg_color.checked = safeGetValue(result.change_bg_color, DEFAULT_CHANGE_BG_COLOR);
     show_deleted_res.checked = safeGetValue(result.show_deleted_res, DEFAULT_SHOW_DELETED_RES);
-    refresh_deleted_res.checked = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
-    refresh_soudane.checked = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
-    refresh_idip.checked = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
+    use_futaba_reload.checked = safeGetValue(result.use_futaba_reload, DEFAULT_USE_FUTABA_RELOAD);
+    use_koshian_reload.checked = safeGetValue(result.use_koshian_reload, DEFAULT_USE_KOSHIAN_RELOAD);
+    //refresh_deleted_res.checked = safeGetValue(result.refresh_deleted_res, DEFAULT_REFRESH_DELETED_RES);
+    //refresh_soudane.checked = safeGetValue(result.refresh_soudane, DEFAULT_REFRESH_SOUDANE);
+    //refresh_idip.checked = safeGetValue(result.refresh_idip, DEFAULT_REFRESH_IDIP);
     use_futapo_link.checked = safeGetValue(result.use_futapo_link, DEFAULT_USE_FUTAPO_LINK);
     use_ftbucket_link.checked = safeGetValue(result.use_ftbucket_link, DEFAULT_USE_FTBUCKET_LINK);
     use_tsumanne_link.checked = safeGetValue(result.use_tsumanne_link, DEFAULT_USE_TSUMANNE_LINK);
     use_futafuta_link.checked = safeGetValue(result.use_futafuta_link, DEFAULT_USE_FUTAFUTA_LINK);
+    use_forest_link.checked = safeGetValue(result.use_forest_link, DEFAULT_USE_FOREST_LINK);
     use_catpage_reload.checked = safeGetValue(result.use_catpage_reload, DEFAULT_USE_CATPAGE_RELOAD);
     use_cattable_reload.checked = safeGetValue(result.use_cattable_reload, DEFAULT_USE_CATTABLE_RELOAD);
     scroll_to_top.checked = safeGetValue(result.scroll_to_top, DEFAULT_SCROLL_TO_TOP);
@@ -123,13 +135,16 @@ function onLoad() {
     replace_f5_key = document.getElementById("replace_f5_key");
     change_bg_color = document.getElementById("change_bg_color");
     show_deleted_res = document.getElementById("show_deleted_res");
-    refresh_deleted_res = document.getElementById("refresh_deleted_res");
-    refresh_soudane = document.getElementById("refresh_soudane");
-    refresh_idip = document.getElementById("refresh_idip");
+    use_futaba_reload = document.getElementById("use_futaba_reload");
+    use_koshian_reload = document.getElementById("use_koshian_reload");
+    //refresh_deleted_res = document.getElementById("refresh_deleted_res");
+    //refresh_soudane = document.getElementById("refresh_soudane");
+    //refresh_idip = document.getElementById("refresh_idip");
     use_futapo_link = document.getElementById("use_futapo_link");
     use_ftbucket_link = document.getElementById("use_ftbucket_link");
     use_tsumanne_link = document.getElementById("use_tsumanne_link");
     use_futafuta_link = document.getElementById("use_futafuta_link");
+    use_forest_link = document.getElementById("use_forest_link");
     use_catpage_reload = document.getElementById("use_catpage_reload");
     use_cattable_reload = document.getElementById("use_cattable_reload");
     scroll_to_top = document.getElementById("scroll_to_top");

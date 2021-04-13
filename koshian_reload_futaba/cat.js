@@ -472,7 +472,7 @@ function main(){
         if(isBottom(e.deltaY) || isTop(e.deltaY)){
             if(cur - last_wheel_time < scroll_period && (!reloader || !reloader.loading) && !timer_notify){
                 ++wheel_count;
-                if(wheel_count > count_to_reload){
+                if(wheel_count >= count_to_reload){
                     wheel_count = 0;
                     if (isCatalog() && reloader) {
                         reloader.reload(false);
@@ -482,7 +482,7 @@ function main(){
                 }
             }else{
                 last_wheel_time = cur;
-                wheel_count = 0;
+                wheel_count = 1;
             }
         }else{
             wheel_count = 0;
