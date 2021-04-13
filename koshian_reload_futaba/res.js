@@ -905,13 +905,13 @@ function main() {
         if (isBottom(e.deltaY)) {
             if (cur - last_bottom_scroll < scroll_period && !reloader.loading && !timer_notify) {
                 ++bottom_scroll_count;
-                if (bottom_scroll_count > count_to_reload) {
+                if (bottom_scroll_count >= count_to_reload) {
                     bottom_scroll_count = 0;
                     reloader.reload();
                 }
             } else {
                 last_bottom_scroll = cur;
-                bottom_scroll_count = 0;
+                bottom_scroll_count = 1;
             }
         } else {
             bottom_scroll_count = 0;
